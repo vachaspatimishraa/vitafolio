@@ -1,0 +1,3 @@
+class SkillModel {
+  const SkillModel();
+}

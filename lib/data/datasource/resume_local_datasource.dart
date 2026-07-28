@@ -1,0 +1,3 @@
+class ResumeLocalDataSource {
+  const ResumeLocalDataSource();
+}

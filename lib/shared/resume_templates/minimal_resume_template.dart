@@ -1,0 +1,3 @@
+class MinimalResumeTemplate {
+  const MinimalResumeTemplate();
+}

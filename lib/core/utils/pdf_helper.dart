@@ -1,0 +1,3 @@
+class PdfHelper {
+  PdfHelper._();
+}

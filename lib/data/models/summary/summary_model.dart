@@ -1,0 +1,3 @@
+class SummaryModel {
+  const SummaryModel();
+}

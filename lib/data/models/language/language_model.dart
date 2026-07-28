@@ -1,0 +1,3 @@
+class LanguageModel {
+  const LanguageModel();
+}

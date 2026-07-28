@@ -1,0 +1,3 @@
+class ExperienceModel {
+  const ExperienceModel();
+}

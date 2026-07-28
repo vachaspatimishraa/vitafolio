@@ -1,0 +1,3 @@
+class TemplateFactory {
+  const TemplateFactory();
+}
