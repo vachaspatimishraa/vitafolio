@@ -12,7 +12,9 @@ class EmptySectionPlaceholder extends StatelessWidget {
       child: Center(
         child: Text(
           '$sectionName section is empty',
-          style: Theme.of(context).textTheme.bodySmall?.copyWith(color: Colors.grey),
+          style: Theme.of(
+            context,
+          ).textTheme.bodySmall?.copyWith(color: Colors.grey),
         ),
       ),
     );

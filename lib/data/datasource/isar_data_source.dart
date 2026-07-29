@@ -56,7 +56,11 @@ class IsarDataSource {
   }
 
   /// Updates a resume's selected template.
-  Future<void> updateResumeTemplate(int resumeId, String templateId, String templateName) async {
+  Future<void> updateResumeTemplate(
+    int resumeId,
+    String templateId,
+    String templateName,
+  ) async {
     await _isar.writeTxn(() async {
       final resume = await _isar.resumeModels.get(resumeId);
       if (resume != null) {

@@ -13,11 +13,7 @@ const EducationModelSchema = Schema(
   name: r'EducationModel',
   id: -8132313263457369463,
   properties: {
-    r'degree': PropertySchema(
-      id: 0,
-      name: r'degree',
-      type: IsarType.string,
-    ),
+    r'degree': PropertySchema(id: 0, name: r'degree', type: IsarType.string),
     r'endDate': PropertySchema(
       id: 1,
       name: r'endDate',
@@ -28,31 +24,19 @@ const EducationModelSchema = Schema(
       name: r'fieldOfStudy',
       type: IsarType.string,
     ),
-    r'grade': PropertySchema(
-      id: 3,
-      name: r'grade',
-      type: IsarType.string,
-    ),
-    r'id': PropertySchema(
-      id: 4,
-      name: r'id',
-      type: IsarType.string,
-    ),
+    r'grade': PropertySchema(id: 3, name: r'grade', type: IsarType.string),
+    r'id': PropertySchema(id: 4, name: r'id', type: IsarType.string),
     r'isCurrentlyStudying': PropertySchema(
       id: 5,
       name: r'isCurrentlyStudying',
       type: IsarType.bool,
     ),
-    r'school': PropertySchema(
-      id: 6,
-      name: r'school',
-      type: IsarType.string,
-    ),
+    r'school': PropertySchema(id: 6, name: r'school', type: IsarType.string),
     r'startDate': PropertySchema(
       id: 7,
       name: r'startDate',
       type: IsarType.dateTime,
-    )
+    ),
   },
   estimateSize: _educationModelEstimateSize,
   serialize: _educationModelSerialize,
@@ -84,7 +68,12 @@ int _educationModelEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.id.length * 3;
+  {
+    final value = object.id;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.school;
     if (value != null) {
@@ -121,11 +110,11 @@ EducationModel _educationModelDeserialize(
     endDate: reader.readDateTimeOrNull(offsets[1]),
     fieldOfStudy: reader.readStringOrNull(offsets[2]),
     grade: reader.readStringOrNull(offsets[3]),
+    id: reader.readStringOrNull(offsets[4]),
     isCurrentlyStudying: reader.readBoolOrNull(offsets[5]),
     school: reader.readStringOrNull(offsets[6]),
     startDate: reader.readDateTimeOrNull(offsets[7]),
   );
-  object.id = reader.readString(offsets[4]);
   return object;
 }
 
@@ -145,7 +134,7 @@ P _educationModelDeserializeProp<P>(
     case 3:
       return (reader.readStringOrNull(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readBoolOrNull(offset)) as P;
     case 6:
@@ -160,71 +149,74 @@ P _educationModelDeserializeProp<P>(
 extension EducationModelQueryFilter
     on QueryBuilder<EducationModel, EducationModel, QFilterCondition> {
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeIsNull() {
+  degreeIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'degree',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'degree'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeIsNotNull() {
+  degreeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'degree',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'degree'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  degreeEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'degree',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'degree',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'degree',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeLessThan(
+  degreeGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'degree',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'degree',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeBetween(
+  degreeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'degree',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  degreeBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -232,227 +224,231 @@ extension EducationModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'degree',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'degree',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  degreeStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'degree',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'degree',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  degreeEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'degree',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'degree',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeContains(String value, {bool caseSensitive = true}) {
+  degreeContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'degree',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'degree',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeMatches(String pattern, {bool caseSensitive = true}) {
+  degreeMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'degree',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'degree',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeIsEmpty() {
+  degreeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'degree',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'degree', value: ''),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      degreeIsNotEmpty() {
+  degreeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'degree',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'degree', value: ''),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      endDateIsNull() {
+  endDateIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'endDate',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'endDate'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      endDateIsNotNull() {
+  endDateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'endDate',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'endDate'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      endDateEqualTo(DateTime? value) {
+  endDateEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'endDate',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'endDate', value: value),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      endDateGreaterThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
+  endDateGreaterThan(DateTime? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'endDate',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'endDate',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      endDateLessThan(
-    DateTime? value, {
-    bool include = false,
-  }) {
+  endDateLessThan(DateTime? value, {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'endDate',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'endDate',
+          value: value,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      endDateBetween(
+  endDateBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'endDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'endDate',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyIsNull() {
+  fieldOfStudyIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'fieldOfStudy',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'fieldOfStudy'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyIsNotNull() {
+  fieldOfStudyIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'fieldOfStudy',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'fieldOfStudy'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  fieldOfStudyEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fieldOfStudy',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'fieldOfStudy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'fieldOfStudy',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyLessThan(
+  fieldOfStudyGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'fieldOfStudy',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'fieldOfStudy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyBetween(
+  fieldOfStudyLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'fieldOfStudy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  fieldOfStudyBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -460,153 +456,158 @@ extension EducationModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'fieldOfStudy',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'fieldOfStudy',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  fieldOfStudyStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'fieldOfStudy',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'fieldOfStudy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  fieldOfStudyEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'fieldOfStudy',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'fieldOfStudy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyContains(String value, {bool caseSensitive = true}) {
+  fieldOfStudyContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'fieldOfStudy',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'fieldOfStudy',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyMatches(String pattern, {bool caseSensitive = true}) {
+  fieldOfStudyMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'fieldOfStudy',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'fieldOfStudy',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyIsEmpty() {
+  fieldOfStudyIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'fieldOfStudy',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'fieldOfStudy', value: ''),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      fieldOfStudyIsNotEmpty() {
+  fieldOfStudyIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'fieldOfStudy',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'fieldOfStudy', value: ''),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeIsNull() {
+  gradeIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'grade',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'grade'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeIsNotNull() {
+  gradeIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'grade',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'grade'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  gradeEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'grade',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'grade',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'grade',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeLessThan(
+  gradeGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'grade',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'grade',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeBetween(
+  gradeLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'grade',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  gradeBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -614,316 +615,155 @@ extension EducationModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'grade',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'grade',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  gradeStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'grade',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'grade',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  gradeEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'grade',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'grade',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeContains(String value, {bool caseSensitive = true}) {
+  gradeContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'grade',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'grade',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeMatches(String pattern, {bool caseSensitive = true}) {
+  gradeMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'grade',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'grade',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeIsEmpty() {
+  gradeIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'grade',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'grade', value: ''),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      gradeIsNotEmpty() {
+  gradeIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'grade',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'grade', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'id'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'id'),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition> idEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'id',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idGreaterThan(
-    String value, {
+  idGreaterThan(
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'id',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idLessThan(
-    String value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
+  idLessThan(String? value, {bool include = false, bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'id',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition> idBetween(
-    String lower,
-    String upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'id',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'id',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition> idMatches(
-      String pattern,
-      {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'id',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'id',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      idIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'id',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      isCurrentlyStudyingIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'isCurrentlyStudying',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      isCurrentlyStudyingIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'isCurrentlyStudying',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      isCurrentlyStudyingEqualTo(bool? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'isCurrentlyStudying',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'school',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'school',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'school',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'school',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'school',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -931,158 +771,347 @@ extension EducationModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'school',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'id',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolStartsWith(
-    String value, {
+  idStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'id',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  idEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'id',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  idContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'id',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition> idMatches(
+    String pattern, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'school',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'id',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolEndsWith(
-    String value, {
+  idIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'id', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  idIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'id', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  isCurrentlyStudyingIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'isCurrentlyStudying'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  isCurrentlyStudyingIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'isCurrentlyStudying'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  isCurrentlyStudyingEqualTo(bool? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'isCurrentlyStudying', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'school'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'school'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolEqualTo(String? value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'school',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolGreaterThan(
+    String? value, {
+    bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'school',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'school',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'school',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'school',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'school',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      schoolIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'school',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      startDateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'startDate',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      startDateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'startDate',
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      startDateEqualTo(DateTime? value) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'startDate',
-        value: value,
-      ));
-    });
-  }
-
-  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      startDateGreaterThan(
-    DateTime? value, {
+  schoolLessThan(
+    String? value, {
     bool include = false,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'startDate',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'school',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      startDateLessThan(
-    DateTime? value, {
-    bool include = false,
+  schoolBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'startDate',
-        value: value,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'school',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
-      startDateBetween(
+  schoolStartsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'school',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolEndsWith(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'school',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'school',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'school',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'school', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  schoolIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'school', value: ''),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  startDateIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'startDate'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  startDateIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'startDate'),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  startDateEqualTo(DateTime? value) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'startDate', value: value),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  startDateGreaterThan(DateTime? value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'startDate',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  startDateLessThan(DateTime? value, {bool include = false}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'startDate',
+          value: value,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<EducationModel, EducationModel, QAfterFilterCondition>
+  startDateBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'startDate',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'startDate',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+        ),
+      );
     });
   }
 }

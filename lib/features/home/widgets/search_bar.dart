@@ -30,7 +30,9 @@ class _HomeSearchBarState extends ConsumerState<HomeSearchBar> {
   @override
   Widget build(BuildContext context) {
     // Sync controller with state when state changes externally
-    final query = ref.watch(homeViewModelProvider).searchQuery;
+    final query = ref.watch(
+      homeViewModelProvider.select((state) => state.searchQuery),
+    );
     if (_controller.text != query) {
       _controller.text = query;
       _controller.selection = TextSelection.fromPosition(

@@ -1,7 +1,12 @@
 import 'package:flutter/foundation.dart';
 
 class DatabaseLogger {
-  static void log(String message, {String? tag, Object? error, StackTrace? stackTrace}) {
+  static void log(
+    String message, {
+    String? tag,
+    Object? error,
+    StackTrace? stackTrace,
+  }) {
     if (kReleaseMode) return;
 
     final prefix = tag != null ? '[$tag]' : '[Database]';
@@ -17,8 +22,14 @@ class DatabaseLogger {
     }
   }
 
-  static void info(String message, {String? tag}) => log(message, tag: tag ?? 'INFO');
-  static void warning(String message, {String? tag}) => log('⚠️ $message', tag: tag ?? 'WARN');
-  static void error(String message, {String? tag, Object? err, StackTrace? st}) => 
-      log('❌ $message', tag: tag ?? 'ERROR', error: err, stackTrace: st);
+  static void info(String message, {String? tag}) =>
+      log(message, tag: tag ?? 'INFO');
+  static void warning(String message, {String? tag}) =>
+      log('⚠️ $message', tag: tag ?? 'WARN');
+  static void error(
+    String message, {
+    String? tag,
+    Object? err,
+    StackTrace? st,
+  }) => log('❌ $message', tag: tag ?? 'ERROR', error: err, stackTrace: st);
 }

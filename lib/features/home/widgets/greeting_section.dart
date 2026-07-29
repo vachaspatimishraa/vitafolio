@@ -22,10 +22,7 @@ class GreetingSection extends ConsumerWidget {
 
     return Row(
       children: [
-        const AppLogo(
-          width: 40,
-          height: 40,
-        ),
+        const AppLogo(width: 40, height: 40),
         const SizedBox(width: AppSpacing.md),
         Expanded(
           child: Column(

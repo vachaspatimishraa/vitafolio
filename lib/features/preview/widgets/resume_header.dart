@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../workflow/models/workflow_state.dart';
+import '../../../../data/models/embedded/personal_information.dart';
 import 'contact_information.dart';
 
 class ResumeHeader extends StatelessWidget {
-  final ResumePersonalInfo personalInfo;
+  final PersonalInformation personalInfo;
 
   const ResumeHeader({super.key, required this.personalInfo});
 
@@ -11,20 +11,24 @@ class ResumeHeader extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
+    final fullNameText = personalInfo.fullName?.isEmpty ?? true
+        ? 'JANE DOE'
+        : personalInfo.fullName!.toUpperCase();
+
     return Column(
       crossAxisAlignment: CrossAxisAlignment.center,
       children: [
         Text(
-          personalInfo.fullName.isEmpty ? 'JANE DOE' : personalInfo.fullName.toUpperCase(),
+          fullNameText,
           style: theme.textTheme.headlineMedium?.copyWith(
             fontWeight: FontWeight.bold,
             letterSpacing: 1.5,
           ),
         ),
-        if (personalInfo.jobTitle.isNotEmpty) ...[
+        if (personalInfo.jobTitle?.isNotEmpty == true) ...[
           const SizedBox(height: 4),
           Text(
-            personalInfo.jobTitle.toUpperCase(),
+            personalInfo.jobTitle!.toUpperCase(),
             style: theme.textTheme.titleMedium?.copyWith(
               color: theme.colorScheme.secondary,
               fontWeight: FontWeight.w500,

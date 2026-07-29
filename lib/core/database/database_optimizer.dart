@@ -7,12 +7,18 @@ class DatabaseOptimizer {
   static Future<void> optimize(Isar isar) async {
     try {
       final count = await isar.resumeModels.count();
-      DatabaseLogger.info('Database Optimization Scan: $count total resumes found.');
-      
+      DatabaseLogger.info(
+        'Database Optimization Scan: $count total resumes found.',
+      );
+
       // Isar handles memory caching automatically, but we can verify indexing status
       DatabaseLogger.info('Indexes are verified. Database is optimized.');
     } catch (e, stackTrace) {
-      DatabaseLogger.error('Failed to run database optimizer', err: e, st: stackTrace);
+      DatabaseLogger.error(
+        'Failed to run database optimizer',
+        err: e,
+        st: stackTrace,
+      );
     }
   }
 }

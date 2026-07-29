@@ -34,10 +34,7 @@ class LoadingOverlay extends StatelessWidget {
                 child: Column(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    const AppLogo(
-                      width: 48,
-                      height: 48,
-                    ),
+                    const AppLogo(width: 48, height: 48),
                     const SizedBox(height: 16),
                     const LoadingIndicator(),
                     if (message != null) ...[

@@ -1,4 +1,4 @@
-import '../../../../data/models/resume/resume_model.dart';
+import '../../../../data/models/resume_model.dart';
 
 enum SaveStatus { saved, saving, unsaved, error }
 

@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../../app/constants/app_spacing.dart';
-import '../../../data/models/resume/resume_model.dart';
+import '../../../data/models/enums/resume_status.dart';
 import 'app_card.dart';
 
 /// A reusable Card to display details about a resume.
@@ -113,7 +113,8 @@ class ResumeCard extends StatelessWidget {
                   maxLines: 2,
                   overflow: TextOverflow.ellipsis,
                 ),
-                if (professionalTitle != null && professionalTitle!.isNotEmpty) ...[
+                if (professionalTitle != null &&
+                    professionalTitle!.isNotEmpty) ...[
                   const SizedBox(height: AppSpacing.xxs),
                   Text(
                     professionalTitle!,
@@ -164,7 +165,9 @@ class ResumeCard extends StatelessWidget {
                     status == ResumeStatus.completed ? 'Completed' : 'Draft',
                     style: textTheme.labelSmall?.copyWith(
                       color: status == ResumeStatus.completed
-                          ? (theme.brightness == Brightness.dark ? Colors.greenAccent[200] : Colors.green[700])
+                          ? (theme.brightness == Brightness.dark
+                                ? Colors.greenAccent[200]
+                                : Colors.green[700])
                           : colorScheme.onSecondaryContainer,
                       fontWeight: FontWeight.bold,
                     ),

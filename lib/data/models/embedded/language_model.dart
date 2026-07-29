@@ -5,14 +5,16 @@ part 'language_model.g.dart';
 
 @embedded
 class LanguageModel {
-  String id = DateTime.now().microsecondsSinceEpoch.toString();
+  String? id;
   String? language;
-  
+
   @enumerated
   var proficiency = LanguageProficiency.beginner;
 
   LanguageModel({
+    this.id,
     this.language,
+    this.proficiency = LanguageProficiency.beginner,
   });
 
   LanguageModel copyWith({
@@ -20,11 +22,10 @@ class LanguageModel {
     String? language,
     LanguageProficiency? proficiency,
   }) {
-    final model = LanguageModel(
+    return LanguageModel(
+      id: id ?? this.id,
       language: language ?? this.language,
+      proficiency: proficiency ?? this.proficiency,
     );
-    model.id = id ?? this.id;
-    model.proficiency = proficiency ?? this.proficiency;
-    return model;
   }
 }

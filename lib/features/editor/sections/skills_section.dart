@@ -11,7 +11,9 @@ class SkillsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(workflowViewModelProvider);
+    final skills = ref.watch(
+      workflowViewModelProvider.select((state) => state.skills),
+    );
     final notifier = ref.read(workflowViewModelProvider.notifier);
 
     return EditorSection(
@@ -20,7 +22,7 @@ class SkillsSection extends ConsumerWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           ChipInput(
-            chips: state.skills,
+            chips: skills,
             suggestions: WorkflowViewModel.skillSuggestions,
             onAdd: notifier.addSkill,
             onRemove: notifier.removeSkill,
@@ -30,7 +32,7 @@ class SkillsSection extends ConsumerWidget {
             spacing: AppSpacing.sm,
             runSpacing: AppSpacing.sm,
             children: WorkflowViewModel.skillSuggestions
-                .where((skill) => !state.skills.contains(skill))
+                .where((skill) => !skills.contains(skill))
                 .map(
                   (skill) => ActionChip(
                     label: Text(skill),

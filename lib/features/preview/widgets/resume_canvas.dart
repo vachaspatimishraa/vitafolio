@@ -3,7 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../workflow/models/workflow_state.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
-import '../renderers/renderer_factory.dart';
+import '../../../core/templates/repository/template_repository.dart' as core_repo;
 import '../view_model/preview_view_model.dart';
 import 'preview_loading_view.dart';
 
@@ -52,19 +52,19 @@ class ResumeCanvas extends ConsumerWidget {
 
     final selectedTemplateId = previewState.selectedTemplate?.id ??
         workflowState.selectedTemplateId ??
-        'modern_clean';
+        'ats_professional';
         
-    final renderer = RendererFactory().getRenderer(selectedTemplateId);
+    final template = core_repo.TemplateRepository().getTemplate(selectedTemplateId);
 
     // Merge workflow state or create state from loaded domain resume model
     final domainResume = previewState.resume;
     final renderData = WorkflowState(
-      personalInfo: workflowState.personalInfo.fullName.isNotEmpty
+      personalInfo: workflowState.personalInfo.fullName?.isNotEmpty ?? false
           ? workflowState.personalInfo
           : (domainResume?.personalInfo ?? workflowState.personalInfo),
       summary: workflowState.summary.isNotEmpty
           ? workflowState.summary
-          : (domainResume?.summary ?? workflowState.summary),
+          : (domainResume?.professionalSummary?.summary ?? workflowState.summary),
       education: workflowState.education.isNotEmpty
           ? workflowState.education
           : (domainResume?.education ?? workflowState.education),
@@ -73,7 +73,7 @@ class ResumeCanvas extends ConsumerWidget {
           : (domainResume?.experience ?? workflowState.experience),
       skills: workflowState.skills.isNotEmpty
           ? workflowState.skills
-          : (domainResume?.skills ?? workflowState.skills),
+          : (domainResume?.skills?.map((s) => s.name ?? '').toList() ?? workflowState.skills),
       projects: workflowState.projects.isNotEmpty
           ? workflowState.projects
           : (domainResume?.projects ?? workflowState.projects),
@@ -86,29 +86,47 @@ class ResumeCanvas extends ConsumerWidget {
       selectedTemplateId: selectedTemplateId,
     );
 
-    final theme = Theme.of(context);
-    final isDark = theme.brightness == Brightness.dark;
-
     return Center(
-      child: InteractiveViewer(
-        minScale: 0.5,
-        maxScale: 3.0,
-        scaleEnabled: true,
-        panEnabled: true,
-        child: AspectRatio(
-          aspectRatio: 1 / 1.414, // Standard A4 Aspect Ratio
-          child: Transform.scale(
-            scale: previewState.scale,
-            child: Card(
-              color: isDark ? Colors.grey[900] : Colors.white,
-              elevation: 6,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(4.0),
-              ),
-              child: Container(
-                padding: const EdgeInsets.symmetric(horizontal: 24.0, vertical: 32.0),
-                child: SingleChildScrollView(
-                  child: renderer.render(renderData, context),
+      child: Padding(
+        padding: const EdgeInsets.all(12.0),
+        child: InteractiveViewer(
+          minScale: 0.5,
+          maxScale: 3.0,
+          scaleEnabled: true,
+          panEnabled: true,
+          child: Center(
+            child: Transform.scale(
+              scale: previewState.scale,
+              child: AspectRatio(
+                aspectRatio: 1 / 1.414, // Standard A4 Aspect Ratio
+                child: Container(
+                  decoration: BoxDecoration(
+                    color: Colors.white,
+                    borderRadius: BorderRadius.circular(4.0),
+                    boxShadow: [
+                      BoxShadow(
+                        color: Colors.black.withValues(alpha: 0.25),
+                        blurRadius: 12,
+                        offset: const Offset(0, 4),
+                      ),
+                    ],
+                  ),
+                  clipBehavior: Clip.antiAlias,
+                  // Enforce Paper Appearance (Light theme context, white bg, dark text)
+                  child: Theme(
+                    data: ThemeData.light().copyWith(
+                      scaffoldBackgroundColor: Colors.white,
+                      colorScheme: const ColorScheme.light(
+                        surface: Colors.white,
+                        onSurface: Colors.black,
+                      ),
+                    ),
+                    child: Builder(
+                      builder: (canvasContext) {
+                        return template.renderer.buildPreview(renderData, canvasContext);
+                      },
+                    ),
+                  ),
                 ),
               ),
             ),

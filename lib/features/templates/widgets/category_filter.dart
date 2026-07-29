@@ -8,7 +8,9 @@ class CategoryFilter extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedCategory = ref.watch(templatesViewModelProvider).selectedCategory;
+    final selectedCategory = ref
+        .watch(templatesViewModelProvider)
+        .selectedCategory;
 
     return SingleChildScrollView(
       scrollDirection: Axis.horizontal,
@@ -22,7 +24,9 @@ class CategoryFilter extends ConsumerWidget {
               selected: isSelected,
               onSelected: (selected) {
                 if (selected) {
-                  ref.read(templatesViewModelProvider.notifier).setCategory(category);
+                  ref
+                      .read(templatesViewModelProvider.notifier)
+                      .setCategory(category);
                 }
               },
             ),

@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../models/template_model.dart';
+import '../../../core/templates/models/resume_template.dart' as core;
 import 'template_thumbnail.dart';
 import 'template_badge.dart';
 import 'selected_badge.dart';
@@ -10,7 +10,7 @@ import '../../../app/constants/app_spacing.dart';
 import '../../../app/router.dart';
 
 class TemplateCard extends ConsumerWidget {
-  final TemplateModel template;
+  final core.ResumeTemplate template;
   final bool isSelected;
 
   const TemplateCard({
@@ -34,10 +34,8 @@ class TemplateCard extends ConsumerWidget {
             : BorderSide(color: colorScheme.outlineVariant, width: 0.5),
       ),
       child: InkWell(
-        onTap: () => context.pushNamed(
-          AppRoutes.templatePreview,
-          extra: template,
-        ),
+        onTap: () =>
+            context.pushNamed(AppRoutes.templatePreview, extra: template),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
@@ -45,21 +43,13 @@ class TemplateCard extends ConsumerWidget {
               child: Stack(
                 children: [
                   TemplateThumbnail(
-                    imagePath: template.thumbnail,
+                    template: template,
                     heroTag: 'template_${template.id}',
                   ),
                   if (isSelected)
-                    const Positioned(
-                      top: 8,
-                      right: 8,
-                      child: SelectedBadge(),
-                    ),
-                  if (template.isAtsFriendly)
-                    const Positioned(
-                      top: 8,
-                      left: 8,
-                      child: TemplateBadge(),
-                    ),
+                    const Positioned(top: 8, right: 8, child: SelectedBadge()),
+                  if (template.category == core.TemplateCategory.ats)
+                    const Positioned(top: 8, left: 8, child: TemplateBadge()),
                 ],
               ),
             ),
@@ -83,7 +73,7 @@ class TemplateCard extends ConsumerWidget {
                   ),
                   const SizedBox(height: 2),
                   Text(
-                    template.category,
+                    template.category.label,
                     style: theme.textTheme.bodySmall?.copyWith(
                       color: colorScheme.secondary,
                     ),

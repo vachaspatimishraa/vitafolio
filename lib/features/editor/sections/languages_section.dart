@@ -16,20 +16,33 @@ class LanguagesSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(workflowViewModelProvider);
+    final languagesLength = ref.watch(
+      workflowViewModelProvider.select((state) => state.languages.length),
+    );
 
     return EditorSection(
       title: 'Languages',
       trailing: SecondaryButton(
         label: AppStrings.addLanguage,
         icon: Icons.add,
-        onPressed: () => ref.read(workflowViewModelProvider.notifier).addLanguage(),
+        onPressed: () =>
+            ref.read(workflowViewModelProvider.notifier).addLanguage(),
       ),
       child: Column(
         children: [
-          for (var index = 0; index < state.languages.length; index++) ...[
-            _LanguageCard(key: ValueKey(state.languages[index].id), index: index),
-            if (index < state.languages.length - 1) const SizedBox(height: AppSpacing.md),
+          for (var index = 0; index < languagesLength; index++) ...[
+            _LanguageCard(
+              key: ValueKey(
+                ref.watch(
+                  workflowViewModelProvider.select(
+                    (s) => s.languages[index].id,
+                  ),
+                ),
+              ),
+              index: index,
+            ),
+            if (index < languagesLength - 1)
+              const SizedBox(height: AppSpacing.md),
           ],
         ],
       ),
@@ -44,7 +57,9 @@ class _LanguageCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final item = ref.watch(workflowViewModelProvider).languages[index];
+    final item = ref.watch(
+      workflowViewModelProvider.select((state) => state.languages[index]),
+    );
     final notifier = ref.read(workflowViewModelProvider.notifier);
 
     return Card(
@@ -55,7 +70,10 @@ class _LanguageCard extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('Language ${index + 1}', style: Theme.of(context).textTheme.titleSmall),
+                  child: Text(
+                    'Language ${index + 1}',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                 ),
                 AppIconButton(
                   icon: Icons.delete_outline,
@@ -68,17 +86,26 @@ class _LanguageCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             AppTextField(
               label: 'Language',
-              initialValue: item.title,
-              onChanged: (value) => notifier.updateLanguage(index, item.copyWith(title: value)),
+              initialValue: item.language,
+              onChanged: (value) => notifier.updateLanguage(
+                index,
+                item.copyWith(language: value),
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             DropdownField(
               label: 'Proficiency',
-              value: item.proficiency.isNotEmpty ? item.proficiency : LanguageProficiency.intermediate.name,
+              value: item.proficiency.name,
               items: LanguageProficiency.values.map((e) => e.name).toList(),
               onChanged: (value) {
                 if (value != null) {
-                  notifier.updateLanguage(index, item.copyWith(proficiency: value));
+                  final prof = LanguageProficiency.values.firstWhere(
+                    (e) => e.name == value,
+                  );
+                  notifier.updateLanguage(
+                    index,
+                    item.copyWith(proficiency: prof),
+                  );
                 }
               },
             ),

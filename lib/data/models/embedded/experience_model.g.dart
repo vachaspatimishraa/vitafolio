@@ -84,7 +84,12 @@ int _experienceModelEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  bytesCount += 3 + object.id.length * 3;
+  {
+    final value = object.id;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.location;
     if (value != null) {
@@ -126,16 +131,16 @@ ExperienceModel _experienceModelDeserialize(
   final object = ExperienceModel(
     company: reader.readStringOrNull(offsets[0]),
     description: reader.readStringOrNull(offsets[1]),
+    employmentType: _ExperienceModelemploymentTypeValueEnumMap[
+            reader.readByteOrNull(offsets[2])] ??
+        EmploymentType.fullTime,
     endDate: reader.readDateTimeOrNull(offsets[3]),
+    id: reader.readStringOrNull(offsets[4]),
     isCurrentlyWorking: reader.readBoolOrNull(offsets[5]),
     location: reader.readStringOrNull(offsets[6]),
     position: reader.readStringOrNull(offsets[7]),
     startDate: reader.readDateTimeOrNull(offsets[8]),
   );
-  object.employmentType = _ExperienceModelemploymentTypeValueEnumMap[
-          reader.readByteOrNull(offsets[2])] ??
-      EmploymentType.fullTime;
-  object.id = reader.readString(offsets[4]);
   return object;
 }
 
@@ -157,7 +162,7 @@ P _experienceModelDeserializeProp<P>(
     case 3:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 4:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 5:
       return (reader.readBoolOrNull(offset)) as P;
     case 6:
@@ -627,8 +632,26 @@ extension ExperienceModelQueryFilter
   }
 
   QueryBuilder<ExperienceModel, ExperienceModel, QAfterFilterCondition>
+      idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<ExperienceModel, ExperienceModel, QAfterFilterCondition>
+      idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<ExperienceModel, ExperienceModel, QAfterFilterCondition>
       idEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -642,7 +665,7 @@ extension ExperienceModelQueryFilter
 
   QueryBuilder<ExperienceModel, ExperienceModel, QAfterFilterCondition>
       idGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -658,7 +681,7 @@ extension ExperienceModelQueryFilter
 
   QueryBuilder<ExperienceModel, ExperienceModel, QAfterFilterCondition>
       idLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -674,8 +697,8 @@ extension ExperienceModelQueryFilter
 
   QueryBuilder<ExperienceModel, ExperienceModel, QAfterFilterCondition>
       idBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,

@@ -23,7 +23,10 @@ class LoadingOverlay extends StatelessWidget {
             child: Center(
               child: Card(
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 24,
+                    vertical: 16,
+                  ),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     children: [

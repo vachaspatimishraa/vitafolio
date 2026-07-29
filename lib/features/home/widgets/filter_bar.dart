@@ -8,7 +8,9 @@ class FilterBar extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedFilter = ref.watch(homeViewModelProvider).selectedFilter;
+    final selectedFilter = ref.watch(
+      homeViewModelProvider.select((state) => state.selectedFilter),
+    );
     final filters = FilterOption.values;
 
     return SingleChildScrollView(
@@ -26,7 +28,9 @@ class FilterBar extends ConsumerWidget {
                 ref.read(homeViewModelProvider.notifier).setFilter(filter);
               },
               showCheckmark: false,
-              backgroundColor: Theme.of(context).colorScheme.surfaceContainerHighest,
+              backgroundColor: Theme.of(
+                context,
+              ).colorScheme.surfaceContainerHighest,
               selectedColor: Theme.of(context).colorScheme.primaryContainer,
               labelStyle: TextStyle(
                 color: isSelected

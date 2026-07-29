@@ -18,7 +18,9 @@ class UseTemplateButton extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     return FilledButton.icon(
       onPressed: () {
-        ref.read(templatesViewModelProvider.notifier).selectTemplate(templateId);
+        ref
+            .read(templatesViewModelProvider.notifier)
+            .selectTemplate(templateId);
         ref.read(workflowViewModelProvider.notifier).selectTemplate(templateId);
         ref.read(previewViewModelProvider.notifier).changeTemplate(templateId);
         context.goNamed(AppRoutes.preview);

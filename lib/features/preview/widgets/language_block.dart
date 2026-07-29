@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../workflow/models/workflow_state.dart';
+import '../../../../data/models/embedded/language_model.dart';
 
 class LanguageBlock extends StatelessWidget {
-  final ResumeEntry item;
+  final LanguageModel item;
 
   const LanguageBlock({super.key, required this.item});
 
@@ -16,12 +16,16 @@ class LanguageBlock extends StatelessWidget {
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
           Text(
-            item.title, // Language Name
-            style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+            item.language ?? '',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
           ),
           Text(
-            item.proficiency, // Fluency
-            style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+            item.proficiency.name,
+            style: theme.textTheme.bodySmall?.copyWith(
+              fontStyle: FontStyle.italic,
+            ),
           ),
         ],
       ),

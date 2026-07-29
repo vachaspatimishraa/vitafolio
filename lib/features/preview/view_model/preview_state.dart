@@ -1,9 +1,9 @@
-import '../../../../data/models/resume/resume_model.dart';
-import '../../templates/models/template_model.dart';
+import '../../../data/models/resume_model.dart';
+import '../../../core/templates/models/resume_template.dart' as core;
 
 class PreviewState {
   final ResumeModel? resume;
-  final TemplateModel? selectedTemplate;
+  final core.ResumeTemplate? selectedTemplate;
   final double scale;
   final bool isLoading;
   final bool isError;
@@ -20,7 +20,7 @@ class PreviewState {
 
   PreviewState copyWith({
     ResumeModel? resume,
-    TemplateModel? selectedTemplate,
+    core.ResumeTemplate? selectedTemplate,
     double? scale,
     bool? isLoading,
     bool? isError,

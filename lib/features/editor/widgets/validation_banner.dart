@@ -16,19 +16,24 @@ class ValidationBanner extends StatelessWidget {
       color: theme.colorScheme.errorContainer,
       child: Row(
         children: [
-          Icon(Icons.warning_amber_rounded, color: theme.colorScheme.onErrorContainer),
+          Icon(
+            Icons.warning_amber_rounded,
+            color: theme.colorScheme.onErrorContainer,
+          ),
           const SizedBox(width: 12),
           Expanded(
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: errors
-                  .map((err) => Text(
-                        err,
-                        style: theme.textTheme.bodyMedium?.copyWith(
-                          color: theme.colorScheme.onErrorContainer,
-                          fontWeight: FontWeight.w500,
-                        ),
-                      ))
+                  .map(
+                    (err) => Text(
+                      err,
+                      style: theme.textTheme.bodyMedium?.copyWith(
+                        color: theme.colorScheme.onErrorContainer,
+                        fontWeight: FontWeight.w500,
+                      ),
+                    ),
+                  )
                   .toList(),
             ),
           ),

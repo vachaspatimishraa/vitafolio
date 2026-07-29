@@ -1,6 +1,1 @@
-enum LanguageProficiency {
-  beginner,
-  intermediate,
-  advanced,
-  native,
-}
+enum LanguageProficiency { beginner, intermediate, advanced, native }

@@ -3,16 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../../core/database/database_provider.dart';
-import '../../../data/models/enums/resume_status.dart';
-import '../../../data/models/resume/resume_model.dart';
-import '../../../data/models/resume_model.dart' as db;
+import '../../../data/models/resume_model.dart';
 import '../../../data/repositories/resume_repository.dart';
 import '../../../data/repositories/repository_provider.dart';
 import 'home_state.dart';
 
 export 'home_state.dart';
 
-// Home ViewModel
 class HomeViewModel extends StateNotifier<HomeState> {
   final ResumeRepository _repository;
   final Isar? _isar;
@@ -25,7 +22,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
 
   void _listenToDatabaseChanges() {
     if (_isar != null) {
-      _dbSubscription = _isar!.resumeModels.watchLazy().listen((_) {
+      _dbSubscription = _isar.resumeModels.watchLazy().listen((_) {
         loadResumes();
       });
     }
@@ -38,7 +35,6 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 
   Future<void> loadResumes() async {
-    // Only set loading to true on initial fetch if resumes are empty
     if (state.resumes.isEmpty) {
       state = state.copyWith(isLoading: true, clearError: true);
     }
@@ -88,7 +84,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     state = state.copyWith(clearSelectedResume: true);
   }
 
-  Future<void> renameResume(String id, String newName) async {
+  Future<void> renameResume(int id, String newName) async {
     try {
       await _repository.renameResume(id, newName);
       if (_isar == null) {
@@ -102,7 +98,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
   }
 
-  Future<void> duplicateResume(String id) async {
+  Future<void> duplicateResume(int id) async {
     try {
       await _repository.duplicateResume(id, '(Copy)');
       if (_isar == null) {
@@ -116,7 +112,7 @@ class HomeViewModel extends StateNotifier<HomeState> {
     }
   }
 
-  Future<void> deleteResume(String id) async {
+  Future<void> deleteResume(int id) async {
     try {
       await _repository.deleteResume(id);
       if (_isar == null) {
@@ -131,15 +127,12 @@ class HomeViewModel extends StateNotifier<HomeState> {
   }
 }
 
-// Provider
 final homeViewModelProvider =
-    StateNotifierProvider<HomeViewModel, HomeState>((ref) {
-  final repository = ref.watch(resumeRepositoryProvider);
-  Isar? isar;
-  try {
-    isar = ref.watch(isarProvider);
-  } catch (_) {
-    // Graceful fallback if isarProvider is not available in unit tests
-  }
-  return HomeViewModel(repository, isar);
-});
+    StateNotifierProvider.autoDispose<HomeViewModel, HomeState>((ref) {
+      final repository = ref.watch(resumeRepositoryProvider);
+      Isar? isar;
+      try {
+        isar = ref.watch(isarProvider);
+      } catch (_) {}
+      return HomeViewModel(repository, isar);
+    });

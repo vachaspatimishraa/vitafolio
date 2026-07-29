@@ -4,7 +4,7 @@ import 'package:go_router/go_router.dart';
 import '../../../app/constants/app_spacing.dart';
 import '../../../app/constants/app_strings.dart';
 import '../../../app/router.dart';
-import '../../../data/models/resume/resume_model.dart';
+import '../../../data/models/resume_model.dart';
 import '../../../shared/widgets/dialogs/delete_dialog.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
 import '../view_model/home_view_model.dart';
@@ -106,7 +106,7 @@ class ResumeCardMenu extends ConsumerWidget {
       context: context,
       builder: (context) => AlertDialog(
         title: const Text('Duplicate Resume'),
-        content: Text('Create a copy of "${resume.title}"?'),
+        content: Text('Create a copy of "${resume.resumeName}"?'),
         actions: [
           TextButton(
             onPressed: () => Navigator.of(context).pop(),
@@ -115,7 +115,9 @@ class ResumeCardMenu extends ConsumerWidget {
           FilledButton(
             onPressed: () {
               Navigator.of(context).pop();
-              ref.read(homeViewModelProvider.notifier).duplicateResume(resume.id);
+              ref
+                  .read(homeViewModelProvider.notifier)
+                  .duplicateResume(resume.id);
               ScaffoldMessenger.of(context).showSnackBar(
                 const SnackBar(content: Text(AppStrings.resumeDuplicated)),
               );
@@ -128,7 +130,7 @@ class ResumeCardMenu extends ConsumerWidget {
   }
 
   void _showRenameDialog(BuildContext context, WidgetRef ref) {
-    final controller = TextEditingController(text: resume.title);
+    final controller = TextEditingController(text: resume.resumeName);
 
     showDialog(
       context: context,
@@ -141,8 +143,8 @@ class ResumeCardMenu extends ConsumerWidget {
             Text(
               AppStrings.renameHint,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: AppSpacing.lg),
             TextField(
@@ -164,9 +166,11 @@ class ResumeCardMenu extends ConsumerWidget {
           FilledButton(
             onPressed: () {
               final newName = controller.text.trim();
-              if (newName.isNotEmpty && newName != resume.title) {
+              if (newName.isNotEmpty && newName != resume.resumeName) {
                 Navigator.of(context).pop();
-                ref.read(homeViewModelProvider.notifier).renameResume(resume.id, newName);
+                ref
+                    .read(homeViewModelProvider.notifier)
+                    .renameResume(resume.id, newName);
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(content: Text(AppStrings.resumeRenamed)),
                 );

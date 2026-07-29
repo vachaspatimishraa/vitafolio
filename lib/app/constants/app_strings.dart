@@ -76,7 +76,8 @@ abstract final class AppStrings {
   static const String renameHint = 'Enter a new name for your resume';
   static const String resumeName = 'Resume Name';
   static const String deleteResumeTitle = 'Delete Resume?';
-  static const String deleteResumeMessage = 'This action cannot be undone. Are you sure you want to delete this resume?';
+  static const String deleteResumeMessage =
+      'This action cannot be undone. Are you sure you want to delete this resume?';
   static const String resumeDeleted = 'Resume deleted successfully';
   static const String resumeRenamed = 'Resume renamed successfully';
   static const String resumeDuplicated = 'Resume duplicated successfully';

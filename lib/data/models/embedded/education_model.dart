@@ -4,7 +4,7 @@ part 'education_model.g.dart';
 
 @embedded
 class EducationModel {
-  String id = DateTime.now().microsecondsSinceEpoch.toString();
+  String? id;
   String? school;
   String? degree;
   String? fieldOfStudy;
@@ -14,6 +14,7 @@ class EducationModel {
   bool? isCurrentlyStudying;
 
   EducationModel({
+    this.id,
     this.school,
     this.degree,
     this.fieldOfStudy,
@@ -33,7 +34,8 @@ class EducationModel {
     DateTime? endDate,
     bool? isCurrentlyStudying,
   }) {
-    final model = EducationModel(
+    return EducationModel(
+      id: id ?? this.id,
       school: school ?? this.school,
       degree: degree ?? this.degree,
       fieldOfStudy: fieldOfStudy ?? this.fieldOfStudy,
@@ -42,7 +44,5 @@ class EducationModel {
       endDate: endDate ?? this.endDate,
       isCurrentlyStudying: isCurrentlyStudying ?? this.isCurrentlyStudying,
     );
-    model.id = id ?? this.id;
-    return model;
   }
 }

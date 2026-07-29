@@ -42,7 +42,12 @@ int _languageModelEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  bytesCount += 3 + object.id.length * 3;
+  {
+    final value = object.id;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
+    }
+  }
   {
     final value = object.language;
     if (value != null) {
@@ -70,12 +75,12 @@ LanguageModel _languageModelDeserialize(
   Map<Type, List<int>> allOffsets,
 ) {
   final object = LanguageModel(
+    id: reader.readStringOrNull(offsets[0]),
     language: reader.readStringOrNull(offsets[1]),
+    proficiency: _LanguageModelproficiencyValueEnumMap[
+            reader.readByteOrNull(offsets[2])] ??
+        LanguageProficiency.beginner,
   );
-  object.id = reader.readString(offsets[0]);
-  object.proficiency = _LanguageModelproficiencyValueEnumMap[
-          reader.readByteOrNull(offsets[2])] ??
-      LanguageProficiency.beginner;
   return object;
 }
 
@@ -87,7 +92,7 @@ P _languageModelDeserializeProp<P>(
 ) {
   switch (propertyId) {
     case 0:
-      return (reader.readString(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 1:
       return (reader.readStringOrNull(offset)) as P;
     case 2:
@@ -114,8 +119,25 @@ const _LanguageModelproficiencyValueEnumMap = {
 
 extension LanguageModelQueryFilter
     on QueryBuilder<LanguageModel, LanguageModel, QFilterCondition> {
+  QueryBuilder<LanguageModel, LanguageModel, QAfterFilterCondition> idIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'id',
+      ));
+    });
+  }
+
+  QueryBuilder<LanguageModel, LanguageModel, QAfterFilterCondition>
+      idIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'id',
+      ));
+    });
+  }
+
   QueryBuilder<LanguageModel, LanguageModel, QAfterFilterCondition> idEqualTo(
-    String value, {
+    String? value, {
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
@@ -129,7 +151,7 @@ extension LanguageModelQueryFilter
 
   QueryBuilder<LanguageModel, LanguageModel, QAfterFilterCondition>
       idGreaterThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -144,7 +166,7 @@ extension LanguageModelQueryFilter
   }
 
   QueryBuilder<LanguageModel, LanguageModel, QAfterFilterCondition> idLessThan(
-    String value, {
+    String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
@@ -159,8 +181,8 @@ extension LanguageModelQueryFilter
   }
 
   QueryBuilder<LanguageModel, LanguageModel, QAfterFilterCondition> idBetween(
-    String lower,
-    String upper, {
+    String? lower,
+    String? upper, {
     bool includeLower = true,
     bool includeUpper = true,
     bool caseSensitive = true,

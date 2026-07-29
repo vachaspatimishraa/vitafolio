@@ -15,20 +15,31 @@ class ProjectsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(workflowViewModelProvider);
+    final projectsLength = ref.watch(
+      workflowViewModelProvider.select((state) => state.projects.length),
+    );
 
     return EditorSection(
       title: 'Projects',
       trailing: SecondaryButton(
         label: AppStrings.addProject,
         icon: Icons.add,
-        onPressed: () => ref.read(workflowViewModelProvider.notifier).addProject(),
+        onPressed: () =>
+            ref.read(workflowViewModelProvider.notifier).addProject(),
       ),
       child: Column(
         children: [
-          for (var index = 0; index < state.projects.length; index++) ...[
-            _ProjectCard(key: ValueKey(state.projects[index].id), index: index),
-            if (index < state.projects.length - 1) const SizedBox(height: AppSpacing.md),
+          for (var index = 0; index < projectsLength; index++) ...[
+            _ProjectCard(
+              key: ValueKey(
+                ref.watch(
+                  workflowViewModelProvider.select((s) => s.projects[index].id),
+                ),
+              ),
+              index: index,
+            ),
+            if (index < projectsLength - 1)
+              const SizedBox(height: AppSpacing.md),
           ],
         ],
       ),
@@ -43,7 +54,9 @@ class _ProjectCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final item = ref.watch(workflowViewModelProvider).projects[index];
+    final item = ref.watch(
+      workflowViewModelProvider.select((state) => state.projects[index]),
+    );
     final notifier = ref.read(workflowViewModelProvider.notifier);
 
     return Card(
@@ -54,7 +67,10 @@ class _ProjectCard extends ConsumerWidget {
             Row(
               children: [
                 Expanded(
-                  child: Text('Project ${index + 1}', style: Theme.of(context).textTheme.titleSmall),
+                  child: Text(
+                    'Project ${index + 1}',
+                    style: Theme.of(context).textTheme.titleSmall,
+                  ),
                 ),
                 AppIconButton(
                   icon: Icons.delete_outline,
@@ -67,41 +83,64 @@ class _ProjectCard extends ConsumerWidget {
             const SizedBox(height: AppSpacing.md),
             AppTextField(
               label: 'Project Name',
-              initialValue: item.title,
-              onChanged: (value) => notifier.updateProject(index, item.copyWith(title: value)),
+              initialValue: item.projectName,
+              onChanged: (value) => notifier.updateProject(
+                index,
+                item.copyWith(projectName: value),
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             AppTextField(
               label: 'Technologies',
-              initialValue: item.subtitle,
-              onChanged: (value) => notifier.updateProject(index, item.copyWith(subtitle: value)),
+              initialValue: item.technologies,
+              onChanged: (value) => notifier.updateProject(
+                index,
+                item.copyWith(technologies: value),
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             MultilineField(
               label: 'Description',
               initialValue: item.description,
-              onChanged: (value) => notifier.updateProject(index, item.copyWith(description: value)),
+              onChanged: (value) => notifier.updateProject(
+                index,
+                item.copyWith(description: value),
+              ),
             ),
             const SizedBox(height: AppSpacing.md),
             AppTextField(
               label: 'GitHub Link',
-              initialValue: item.url,
+              initialValue: item.githubUrl,
               keyboardType: TextInputType.url,
-              onChanged: (value) => notifier.updateProject(index, item.copyWith(url: value)),
+              onChanged: (value) => notifier.updateProject(
+                index,
+                item.copyWith(githubUrl: value),
+              ),
               validator: (value) {
                 final text = value?.trim() ?? '';
-                return ref.read(workflowViewModelProvider.notifier).isValidUrl(text) ? null : 'Enter a valid URL';
+                return ref
+                        .read(workflowViewModelProvider.notifier)
+                        .isValidUrl(text)
+                    ? null
+                    : 'Enter a valid URL';
               },
             ),
             const SizedBox(height: AppSpacing.md),
             AppTextField(
               label: 'Live URL',
-              initialValue: item.extra,
+              initialValue: item.liveDemoUrl,
               keyboardType: TextInputType.url,
-              onChanged: (value) => notifier.updateProject(index, item.copyWith(extra: value)),
+              onChanged: (value) => notifier.updateProject(
+                index,
+                item.copyWith(liveDemoUrl: value),
+              ),
               validator: (value) {
                 final text = value?.trim() ?? '';
-                return ref.read(workflowViewModelProvider.notifier).isValidUrl(text) ? null : 'Enter a valid URL';
+                return ref
+                        .read(workflowViewModelProvider.notifier)
+                        .isValidUrl(text)
+                    ? null
+                    : 'Enter a valid URL';
               },
             ),
           ],

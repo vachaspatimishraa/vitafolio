@@ -18,10 +18,7 @@ class SplashLogo extends StatelessWidget {
     return Column(
       mainAxisSize: MainAxisSize.min,
       children: [
-        const AppLogo(
-          width: 140,
-          height: 140,
-        ),
+        const AppLogo(width: 140, height: 140),
         SizedBox(height: AppSpacing.lg),
         // App Name
         Text(

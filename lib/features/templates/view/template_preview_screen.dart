@@ -1,12 +1,45 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../models/template_model.dart';
+import '../../../core/templates/models/resume_template.dart' as core;
+import '../../../data/models/embedded/education_model.dart';
+import '../../../data/models/embedded/experience_model.dart';
+import '../../../data/models/embedded/personal_information.dart';
+import '../../preview/view_model/preview_view_model.dart';
+import '../../workflow/models/workflow_state.dart';
+import '../../workflow/view_model/workflow_view_model.dart';
 import '../widgets/template_badge.dart';
 import '../widgets/use_template_button.dart';
 import '../../../app/constants/app_spacing.dart';
 
+final _sampleWorkflowState = WorkflowState(
+  personalInfo: PersonalInformation(
+    fullName: 'John Doe',
+    jobTitle: 'Software Engineer',
+    email: 'john@example.com',
+    phone: '+1 234 567 890',
+  ),
+  summary: 'Experienced software engineer specializing in cross-platform mobile architecture, scalable apps, and UI/UX design.',
+  experience: [
+    ExperienceModel(
+      company: 'Tech Solutions',
+      position: 'Senior Developer',
+      description: 'Built high performance Flutter and backend services.',
+    ),
+  ],
+  education: [
+    EducationModel(
+      school: 'State University',
+      degree: 'B.S. Computer Science',
+    ),
+  ],
+  skills: const ['Flutter', 'Dart', 'Python', 'SQL', 'Git'],
+  projects: const [],
+  certifications: const [],
+  languages: const [],
+);
+
 class TemplatePreviewScreen extends ConsumerWidget {
-  final TemplateModel template;
+  final core.ResumeTemplate template;
 
   const TemplatePreviewScreen({super.key, required this.template});
 
@@ -15,12 +48,52 @@ class TemplatePreviewScreen extends ConsumerWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final textTheme = theme.textTheme;
+    final workflowState = ref.watch(workflowViewModelProvider);
+    final domainResume = ref.watch(previewViewModelProvider).resume;
+
+    final renderData = WorkflowState(
+      personalInfo: (workflowState.personalInfo.fullName?.isNotEmpty ?? false)
+          ? workflowState.personalInfo
+          : ((domainResume?.personalInfo?.fullName?.isNotEmpty ?? false)
+              ? domainResume!.personalInfo!
+              : _sampleWorkflowState.personalInfo),
+      summary: workflowState.summary.isNotEmpty
+          ? workflowState.summary
+          : ((domainResume?.professionalSummary?.summary?.isNotEmpty ?? false)
+              ? domainResume!.professionalSummary!.summary!
+              : _sampleWorkflowState.summary),
+      education: workflowState.education.isNotEmpty
+          ? workflowState.education
+          : ((domainResume?.education?.isNotEmpty ?? false)
+              ? domainResume!.education!
+              : _sampleWorkflowState.education),
+      experience: workflowState.experience.isNotEmpty
+          ? workflowState.experience
+          : ((domainResume?.experience?.isNotEmpty ?? false)
+              ? domainResume!.experience!
+              : _sampleWorkflowState.experience),
+      skills: workflowState.skills.isNotEmpty
+          ? workflowState.skills
+          : ((domainResume?.skills?.isNotEmpty ?? false)
+              ? domainResume!.skills!.map((s) => s.name ?? '').toList()
+              : _sampleWorkflowState.skills),
+      projects: workflowState.projects.isNotEmpty
+          ? workflowState.projects
+          : (domainResume?.projects ?? workflowState.projects),
+      certifications: workflowState.certifications.isNotEmpty
+          ? workflowState.certifications
+          : (domainResume?.certifications ?? workflowState.certifications),
+      languages: workflowState.languages.isNotEmpty
+          ? workflowState.languages
+          : (domainResume?.languages ?? workflowState.languages),
+      selectedTemplateId: template.id,
+    );
 
     return Scaffold(
       appBar: AppBar(
         title: Text(template.name),
         actions: [
-          if (template.isAtsFriendly)
+          if (template.category == core.TemplateCategory.ats)
             const Padding(
               padding: EdgeInsets.only(right: AppSpacing.sm),
               child: TemplateBadge(),
@@ -38,8 +111,8 @@ class TemplatePreviewScreen extends ConsumerWidget {
                     tag: 'template_${template.id}',
                     child: Container(
                       constraints: const BoxConstraints(
-                        maxHeight: 500,
-                        minHeight: 300,
+                        maxHeight: 520,
+                        minHeight: 400,
                       ),
                       width: double.infinity,
                       decoration: BoxDecoration(
@@ -53,31 +126,12 @@ class TemplatePreviewScreen extends ConsumerWidget {
                         ],
                         borderRadius: BorderRadius.circular(8),
                       ),
-                      child: Center(
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Icon(
-                              Icons.description_outlined,
-                              size: 80,
-                              color: colorScheme.primary.withValues(alpha: 0.4),
-                            ),
-                            const SizedBox(height: AppSpacing.md),
-                            Text(
-                              template.name,
-                              style: textTheme.titleLarge?.copyWith(
-                                fontWeight: FontWeight.bold,
-                                color: colorScheme.onSurface,
-                              ),
-                            ),
-                            const SizedBox(height: AppSpacing.sm),
-                            Text(
-                              template.category,
-                              style: textTheme.bodyMedium?.copyWith(
-                                color: colorScheme.secondary,
-                              ),
-                            ),
-                          ],
+                      child: ClipRRect(
+                        borderRadius: BorderRadius.circular(8),
+                        child: InteractiveViewer(
+                          minScale: 0.5,
+                          maxScale: 3.0,
+                          child: template.renderer.buildPreview(renderData, context),
                         ),
                       ),
                     ),
@@ -97,13 +151,13 @@ class TemplatePreviewScreen extends ConsumerWidget {
                           ),
                           const SizedBox(height: AppSpacing.xxs),
                           Text(
-                            template.category,
+                            template.category.label,
                             style: textTheme.bodySmall?.copyWith(
                               color: colorScheme.secondary,
                             ),
                           ),
                           const SizedBox(height: AppSpacing.md),
-                          if (template.isAtsFriendly) ...[
+                          if (template.category == core.TemplateCategory.ats) ...[
                             Row(
                               children: [
                                 const TemplateBadge(),
@@ -119,7 +173,7 @@ class TemplatePreviewScreen extends ConsumerWidget {
                             const SizedBox(height: AppSpacing.md),
                           ],
                           Text(
-                            'A premium design template perfect for showcase resumes.',
+                            template.description,
                             style: textTheme.bodyMedium?.copyWith(
                               color: colorScheme.onSurfaceVariant,
                             ),

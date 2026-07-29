@@ -19,7 +19,7 @@ class NavigationGuard extends StatelessWidget {
       canPop: !hasUnsavedChanges,
       onPopInvokedWithResult: (didPop, result) async {
         if (didPop) return;
-        
+
         final shouldPop = await showDialog<bool>(
           context: context,
           builder: (context) => UnsavedChangesDialog(

@@ -1,5 +1,11 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../../data/models/resume/resume_model.dart';
+import '../../../data/models/resume_model.dart';
+import '../../../data/models/embedded/personal_information.dart';
+import '../../../data/models/embedded/education_model.dart';
+import '../../../data/models/embedded/experience_model.dart';
+import '../../../data/models/embedded/project_model.dart';
+import '../../../data/models/embedded/certification_model.dart';
+import '../../../data/models/embedded/language_model.dart';
 import '../models/workflow_state.dart';
 
 class WorkflowViewModel extends StateNotifier<WorkflowState> {
@@ -15,18 +21,8 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     'Python',
     'REST APIs',
     'Git',
+    'Figma',
   ];
-
-  bool isValidUrl(String url) {
-    if (url.trim().isEmpty) return true;
-    final uri = Uri.tryParse(url);
-    return uri != null && (uri.isScheme('http') || uri.isScheme('https'));
-  }
-
-  bool isValidPhone(String phone) {
-    if (phone.trim().isEmpty) return true;
-    return RegExp(r'^\+?[0-9\s-]{7,15}$').hasMatch(phone.trim());
-  }
 
   void createNewResume() {
     state = WorkflowState.initial();
@@ -34,21 +30,26 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
 
   void loadExistingResume(ResumeModel resume) {
     state = state.copyWith(
-      personalInfo: resume.personalInfo,
-      summary: resume.summary,
-      education: resume.education,
-      experience: resume.experience,
-      skills: resume.skills,
-      projects: resume.projects,
-      certifications: resume.certifications,
-      languages: resume.languages,
-      selectedTemplateId: resume.templateId,
+      resumeName: resume.resumeName ?? '',
+      personalInfo: resume.personalInfo ?? PersonalInformation(),
+      summary: resume.professionalSummary?.summary ?? '',
+      education: resume.education ?? [],
+      experience: resume.experience ?? [],
+      skills: resume.skills?.map((s) => s.name ?? '').toList() ?? [],
+      projects: resume.projects ?? [],
+      certifications: resume.certifications ?? [],
+      languages: resume.languages ?? [],
+      selectedTemplateId: resume.selectedTemplate?.templateId,
       hasUnsavedChanges: false,
       currentStep: WorkflowStep.editing,
     );
   }
 
-  void updatePersonalInfo(ResumePersonalInfo info) {
+  void updateResumeName(String name) {
+    state = state.copyWith(resumeName: name, hasUnsavedChanges: true);
+  }
+
+  void updatePersonalInfo(PersonalInformation info) {
     state = state.copyWith(personalInfo: info, hasUnsavedChanges: true);
   }
 
@@ -56,7 +57,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(summary: summary, hasUnsavedChanges: true);
   }
 
-  void updateEducation(int index, ResumeEntry entry) {
+  void updateEducation(int index, EducationModel entry) {
     final list = [...state.education];
     list[index] = entry;
     state = state.copyWith(education: list, hasUnsavedChanges: true);
@@ -66,7 +67,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(
       education: [
         ...state.education,
-        ResumeEntry(id: 'education-${state.education.length}')
+        EducationModel(id: 'education-${state.education.length}'),
       ],
       hasUnsavedChanges: true,
     );
@@ -78,7 +79,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(education: list, hasUnsavedChanges: true);
   }
 
-  void updateExperience(int index, ResumeEntry entry) {
+  void updateExperience(int index, ExperienceModel entry) {
     final list = [...state.experience];
     list[index] = entry;
     state = state.copyWith(experience: list, hasUnsavedChanges: true);
@@ -88,7 +89,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(
       experience: [
         ...state.experience,
-        ResumeEntry(id: 'experience-${state.experience.length}')
+        ExperienceModel(id: 'experience-${state.experience.length}'),
       ],
       hasUnsavedChanges: true,
     );
@@ -100,7 +101,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(experience: list, hasUnsavedChanges: true);
   }
 
-  void updateProject(int index, ResumeEntry entry) {
+  void updateProject(int index, ProjectModel entry) {
     final list = [...state.projects];
     list[index] = entry;
     state = state.copyWith(projects: list, hasUnsavedChanges: true);
@@ -110,7 +111,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(
       projects: [
         ...state.projects,
-        ResumeEntry(id: 'project-${state.projects.length}')
+        ProjectModel(id: 'project-${state.projects.length}'),
       ],
       hasUnsavedChanges: true,
     );
@@ -122,7 +123,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(projects: list, hasUnsavedChanges: true);
   }
 
-  void updateCertification(int index, ResumeEntry entry) {
+  void updateCertification(int index, CertificationModel entry) {
     final list = [...state.certifications];
     list[index] = entry;
     state = state.copyWith(certifications: list, hasUnsavedChanges: true);
@@ -132,7 +133,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(
       certifications: [
         ...state.certifications,
-        ResumeEntry(id: 'certification-${state.certifications.length}')
+        CertificationModel(id: 'certification-${state.certifications.length}'),
       ],
       hasUnsavedChanges: true,
     );
@@ -144,7 +145,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(certifications: list, hasUnsavedChanges: true);
   }
 
-  void updateLanguage(int index, ResumeEntry entry) {
+  void updateLanguage(int index, LanguageModel entry) {
     final list = [...state.languages];
     list[index] = entry;
     state = state.copyWith(languages: list, hasUnsavedChanges: true);
@@ -154,7 +155,7 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = state.copyWith(
       languages: [
         ...state.languages,
-        ResumeEntry(id: 'language-${state.languages.length}')
+        LanguageModel(id: 'language-${state.languages.length}'),
       ],
       hasUnsavedChanges: true,
     );
@@ -180,7 +181,10 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
   }
 
   void selectTemplate(String templateId) {
-    state = state.copyWith(selectedTemplateId: templateId, hasUnsavedChanges: true);
+    state = state.copyWith(
+      selectedTemplateId: templateId,
+      hasUnsavedChanges: true,
+    );
   }
 
   void markUnsavedChanges(bool value) {
@@ -191,6 +195,17 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     return RegExp(r'^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$').hasMatch(email);
   }
 
+  bool isValidUrl(String url) {
+    if (url.trim().isEmpty) return true;
+    final uri = Uri.tryParse(url);
+    return uri != null && (uri.isScheme('http') || uri.isScheme('https'));
+  }
+
+  bool isValidPhone(String phone) {
+    if (phone.trim().isEmpty) return true;
+    return RegExp(r'^\+?[0-9\s-]{7,15}$').hasMatch(phone.trim());
+  }
+
   void resetState() {
     state = WorkflowState.initial();
   }
@@ -198,5 +213,5 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
 
 final workflowViewModelProvider =
     StateNotifierProvider<WorkflowViewModel, WorkflowState>((ref) {
-  return WorkflowViewModel();
-});
+      return WorkflowViewModel();
+    });

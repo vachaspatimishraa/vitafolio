@@ -16,12 +16,11 @@ class TemplatesScreen extends ConsumerWidget {
     final state = ref.watch(templatesViewModelProvider);
     final hasTemplates = state.filteredTemplates.isNotEmpty;
     final hasActiveFilters =
-        state.searchQuery.isNotEmpty || state.selectedCategory != TemplateCategory.all;
+        state.searchQuery.isNotEmpty ||
+        state.selectedCategory != TemplateCategory.all;
 
     return Scaffold(
-      appBar: AppBar(
-        title: const Text(AppStrings.templates),
-      ),
+      appBar: AppBar(title: const Text(AppStrings.templates)),
       body: Column(
         children: [
           Padding(
@@ -43,15 +42,15 @@ class TemplatesScreen extends ConsumerWidget {
             child: state.isLoading
                 ? const Center(child: CircularProgressIndicator())
                 : hasTemplates
-                    ? const TemplateGrid()
-                    : EmptyTemplateView(
-                        query: state.searchQuery,
-                        onReset: hasActiveFilters
-                            ? () => ref
-                                .read(templatesViewModelProvider.notifier)
-                                .resetFilters()
-                            : null,
-                      ),
+                ? const TemplateGrid()
+                : EmptyTemplateView(
+                    query: state.searchQuery,
+                    onReset: hasActiveFilters
+                        ? () => ref
+                              .read(templatesViewModelProvider.notifier)
+                              .resetFilters()
+                        : null,
+                  ),
           ),
         ],
       ),

@@ -2,7 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
 /// The tabs available in the app shell.
-enum NavigationTab { home, templates }
+enum NavigationTab { home, editDetails, templates }
 
 /// State for the app navigation.
 class NavigationState {

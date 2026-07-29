@@ -8,7 +8,9 @@ class SortMenu extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedSort = ref.watch(homeViewModelProvider).selectedSort;
+    final selectedSort = ref.watch(
+      homeViewModelProvider.select((state) => state.selectedSort),
+    );
     final colorScheme = Theme.of(context).colorScheme;
 
     return PopupMenuButton<SortOption>(
@@ -17,9 +19,7 @@ class SortMenu extends ConsumerWidget {
         ref.read(homeViewModelProvider.notifier).setSort(sort);
       },
       offset: const Offset(0, 40),
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
-      ),
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(12)),
       child: Container(
         padding: const EdgeInsets.symmetric(
           horizontal: AppSpacing.md,
@@ -32,11 +32,7 @@ class SortMenu extends ConsumerWidget {
         child: Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            Icon(
-              Icons.sort,
-              size: 18,
-              color: colorScheme.onSurfaceVariant,
-            ),
+            Icon(Icons.sort, size: 18, color: colorScheme.onSurfaceVariant),
             const SizedBox(width: AppSpacing.xs),
             Text(
               selectedSort.label,
@@ -62,11 +58,7 @@ class SortMenu extends ConsumerWidget {
           child: Row(
             children: [
               if (isSelected)
-                Icon(
-                  Icons.check,
-                  size: 18,
-                  color: colorScheme.primary,
-                )
+                Icon(Icons.check, size: 18, color: colorScheme.primary)
               else
                 const SizedBox(width: 18),
               const SizedBox(width: AppSpacing.sm),

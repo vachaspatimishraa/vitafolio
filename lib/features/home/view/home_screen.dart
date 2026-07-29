@@ -5,54 +5,50 @@ import 'package:go_router/go_router.dart';
 import '../../../app/constants/app_spacing.dart';
 import '../../../app/constants/app_strings.dart';
 import '../../../app/router.dart';
+import '../../../shared/widgets/buttons/primary_button.dart';
 import '../../../shared/widgets/empty_states/empty_state.dart';
 import '../../../shared/widgets/loaders/loading_indicator.dart';
-import '../../../shared/widgets/buttons/primary_button.dart';
 import '../../editor/view_model/editor_view_model.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/dashboard_header.dart';
-import '../widgets/search_bar.dart';
-import '../widgets/filter_bar.dart';
-import '../widgets/sort_menu.dart';
-import '../widgets/statistics_section.dart';
-import '../widgets/section_title.dart';
 import '../widgets/resume_list.dart';
+import '../widgets/search_bar.dart';
+import '../widgets/section_title.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(homeViewModelProvider);
+    final isLoading = ref.watch(
+      homeViewModelProvider.select((s) => s.isLoading),
+    );
+    final isError = ref.watch(homeViewModelProvider.select((s) => s.isError));
+    final errorMessage = ref.watch(
+      homeViewModelProvider.select((s) => s.errorMessage),
+    );
 
     return Scaffold(
       body: SafeArea(
-        child: state.isLoading
+        child: isLoading
             ? _buildLoadingState()
-            : state.isError
-                ? _buildErrorState(context, ref, state.errorMessage)
-                : _buildContent(context, ref, state),
+            : isError
+            ? _buildErrorState(context, ref, errorMessage)
+            : _buildContent(context, ref),
       ),
-      floatingActionButton: Builder(
-        builder: (context) {
-          final isSmall = MediaQuery.of(context).size.width < 480;
-          return FloatingActionButton.extended(
-            onPressed: () {
-              ref.read(editorViewModelProvider.notifier).resetState();
-              context.push(AppRoutes.editor);
-            },
-            icon: const Icon(Icons.add),
-            label: Text(isSmall ? 'Create' : AppStrings.createResume),
-          );
+      floatingActionButton: FloatingActionButton.extended(
+        onPressed: () {
+          ref.read(editorViewModelProvider.notifier).resetState();
+          context.push(AppRoutes.editor);
         },
+        icon: const Icon(Icons.add),
+        label: const Text(AppStrings.createResume),
       ),
     );
   }
 
   Widget _buildLoadingState() {
-    return const Center(
-      child: LoadingIndicator(),
-    );
+    return const Center(child: LoadingIndicator());
   }
 
   Widget _buildErrorState(BuildContext context, WidgetRef ref, String? error) {
@@ -70,17 +66,17 @@ class HomeScreen extends ConsumerWidget {
             const SizedBox(height: AppSpacing.lg),
             Text(
               AppStrings.somethingWentWrong,
-              style: Theme.of(context).textTheme.titleLarge?.copyWith(
-                    fontWeight: FontWeight.bold,
-                  ),
+              style: Theme.of(
+                context,
+              ).textTheme.titleLarge?.copyWith(fontWeight: FontWeight.bold),
             ),
             const SizedBox(height: AppSpacing.sm),
             Text(
               error ?? AppStrings.failedToLoadResumes,
               textAlign: TextAlign.center,
               style: Theme.of(context).textTheme.bodyMedium?.copyWith(
-                    color: Theme.of(context).colorScheme.onSurfaceVariant,
-                  ),
+                color: Theme.of(context).colorScheme.onSurfaceVariant,
+              ),
             ),
             const SizedBox(height: AppSpacing.xl),
             PrimaryButton(
@@ -95,9 +91,17 @@ class HomeScreen extends ConsumerWidget {
     );
   }
 
-  Widget _buildContent(BuildContext context, WidgetRef ref, HomeState state) {
+  Widget _buildContent(BuildContext context, WidgetRef ref) {
+    final resumesEmpty = ref.watch(
+      homeViewModelProvider.select((s) => s.resumes.isEmpty),
+    );
+    final filteredResumesEmpty = ref.watch(
+      homeViewModelProvider.select((s) => s.filteredResumes.isEmpty),
+    );
+
     return RefreshIndicator(
-      onRefresh: () => ref.read(homeViewModelProvider.notifier).refreshResumes(),
+      onRefresh: () =>
+          ref.read(homeViewModelProvider.notifier).refreshResumes(),
       child: SingleChildScrollView(
         physics: const AlwaysScrollableScrollPhysics(),
         child: Column(
@@ -105,33 +109,16 @@ class HomeScreen extends ConsumerWidget {
           children: [
             const DashboardHeader(),
             const HomeSearchBar(),
-            const FilterBar(),
             const SizedBox(height: AppSpacing.md),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    '${state.filteredResumes.length} resumes',
-                    style: Theme.of(context).textTheme.bodySmall?.copyWith(
-                          color: Theme.of(context).colorScheme.onSurfaceVariant,
-                        ),
-                  ),
-                  const SortMenu(),
-                ],
-              ),
-            ),
-            const SizedBox(height: AppSpacing.sm),
-            const StatisticsSection(),
             const SectionTitle(title: AppStrings.recentResumes),
-            if (state.resumes.isEmpty)
+            if (resumesEmpty)
               Padding(
                 padding: const EdgeInsets.symmetric(vertical: AppSpacing.xxl),
                 child: EmptyState(
                   icon: Icons.article_outlined,
-                  title: AppStrings.noResumesYet,
-                  description: AppStrings.emptyDescription,
+                  title: 'Create Your First Resume',
+                  description:
+                      'Build a professional, job-ready resume in minutes with our ATS-friendly templates.',
                   showLogo: true,
                   primaryActionLabel: AppStrings.createResume,
                   onPrimaryAction: () {
@@ -140,18 +127,18 @@ class HomeScreen extends ConsumerWidget {
                   },
                 ),
               )
-            else if (state.filteredResumes.isEmpty)
+            else if (filteredResumesEmpty)
               const Padding(
                 padding: EdgeInsets.symmetric(vertical: AppSpacing.xxl),
                 child: EmptyState(
                   icon: Icons.search_off_outlined,
                   title: AppStrings.noResumesFound,
-                  description: 'Try adjusting your search or filter.',
+                  description: 'Try adjusting your search terms.',
                 ),
               )
             else
               const ResumeList(),
-            // Bottom padding for FAB
+            // Bottom spacing for FAB
             const SizedBox(height: 100),
           ],
         ),

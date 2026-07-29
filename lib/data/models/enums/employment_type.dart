@@ -1,7 +1,1 @@
-enum EmploymentType {
-  fullTime,
-  partTime,
-  contract,
-  internship,
-  freelance,
-}
+enum EmploymentType { fullTime, partTime, contract, internship, freelance }

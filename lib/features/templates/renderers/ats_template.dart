@@ -15,11 +15,21 @@ class AtsTemplateRenderer implements TemplateRenderer {
   @override
   Widget render(WorkflowState resumeData, BuildContext context) {
     final theme = Theme.of(context);
-    final educationList = resumeData.education.where((e) => e.title.isNotEmpty).toList();
-    final experienceList = resumeData.experience.where((e) => e.title.isNotEmpty).toList();
-    final projectsList = resumeData.projects.where((e) => e.title.isNotEmpty).toList();
-    final certificationsList = resumeData.certifications.where((e) => e.title.isNotEmpty).toList();
-    final languagesList = resumeData.languages.where((e) => e.title.isNotEmpty).toList();
+    final educationList = resumeData.education
+        .where((e) => e.school?.isNotEmpty ?? false)
+        .toList();
+    final experienceList = resumeData.experience
+        .where((e) => e.company?.isNotEmpty ?? false)
+        .toList();
+    final projectsList = resumeData.projects
+        .where((p) => p.projectName?.isNotEmpty ?? false)
+        .toList();
+    final certificationsList = resumeData.certifications
+        .where((c) => c.certificateName?.isNotEmpty ?? false)
+        .toList();
+    final languagesList = resumeData.languages
+        .where((l) => l.language?.isNotEmpty ?? false)
+        .toList();
 
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
@@ -28,54 +38,102 @@ class AtsTemplateRenderer implements TemplateRenderer {
         const SizedBox(height: 12),
         const Divider(color: Colors.black, thickness: 1),
         if (resumeData.summary.isNotEmpty) ...[
-          Text('SUMMARY', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'SUMMARY',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
-          Text(resumeData.summary, style: theme.textTheme.bodySmall?.copyWith(fontSize: 11)),
+          Text(
+            resumeData.summary,
+            style: theme.textTheme.bodySmall?.copyWith(fontSize: 11),
+          ),
           const SizedBox(height: 12),
         ],
         if (experienceList.isNotEmpty) ...[
-          Text('EXPERIENCE', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'EXPERIENCE',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Column(
-            children: experienceList.map((item) => ExperienceBlock(item: item)).toList(),
+            children: experienceList
+                .map((item) => ExperienceBlock(item: item))
+                .toList(),
           ),
           const SizedBox(height: 12),
         ],
         if (educationList.isNotEmpty) ...[
-          Text('EDUCATION', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'EDUCATION',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Column(
-            children: educationList.map((item) => EducationBlock(item: item)).toList(),
+            children: educationList
+                .map((item) => EducationBlock(item: item))
+                .toList(),
           ),
           const SizedBox(height: 12),
         ],
         if (resumeData.skills.isNotEmpty) ...[
-          Text('SKILLS', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'SKILLS',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           SkillsBlock(skills: resumeData.skills),
           const SizedBox(height: 12),
         ],
         if (projectsList.isNotEmpty) ...[
-          Text('PROJECTS', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'PROJECTS',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Column(
-            children: projectsList.map((item) => ProjectsBlock(item: item)).toList(),
+            children: projectsList
+                .map((item) => ProjectsBlock(item: item))
+                .toList(),
           ),
           const SizedBox(height: 12),
         ],
         if (certificationsList.isNotEmpty) ...[
-          Text('CERTIFICATIONS', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'CERTIFICATIONS',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Column(
-            children: certificationsList.map((item) => CertificationBlock(item: item)).toList(),
+            children: certificationsList
+                .map((item) => CertificationBlock(item: item))
+                .toList(),
           ),
           const SizedBox(height: 12),
         ],
         if (languagesList.isNotEmpty) ...[
-          Text('LANGUAGES', style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold)),
+          Text(
+            'LANGUAGES',
+            style: theme.textTheme.titleSmall?.copyWith(
+              fontWeight: FontWeight.bold,
+            ),
+          ),
           const SizedBox(height: 4),
           Column(
-            children: languagesList.map((item) => LanguageBlock(item: item)).toList(),
+            children: languagesList
+                .map((item) => LanguageBlock(item: item))
+                .toList(),
           ),
         ],
       ],

@@ -15,7 +15,11 @@ class SaveStatusIndicator extends StatelessWidget {
         return Row(
           mainAxisSize: MainAxisSize.min,
           children: [
-            const Icon(Icons.check_circle_outline, color: Colors.green, size: 16),
+            const Icon(
+              Icons.check_circle_outline,
+              color: Colors.green,
+              size: 16,
+            ),
             const SizedBox(width: 4),
             Text(
               'Saved',

@@ -1,5 +1,1 @@
-enum ResumeStatus {
-  draft,
-  completed,
-  archived,
-}
+enum ResumeStatus { draft, completed, archived }

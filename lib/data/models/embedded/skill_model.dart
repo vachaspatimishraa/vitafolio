@@ -4,25 +4,17 @@ part 'skill_model.g.dart';
 
 @embedded
 class SkillModel {
-  String id = DateTime.now().microsecondsSinceEpoch.toString();
+  String? id;
   String? name;
   String? category;
 
-  SkillModel({
-    this.name,
-    this.category,
-  });
+  SkillModel({this.id, this.name, this.category});
 
-  SkillModel copyWith({
-    String? id,
-    String? name,
-    String? category,
-  }) {
-    final model = SkillModel(
+  SkillModel copyWith({String? id, String? name, String? category}) {
+    return SkillModel(
+      id: id ?? this.id,
       name: name ?? this.name,
       category: category ?? this.category,
     );
-    model.id = id ?? this.id;
-    return model;
   }
 }

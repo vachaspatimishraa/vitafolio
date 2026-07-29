@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
-import '../../workflow/models/workflow_state.dart';
+import '../../../../data/models/embedded/project_model.dart';
 
 class ProjectsBlock extends StatelessWidget {
-  final ResumeEntry item;
+  final ProjectModel item;
 
   const ProjectsBlock({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final links = [
+      if (item.githubUrl?.isNotEmpty == true) 'GitHub',
+      if (item.liveDemoUrl?.isNotEmpty == true) 'Live Demo',
+    ].join(' | ');
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -20,31 +25,32 @@ class ProjectsBlock extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item.title, // Project Name
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                  item.projectName ?? '',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              if (item.extra.isNotEmpty)
+              if (links.isNotEmpty)
                 Text(
-                  item.extra, // Live Link / Extra
-                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
+                  links,
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
             ],
           ),
-          if (item.subtitle.isNotEmpty)
+          if (item.technologies?.isNotEmpty == true)
             Text(
-              item.subtitle, // Technologies
+              item.technologies!,
               style: theme.textTheme.bodySmall?.copyWith(
                 fontStyle: FontStyle.italic,
                 color: theme.colorScheme.secondary,
               ),
             ),
-          if (item.description.isNotEmpty) ...[
+          if (item.description?.isNotEmpty == true) ...[
             const SizedBox(height: 4),
-            Text(
-              item.description,
-              style: theme.textTheme.bodySmall,
-            ),
+            Text(item.description!, style: theme.textTheme.bodySmall),
           ],
         ],
       ),

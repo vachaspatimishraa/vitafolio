@@ -24,10 +24,7 @@ class DropdownField extends StatelessWidget {
       ).copyWith(labelText: label),
       items: items
           .map(
-            (item) => DropdownMenuItem<String>(
-              value: item,
-              child: Text(item),
-            ),
+            (item) => DropdownMenuItem<String>(value: item, child: Text(item)),
           )
           .toList(),
       onChanged: onChanged,

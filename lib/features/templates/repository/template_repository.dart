@@ -72,7 +72,9 @@ class TemplateRepository {
 
   List<TemplateModel> filterByCategory(String category) {
     if (category.toLowerCase() == 'all') return templates;
-    return templates.where((t) => t.category.toLowerCase() == category.toLowerCase()).toList();
+    return templates
+        .where((t) => t.category.toLowerCase() == category.toLowerCase())
+        .toList();
   }
 
   List<TemplateModel> searchTemplates(String query) {
@@ -80,7 +82,7 @@ class TemplateRepository {
     final lowercaseQuery = query.toLowerCase();
     return templates.where((t) {
       return t.name.toLowerCase().contains(lowercaseQuery) ||
-             t.category.toLowerCase().contains(lowercaseQuery);
+          t.category.toLowerCase().contains(lowercaseQuery);
     }).toList();
   }
 }

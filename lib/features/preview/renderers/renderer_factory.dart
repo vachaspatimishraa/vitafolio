@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import '../../templates/models/template_model.dart';
 import '../../templates/renderers/template_renderer.dart';
 import '../../templates/repository/template_repository.dart';
@@ -7,7 +6,7 @@ class RendererFactory {
   final TemplateRepository _templateRepository;
 
   RendererFactory({TemplateRepository? templateRepository})
-      : _templateRepository = templateRepository ?? TemplateRepository();
+    : _templateRepository = templateRepository ?? TemplateRepository();
 
   TemplateRenderer getRenderer(String? templateId) {
     if (templateId != null && templateId.isNotEmpty) {

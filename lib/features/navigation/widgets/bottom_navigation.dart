@@ -29,6 +29,11 @@ class BottomNavigation extends ConsumerWidget {
           label: 'Home',
         ),
         NavigationDestination(
+          icon: Icon(Icons.edit_note_outlined),
+          selectedIcon: Icon(Icons.edit_note),
+          label: 'Edit Details',
+        ),
+        NavigationDestination(
           icon: Icon(Icons.dashboard_customize_outlined),
           selectedIcon: Icon(Icons.dashboard_customize),
           label: 'Templates',

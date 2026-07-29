@@ -3,12 +3,11 @@ import 'package:go_router/go_router.dart';
 
 import '../features/editor/view/editor_screen.dart';
 import '../features/home/view/home_screen.dart';
-import '../features/navigation/view/app_shell.dart';
 import '../features/preview/view/preview_screen.dart';
 import '../features/splash/view/splash_screen.dart';
 import '../features/templates/view/templates_screen.dart';
 import '../features/templates/view/template_preview_screen.dart';
-import '../features/templates/models/template_model.dart';
+import '../core/templates/models/resume_template.dart' as core;
 
 class AppRoutes {
   static const splash = '/';
@@ -23,9 +22,24 @@ class AppRouter {
   static final GoRouter router = GoRouter(
     initialLocation: AppRoutes.splash,
     errorBuilder: (context, state) => Scaffold(
-      appBar: AppBar(title: const Text('Page not found')),
+      appBar: AppBar(title: const Text('Navigation Error')),
       body: Center(
-        child: Text('The requested page "${state.uri}" could not be found.'),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            const Icon(Icons.error_outline, size: 64, color: Colors.amber),
+            const SizedBox(height: 16),
+            Text(
+              'The page "${state.uri}" could not be found or loaded.',
+              textAlign: TextAlign.center,
+            ),
+            const SizedBox(height: 24),
+            ElevatedButton(
+              onPressed: () => context.go(AppRoutes.home),
+              child: const Text('Return to Home'),
+            ),
+          ],
+        ),
       ),
     ),
     routes: <RouteBase>[
@@ -34,38 +48,31 @@ class AppRouter {
         name: 'splash',
         builder: (context, state) => const SplashScreen(),
       ),
-      StatefulShellRoute.indexedStack(
-        builder: (context, state, navigationShell) {
-          return AppShell(navigationShell: navigationShell);
-        },
-        branches: [
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.home,
-                name: 'home',
-                builder: (context, state) => const HomeScreen(),
-              ),
-            ],
-          ),
-          StatefulShellBranch(
-            routes: [
-              GoRoute(
-                path: AppRoutes.templates,
-                name: 'templates',
-                builder: (context, state) => const TemplatesScreen(),
-                routes: [
-                  GoRoute(
-                    path: 'preview',
-                    name: 'template_preview',
-                    builder: (context, state) {
-                      final template = state.extra as TemplateModel;
-                      return TemplatePreviewScreen(template: template);
-                    },
-                  ),
-                ],
-              ),
-            ],
+      GoRoute(
+        path: AppRoutes.home,
+        name: 'home',
+        builder: (context, state) => const HomeScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.templates,
+        name: 'templates',
+        builder: (context, state) => const TemplatesScreen(),
+        routes: [
+          GoRoute(
+            path: 'preview',
+            name: 'template_preview',
+            builder: (context, state) {
+              final template = state.extra;
+              if (template is core.ResumeTemplate) {
+                return TemplatePreviewScreen(template: template);
+              }
+              return Scaffold(
+                appBar: AppBar(title: const Text('Template Preview')),
+                body: const Center(
+                  child: Text('Invalid or missing template data.'),
+                ),
+              );
+            },
           ),
         ],
       ),

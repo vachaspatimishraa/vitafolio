@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../view_model/preview_view_model.dart';
 import '../widgets/preview_action_bar.dart';
 import '../widgets/preview_app_bar.dart';
 import '../widgets/resume_canvas.dart';
@@ -12,7 +11,6 @@ class PreviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final previewState = ref.watch(previewViewModelProvider);
 
     return Scaffold(
       appBar: const PreviewAppBar(),
@@ -20,7 +18,7 @@ class PreviewScreen extends ConsumerWidget {
       body: SafeArea(
         child: Column(
           children: [
-            if (previewState.resume != null) const TemplateSelector(),
+            const TemplateSelector(),
             const Expanded(
               child: Padding(
                 padding: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),

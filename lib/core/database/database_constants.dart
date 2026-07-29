@@ -24,8 +24,5 @@ abstract final class DatabaseConstants {
   ///
   /// Add new collections here as they are implemented.
   /// This list is consumed by [IsarService] during initialization.
-  static List<CollectionSchema<dynamic>> get collections => [
-    ResumeModelSchema,
-  ];
+  static List<CollectionSchema<dynamic>> get collections => [ResumeModelSchema];
 }
-

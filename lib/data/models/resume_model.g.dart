@@ -365,65 +365,66 @@ ResumeModel _resumeModelDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = ResumeModel();
-  object.certifications = reader.readObjectList<CertificationModel>(
-    offsets[0],
-    CertificationModelSchema.deserialize,
-    allOffsets,
-    CertificationModel(),
+  final object = ResumeModel(
+    certifications: reader.readObjectList<CertificationModel>(
+      offsets[0],
+      CertificationModelSchema.deserialize,
+      allOffsets,
+      CertificationModel(),
+    ),
+    createdDate: reader.readDateTimeOrNull(offsets[1]),
+    education: reader.readObjectList<EducationModel>(
+      offsets[2],
+      EducationModelSchema.deserialize,
+      allOffsets,
+      EducationModel(),
+    ),
+    experience: reader.readObjectList<ExperienceModel>(
+      offsets[3],
+      ExperienceModelSchema.deserialize,
+      allOffsets,
+      ExperienceModel(),
+    ),
+    id: id,
+    languages: reader.readObjectList<LanguageModel>(
+      offsets[4],
+      LanguageModelSchema.deserialize,
+      allOffsets,
+      LanguageModel(),
+    ),
+    lastUpdated: reader.readDateTimeOrNull(offsets[5]),
+    personalInfo: reader.readObjectOrNull<PersonalInformation>(
+      offsets[6],
+      PersonalInformationSchema.deserialize,
+      allOffsets,
+    ),
+    professionalSummary: reader.readObjectOrNull<ProfessionalSummary>(
+      offsets[7],
+      ProfessionalSummarySchema.deserialize,
+      allOffsets,
+    ),
+    projects: reader.readObjectList<ProjectModel>(
+      offsets[8],
+      ProjectModelSchema.deserialize,
+      allOffsets,
+      ProjectModel(),
+    ),
+    resumeName: reader.readStringOrNull(offsets[9]),
+    selectedTemplate: reader.readObjectOrNull<TemplateSelection>(
+      offsets[10],
+      TemplateSelectionSchema.deserialize,
+      allOffsets,
+    ),
+    skills: reader.readObjectList<SkillModel>(
+      offsets[11],
+      SkillModelSchema.deserialize,
+      allOffsets,
+      SkillModel(),
+    ),
+    status:
+        _ResumeModelstatusValueEnumMap[reader.readByteOrNull(offsets[12])] ??
+            ResumeStatus.draft,
   );
-  object.createdDate = reader.readDateTimeOrNull(offsets[1]);
-  object.education = reader.readObjectList<EducationModel>(
-    offsets[2],
-    EducationModelSchema.deserialize,
-    allOffsets,
-    EducationModel(),
-  );
-  object.experience = reader.readObjectList<ExperienceModel>(
-    offsets[3],
-    ExperienceModelSchema.deserialize,
-    allOffsets,
-    ExperienceModel(),
-  );
-  object.id = id;
-  object.languages = reader.readObjectList<LanguageModel>(
-    offsets[4],
-    LanguageModelSchema.deserialize,
-    allOffsets,
-    LanguageModel(),
-  );
-  object.lastUpdated = reader.readDateTimeOrNull(offsets[5]);
-  object.personalInfo = reader.readObjectOrNull<PersonalInformation>(
-    offsets[6],
-    PersonalInformationSchema.deserialize,
-    allOffsets,
-  );
-  object.professionalSummary = reader.readObjectOrNull<ProfessionalSummary>(
-    offsets[7],
-    ProfessionalSummarySchema.deserialize,
-    allOffsets,
-  );
-  object.projects = reader.readObjectList<ProjectModel>(
-    offsets[8],
-    ProjectModelSchema.deserialize,
-    allOffsets,
-    ProjectModel(),
-  );
-  object.resumeName = reader.readStringOrNull(offsets[9]);
-  object.selectedTemplate = reader.readObjectOrNull<TemplateSelection>(
-    offsets[10],
-    TemplateSelectionSchema.deserialize,
-    allOffsets,
-  );
-  object.skills = reader.readObjectList<SkillModel>(
-    offsets[11],
-    SkillModelSchema.deserialize,
-    allOffsets,
-    SkillModel(),
-  );
-  object.status =
-      _ResumeModelstatusValueEnumMap[reader.readByteOrNull(offsets[12])] ??
-          ResumeStatus.draft;
   return object;
 }
 

@@ -1,14 +1,18 @@
 import 'package:flutter/material.dart';
-import '../../workflow/models/workflow_state.dart';
+import '../../../../data/models/embedded/certification_model.dart';
 
 class CertificationBlock extends StatelessWidget {
-  final ResumeEntry item;
+  final CertificationModel item;
 
   const CertificationBlock({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final dateStr = item.issueDate != null
+        ? item.issueDate!.toIso8601String().split('T').first
+        : '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -20,15 +24,14 @@ class CertificationBlock extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item.title, // Certification Name
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                  item.certificateName ?? '',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              if (item.startDate.isNotEmpty)
-                Text(
-                  item.startDate, // Date
-                  style: theme.textTheme.bodySmall,
-                ),
+              if (dateStr.isNotEmpty)
+                Text(dateStr, style: theme.textTheme.bodySmall),
             ],
           ),
           Row(
@@ -36,14 +39,18 @@ class CertificationBlock extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item.subtitle, // Issuer / Organization
-                  style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+                  item.organization ?? '',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
-              if (item.url.isNotEmpty)
+              if (item.credentialUrl?.isNotEmpty == true)
                 Text(
                   'Verify',
-                  style: theme.textTheme.bodySmall?.copyWith(color: theme.colorScheme.primary),
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    color: theme.colorScheme.primary,
+                  ),
                 ),
             ],
           ),

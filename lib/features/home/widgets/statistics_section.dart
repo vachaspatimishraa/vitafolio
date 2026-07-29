@@ -10,7 +10,11 @@ class StatisticsSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(homeViewModelProvider);
+    final (totalCount, draftCount, completedCount, archivedCount) = ref.watch(
+      homeViewModelProvider.select(
+        (s) => (s.totalCount, s.draftCount, s.completedCount, s.archivedCount),
+      ),
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
@@ -28,7 +32,7 @@ class StatisticsSection extends ConsumerWidget {
                     Expanded(
                       child: StatisticsCard(
                         title: AppStrings.totalResumes,
-                        value: state.totalCount.toString(),
+                        value: totalCount.toString(),
                         icon: Icons.description_outlined,
                       ),
                     ),
@@ -36,7 +40,7 @@ class StatisticsSection extends ConsumerWidget {
                     Expanded(
                       child: StatisticsCard(
                         title: AppStrings.draftResumes,
-                        value: state.draftCount.toString(),
+                        value: draftCount.toString(),
                         icon: Icons.edit_document,
                       ),
                     ),
@@ -48,7 +52,7 @@ class StatisticsSection extends ConsumerWidget {
                     Expanded(
                       child: StatisticsCard(
                         title: AppStrings.completedResumes,
-                        value: state.completedCount.toString(),
+                        value: completedCount.toString(),
                         icon: Icons.check_circle_outline,
                       ),
                     ),
@@ -56,7 +60,7 @@ class StatisticsSection extends ConsumerWidget {
                     Expanded(
                       child: StatisticsCard(
                         title: AppStrings.archivedResumes,
-                        value: state.archivedCount.toString(),
+                        value: archivedCount.toString(),
                         icon: Icons.archive_outlined,
                       ),
                     ),
@@ -73,7 +77,7 @@ class StatisticsSection extends ConsumerWidget {
                 Expanded(
                   child: StatisticsCard(
                     title: AppStrings.totalResumes,
-                    value: state.totalCount.toString(),
+                    value: totalCount.toString(),
                     icon: Icons.description_outlined,
                   ),
                 ),
@@ -81,7 +85,7 @@ class StatisticsSection extends ConsumerWidget {
                 Expanded(
                   child: StatisticsCard(
                     title: AppStrings.draftResumes,
-                    value: state.draftCount.toString(),
+                    value: draftCount.toString(),
                     icon: Icons.edit_document,
                   ),
                 ),
@@ -89,7 +93,7 @@ class StatisticsSection extends ConsumerWidget {
                 Expanded(
                   child: StatisticsCard(
                     title: AppStrings.completedResumes,
-                    value: state.completedCount.toString(),
+                    value: completedCount.toString(),
                     icon: Icons.check_circle_outline,
                   ),
                 ),
@@ -97,7 +101,7 @@ class StatisticsSection extends ConsumerWidget {
                 Expanded(
                   child: StatisticsCard(
                     title: AppStrings.archivedResumes,
-                    value: state.archivedCount.toString(),
+                    value: archivedCount.toString(),
                     icon: Icons.archive_outlined,
                   ),
                 ),

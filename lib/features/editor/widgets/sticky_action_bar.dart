@@ -8,7 +8,11 @@ class StickyActionBar extends StatelessWidget {
   final VoidCallback onSaveDraft;
   final VoidCallback onPreview;
 
-  const StickyActionBar({super.key, required this.onSaveDraft, required this.onPreview});
+  const StickyActionBar({
+    super.key,
+    required this.onSaveDraft,
+    required this.onPreview,
+  });
 
   @override
   Widget build(BuildContext context) {

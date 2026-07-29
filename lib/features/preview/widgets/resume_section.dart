@@ -5,11 +5,7 @@ class ResumeSection extends StatelessWidget {
   final String title;
   final Widget child;
 
-  const ResumeSection({
-    super.key,
-    required this.title,
-    required this.child,
-  });
+  const ResumeSection({super.key, required this.title, required this.child});
 
   @override
   Widget build(BuildContext context) {

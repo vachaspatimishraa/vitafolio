@@ -1,14 +1,27 @@
 import 'package:flutter/material.dart';
-import '../../workflow/models/workflow_state.dart';
+import '../../../../data/models/embedded/education_model.dart';
 
 class EducationBlock extends StatelessWidget {
-  final ResumeEntry item;
+  final EducationModel item;
 
   const EducationBlock({super.key, required this.item});
 
   @override
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
+
+    final startDateStr = item.startDate != null
+        ? item.startDate!.toIso8601String().split('T').first
+        : '';
+    final endDateStr = item.isCurrentlyStudying == true
+        ? 'Present'
+        : (item.endDate != null
+              ? item.endDate!.toIso8601String().split('T').first
+              : '');
+
+    final dateRange = startDateStr.isNotEmpty || endDateStr.isNotEmpty
+        ? '$startDateStr – $endDateStr'
+        : '';
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),
@@ -20,15 +33,14 @@ class EducationBlock extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item.title, // School
-                  style: theme.textTheme.titleSmall?.copyWith(fontWeight: FontWeight.bold),
+                  item.school ?? '',
+                  style: theme.textTheme.titleSmall?.copyWith(
+                    fontWeight: FontWeight.bold,
+                  ),
                 ),
               ),
-              if (item.startDate.isNotEmpty || item.endDate.isNotEmpty)
-                Text(
-                  '${item.startDate} – ${item.endDate}',
-                  style: theme.textTheme.bodySmall,
-                ),
+              if (dateRange.isNotEmpty)
+                Text(dateRange, style: theme.textTheme.bodySmall),
             ],
           ),
           Row(
@@ -36,21 +48,20 @@ class EducationBlock extends StatelessWidget {
             children: [
               Expanded(
                 child: Text(
-                  item.subtitle, // Degree
-                  style: theme.textTheme.bodySmall?.copyWith(fontStyle: FontStyle.italic),
+                  item.degree ?? '',
+                  style: theme.textTheme.bodySmall?.copyWith(
+                    fontStyle: FontStyle.italic,
+                  ),
                 ),
               ),
-              if (item.extra.isNotEmpty)
-                Text(
-                  item.extra, // Grade/CGPA
-                  style: theme.textTheme.bodySmall,
-                ),
+              if (item.grade?.isNotEmpty == true)
+                Text(item.grade!, style: theme.textTheme.bodySmall),
             ],
           ),
-          if (item.location.isNotEmpty) ...[
+          if (item.fieldOfStudy?.isNotEmpty == true) ...[
             const SizedBox(height: 2),
             Text(
-              item.location,
+              item.fieldOfStudy!,
               style: theme.textTheme.bodySmall?.copyWith(color: Colors.grey),
             ),
           ],

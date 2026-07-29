@@ -41,10 +41,7 @@ class EmptyState extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             if (showLogo) ...[
-              const AppLogo(
-                width: 90,
-                height: 90,
-              ),
+              const AppLogo(width: 90, height: 90),
               const SizedBox(height: AppSpacing.lg),
             ],
             Container(

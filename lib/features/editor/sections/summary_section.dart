@@ -11,7 +11,9 @@ class ProfessionalSummarySection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(workflowViewModelProvider);
+    final summary = ref.watch(
+      workflowViewModelProvider.select((state) => state.summary),
+    );
 
     return EditorSection(
       title: 'Professional Summary',
@@ -22,7 +24,7 @@ class ProfessionalSummarySection extends ConsumerWidget {
             label: 'Summary',
             hintText:
                 'Write a concise professional summary that highlights your strengths.',
-            initialValue: state.summary,
+            initialValue: summary,
             maxLength: WorkflowViewModel.summaryCharacterLimit,
             onChanged: (value) => ref
                 .read(workflowViewModelProvider.notifier)
@@ -30,7 +32,7 @@ class ProfessionalSummarySection extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.xs),
           Text(
-            '${state.summary.length}/${WorkflowViewModel.summaryCharacterLimit} characters',
+            '${summary.length}/${WorkflowViewModel.summaryCharacterLimit} characters',
             style: Theme.of(context).textTheme.bodySmall,
           ),
         ],

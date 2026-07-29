@@ -6,7 +6,10 @@ class AppTypography {
     return GoogleFonts.outfitTextTheme(
       TextTheme(
         displayLarge: TextStyle(color: textColor, fontWeight: FontWeight.bold),
-        headlineMedium: TextStyle(color: textColor, fontWeight: FontWeight.w600),
+        headlineMedium: TextStyle(
+          color: textColor,
+          fontWeight: FontWeight.w600,
+        ),
         titleMedium: TextStyle(color: textColor, fontWeight: FontWeight.w500),
         bodyLarge: TextStyle(color: textColor, fontWeight: FontWeight.normal),
         labelLarge: TextStyle(color: textColor, fontWeight: FontWeight.w500),

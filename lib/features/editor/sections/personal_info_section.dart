@@ -11,8 +11,9 @@ class PersonalInformationSection extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final state = ref.watch(workflowViewModelProvider);
-    final info = state.personalInfo;
+    final info = ref.watch(
+      workflowViewModelProvider.select((state) => state.personalInfo),
+    );
 
     return EditorSection(
       title: 'Personal Information',
@@ -38,6 +39,23 @@ class PersonalInformationSection extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           AppTextField(
+            label: 'Phone',
+            initialValue: info.phone,
+            keyboardType: TextInputType.phone,
+            onChanged: (value) => ref
+                .read(workflowViewModelProvider.notifier)
+                .updatePersonalInfo(info.copyWith(phone: value)),
+            validator: (value) {
+              final text = value?.trim() ?? '';
+              return ref
+                      .read(workflowViewModelProvider.notifier)
+                      .isValidPhone(text)
+                  ? null
+                  : 'Enter a valid phone number';
+            },
+          ),
+          const SizedBox(height: AppSpacing.md),
+          AppTextField(
             label: 'Email',
             initialValue: info.email,
             keyboardType: TextInputType.emailAddress,
@@ -58,127 +76,56 @@ class PersonalInformationSection extends ConsumerWidget {
           ),
           const SizedBox(height: AppSpacing.md),
           AppTextField(
-            label: 'Phone',
-            initialValue: info.phone,
-            keyboardType: TextInputType.phone,
+            label: 'LinkedIn',
+            initialValue: info.linkedIn,
+            keyboardType: TextInputType.url,
             onChanged: (value) => ref
                 .read(workflowViewModelProvider.notifier)
-                .updatePersonalInfo(info.copyWith(phone: value)),
+                .updatePersonalInfo(info.copyWith(linkedIn: value)),
             validator: (value) {
               final text = value?.trim() ?? '';
               return ref
                       .read(workflowViewModelProvider.notifier)
-                      .isValidPhone(text)
+                      .isValidUrl(text)
                   ? null
-                  : 'Enter a valid phone number';
+                  : 'Enter a valid URL';
             },
           ),
           const SizedBox(height: AppSpacing.md),
           AppTextField(
-            label: 'Address',
-            initialValue: info.address,
+            label: 'GitHub',
+            initialValue: info.github,
+            keyboardType: TextInputType.url,
             onChanged: (value) => ref
                 .read(workflowViewModelProvider.notifier)
-                .updatePersonalInfo(info.copyWith(address: value)),
+                .updatePersonalInfo(info.copyWith(github: value)),
+            validator: (value) {
+              final text = value?.trim() ?? '';
+              return ref
+                      .read(workflowViewModelProvider.notifier)
+                      .isValidUrl(text)
+                  ? null
+                  : 'Enter a valid URL';
+            },
           ),
           const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  label: 'City',
-                  initialValue: info.city,
-                  onChanged: (value) => ref
-                      .read(workflowViewModelProvider.notifier)
-                      .updatePersonalInfo(info.copyWith(city: value)),
+          AppTextField(
+            label: 'Portfolio Website',
+            initialValue: info.portfolioWebsite,
+            keyboardType: TextInputType.url,
+            onChanged: (value) => ref
+                .read(workflowViewModelProvider.notifier)
+                .updatePersonalInfo(
+                  info.copyWith(portfolioWebsite: value),
                 ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: AppTextField(
-                  label: 'State',
-                  initialValue: info.state,
-                  onChanged: (value) => ref
+            validator: (value) {
+              final text = value?.trim() ?? '';
+              return ref
                       .read(workflowViewModelProvider.notifier)
-                      .updatePersonalInfo(info.copyWith(state: value)),
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  label: 'Country',
-                  initialValue: info.country,
-                  onChanged: (value) => ref
-                      .read(workflowViewModelProvider.notifier)
-                      .updatePersonalInfo(info.copyWith(country: value)),
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: AppTextField(
-                  label: 'LinkedIn',
-                  initialValue: info.linkedIn,
-                  keyboardType: TextInputType.url,
-                  onChanged: (value) => ref
-                      .read(workflowViewModelProvider.notifier)
-                      .updatePersonalInfo(info.copyWith(linkedIn: value)),
-                  validator: (value) {
-                    final text = value?.trim() ?? '';
-                    return ref
-                            .read(workflowViewModelProvider.notifier)
-                            .isValidUrl(text)
-                        ? null
-                        : 'Enter a valid URL';
-                  },
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: AppSpacing.md),
-          Row(
-            children: [
-              Expanded(
-                child: AppTextField(
-                  label: 'GitHub',
-                  initialValue: info.github,
-                  keyboardType: TextInputType.url,
-                  onChanged: (value) => ref
-                      .read(workflowViewModelProvider.notifier)
-                      .updatePersonalInfo(info.copyWith(github: value)),
-                  validator: (value) {
-                    final text = value?.trim() ?? '';
-                    return ref
-                            .read(workflowViewModelProvider.notifier)
-                            .isValidUrl(text)
-                        ? null
-                        : 'Enter a valid URL';
-                  },
-                ),
-              ),
-              const SizedBox(width: AppSpacing.md),
-              Expanded(
-                child: AppTextField(
-                  label: 'Portfolio Website',
-                  initialValue: info.portfolio,
-                  keyboardType: TextInputType.url,
-                  onChanged: (value) => ref
-                      .read(workflowViewModelProvider.notifier)
-                      .updatePersonalInfo(info.copyWith(portfolio: value)),
-                  validator: (value) {
-                    final text = value?.trim() ?? '';
-                    return ref
-                            .read(workflowViewModelProvider.notifier)
-                            .isValidUrl(text)
-                        ? null
-                        : 'Enter a valid URL';
-                  },
-                ),
-              ),
-            ],
+                      .isValidUrl(text)
+                  ? null
+                  : 'Enter a valid URL';
+            },
           ),
         ],
       ),

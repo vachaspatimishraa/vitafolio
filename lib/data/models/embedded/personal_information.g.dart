@@ -13,59 +13,39 @@ const PersonalInformationSchema = Schema(
   name: r'PersonalInformation',
   id: -722308265752307796,
   properties: {
-    r'address': PropertySchema(
-      id: 0,
-      name: r'address',
-      type: IsarType.string,
-    ),
-    r'city': PropertySchema(
-      id: 1,
-      name: r'city',
-      type: IsarType.string,
-    ),
-    r'country': PropertySchema(
-      id: 2,
-      name: r'country',
-      type: IsarType.string,
-    ),
     r'email': PropertySchema(
-      id: 3,
+      id: 0,
       name: r'email',
       type: IsarType.string,
     ),
     r'fullName': PropertySchema(
-      id: 4,
+      id: 1,
       name: r'fullName',
       type: IsarType.string,
     ),
     r'github': PropertySchema(
-      id: 5,
+      id: 2,
       name: r'github',
       type: IsarType.string,
     ),
     r'jobTitle': PropertySchema(
-      id: 6,
+      id: 3,
       name: r'jobTitle',
       type: IsarType.string,
     ),
     r'linkedIn': PropertySchema(
-      id: 7,
+      id: 4,
       name: r'linkedIn',
       type: IsarType.string,
     ),
     r'phone': PropertySchema(
-      id: 8,
+      id: 5,
       name: r'phone',
       type: IsarType.string,
     ),
     r'portfolioWebsite': PropertySchema(
-      id: 9,
+      id: 6,
       name: r'portfolioWebsite',
-      type: IsarType.string,
-    ),
-    r'state': PropertySchema(
-      id: 10,
-      name: r'state',
       type: IsarType.string,
     )
   },
@@ -81,24 +61,6 @@ int _personalInformationEstimateSize(
   Map<Type, List<int>> allOffsets,
 ) {
   var bytesCount = offsets.last;
-  {
-    final value = object.address;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.city;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
-  {
-    final value = object.country;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   {
     final value = object.email;
     if (value != null) {
@@ -141,12 +103,6 @@ int _personalInformationEstimateSize(
       bytesCount += 3 + value.length * 3;
     }
   }
-  {
-    final value = object.state;
-    if (value != null) {
-      bytesCount += 3 + value.length * 3;
-    }
-  }
   return bytesCount;
 }
 
@@ -156,17 +112,13 @@ void _personalInformationSerialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  writer.writeString(offsets[0], object.address);
-  writer.writeString(offsets[1], object.city);
-  writer.writeString(offsets[2], object.country);
-  writer.writeString(offsets[3], object.email);
-  writer.writeString(offsets[4], object.fullName);
-  writer.writeString(offsets[5], object.github);
-  writer.writeString(offsets[6], object.jobTitle);
-  writer.writeString(offsets[7], object.linkedIn);
-  writer.writeString(offsets[8], object.phone);
-  writer.writeString(offsets[9], object.portfolioWebsite);
-  writer.writeString(offsets[10], object.state);
+  writer.writeString(offsets[0], object.email);
+  writer.writeString(offsets[1], object.fullName);
+  writer.writeString(offsets[2], object.github);
+  writer.writeString(offsets[3], object.jobTitle);
+  writer.writeString(offsets[4], object.linkedIn);
+  writer.writeString(offsets[5], object.phone);
+  writer.writeString(offsets[6], object.portfolioWebsite);
 }
 
 PersonalInformation _personalInformationDeserialize(
@@ -175,18 +127,15 @@ PersonalInformation _personalInformationDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = PersonalInformation();
-  object.address = reader.readStringOrNull(offsets[0]);
-  object.city = reader.readStringOrNull(offsets[1]);
-  object.country = reader.readStringOrNull(offsets[2]);
-  object.email = reader.readStringOrNull(offsets[3]);
-  object.fullName = reader.readStringOrNull(offsets[4]);
-  object.github = reader.readStringOrNull(offsets[5]);
-  object.jobTitle = reader.readStringOrNull(offsets[6]);
-  object.linkedIn = reader.readStringOrNull(offsets[7]);
-  object.phone = reader.readStringOrNull(offsets[8]);
-  object.portfolioWebsite = reader.readStringOrNull(offsets[9]);
-  object.state = reader.readStringOrNull(offsets[10]);
+  final object = PersonalInformation(
+    email: reader.readStringOrNull(offsets[0]),
+    fullName: reader.readStringOrNull(offsets[1]),
+    github: reader.readStringOrNull(offsets[2]),
+    jobTitle: reader.readStringOrNull(offsets[3]),
+    linkedIn: reader.readStringOrNull(offsets[4]),
+    phone: reader.readStringOrNull(offsets[5]),
+    portfolioWebsite: reader.readStringOrNull(offsets[6]),
+  );
   return object;
 }
 
@@ -211,14 +160,6 @@ P _personalInformationDeserializeProp<P>(
       return (reader.readStringOrNull(offset)) as P;
     case 6:
       return (reader.readStringOrNull(offset)) as P;
-    case 7:
-      return (reader.readStringOrNull(offset)) as P;
-    case 8:
-      return (reader.readStringOrNull(offset)) as P;
-    case 9:
-      return (reader.readStringOrNull(offset)) as P;
-    case 10:
-      return (reader.readStringOrNull(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
@@ -226,468 +167,6 @@ P _personalInformationDeserializeProp<P>(
 
 extension PersonalInformationQueryFilter on QueryBuilder<PersonalInformation,
     PersonalInformation, QFilterCondition> {
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'address',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'address',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'address',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'address',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'address',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'address',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'address',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'address',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'address',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'address',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      addressIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'address',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'city',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'city',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'city',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'city',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'city',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'city',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      cityIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'city',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'country',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'country',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'country',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'country',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'country',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'country',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      countryIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'country',
-        value: '',
-      ));
-    });
-  }
-
   QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
       emailIsNull() {
     return QueryBuilder.apply(this, (query) {
@@ -1761,160 +1240,6 @@ extension PersonalInformationQueryFilter on QueryBuilder<PersonalInformation,
     return QueryBuilder.apply(this, (query) {
       return query.addFilterCondition(FilterCondition.greaterThan(
         property: r'portfolioWebsite',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'state',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'state',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateLessThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateBetween(
-    String? lower,
-    String? upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'state',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateContains(String value, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'state',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateMatches(String pattern, {bool caseSensitive = true}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'state',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'state',
-        value: '',
-      ));
-    });
-  }
-
-  QueryBuilder<PersonalInformation, PersonalInformation, QAfterFilterCondition>
-      stateIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'state',
         value: '',
       ));
     });

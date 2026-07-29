@@ -55,8 +55,9 @@ ProfessionalSummary _professionalSummaryDeserialize(
   List<int> offsets,
   Map<Type, List<int>> allOffsets,
 ) {
-  final object = ProfessionalSummary();
-  object.summary = reader.readStringOrNull(offsets[0]);
+  final object = ProfessionalSummary(
+    summary: reader.readStringOrNull(offsets[0]),
+  );
   return object;
 }
 

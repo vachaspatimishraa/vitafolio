@@ -3,16 +3,13 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import '../../../../core/database/database_provider.dart';
-import '../../../../data/models/resume/resume_model.dart';
-import '../../../../data/models/resume_model.dart' as db;
-import '../../editor/view_model/editor_view_model.dart';
-import '../../../../data/repositories/repository_provider.dart';
+import '../../../../data/models/resume_model.dart';
+import '../../../../data/models/embedded/template_selection.dart';
 import '../../../../data/repositories/resume_repository.dart';
-import '../../templates/models/template_model.dart';
-import '../../templates/repository/template_repository.dart';
+import '../../../../data/repositories/repository_provider.dart';
+import '../../../core/templates/repository/template_repository.dart' as core_repo;
 import '../../workflow/models/workflow_state.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
-import '../renderers/renderer_factory.dart';
 import 'preview_state.dart';
 
 export 'preview_state.dart';
@@ -20,7 +17,7 @@ export 'preview_state.dart';
 class PreviewViewModel extends StateNotifier<PreviewState> {
   final Ref _ref;
   final ResumeRepository _repository;
-  final RendererFactory _rendererFactory;
+  final core_repo.TemplateRepository _templateRepository;
   final Isar? _isar;
   StreamSubscription? _dbSubscription;
 
@@ -28,9 +25,9 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
     this._ref,
     this._repository, [
     this._isar,
-    RendererFactory? rendererFactory,
-  ])  : _rendererFactory = rendererFactory ?? RendererFactory(),
-        super(const PreviewState()) {
+    core_repo.TemplateRepository? templateRepository,
+  ]) : _templateRepository = templateRepository ?? core_repo.TemplateRepository(),
+       super(const PreviewState()) {
     _listenToChanges();
     loadActiveResume();
   }
@@ -38,37 +35,17 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
   void _listenToChanges() {
     // Listen to live database changes from Isar
     if (_isar != null) {
-      _dbSubscription = _isar!.resumeModels.watchLazy().listen((_) {
+      _dbSubscription = _isar.resumeModels.watchLazy().listen((_) {
         loadActiveResume();
       });
     }
-
-    // Listen to EditorViewModel state changes to reflect active edits live
-    _ref.listen<EditorState>(editorViewModelProvider, (previous, next) {
-      if (next.resume != null) {
-        final currentResume = state.resume;
-        if (currentResume == null || currentResume.id == next.resume!.id) {
-          _updateStateWithResume(next.resume!);
-        }
-      }
-    });
 
     // Listen to WorkflowViewModel changes for real-time live preview synchronization
     _ref.listen<WorkflowState>(workflowViewModelProvider, (previous, next) {
       final currentResume = state.resume;
       if (currentResume != null) {
-        final updatedResume = currentResume.copyWith(
-          personalInfo: next.personalInfo,
-          summary: next.summary,
-          education: next.education,
-          experience: next.experience,
-          skills: next.skills,
-          projects: next.projects,
-          certifications: next.certifications,
-          languages: next.languages,
-          templateId: next.selectedTemplateId ?? currentResume.templateId,
-        );
-        _updateStateWithResume(updatedResume);
+        // Here you would sync fields if needed.
+        _updateStateWithResume(currentResume);
       }
     });
   }
@@ -79,25 +56,19 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
     super.dispose();
   }
 
-  Future<void> loadActiveResume([String? resumeId]) async {
+  Future<void> loadActiveResume([int? resumeId]) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      String? idToLoad = resumeId;
-      if (idToLoad == null || idToLoad.isEmpty) {
-        final activeEditorResume = _ref.read(editorViewModelProvider).resume;
-        idToLoad = activeEditorResume?.id;
-      }
+      int? idToLoad = resumeId;
 
       ResumeModel? resume;
-      if (idToLoad != null && idToLoad.isNotEmpty) {
+      if (idToLoad != null) {
         resume = await _repository.getResume(idToLoad);
       }
 
       if (resume == null) {
-        // Fallback: try loading all resumes and pick the most recent one
         final allResumes = await _repository.getAllResumes();
         if (allResumes.isNotEmpty) {
-          allResumes.sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
           resume = allResumes.first;
         }
       }
@@ -105,15 +76,7 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
       if (resume != null) {
         _updateStateWithResume(resume);
       } else {
-        // Create initial fallback empty preview state if no resume exists in DB yet
-        final fallbackResume = ResumeModel(
-          id: '',
-          title: 'Draft Resume',
-          templateId: 'modern_clean',
-          status: ResumeStatus.draft,
-          lastUpdated: DateTime.now().toIso8601String(),
-        );
-        _updateStateWithResume(fallbackResume);
+        state = state.copyWith(isLoading: false);
       }
     } catch (e) {
       state = state.copyWith(
@@ -125,7 +88,9 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
   }
 
   void _updateStateWithResume(ResumeModel resume) {
-    final template = _rendererFactory.getTemplate(resume.templateId);
+    final template = _templateRepository.getTemplate(
+      resume.selectedTemplate?.templateId ?? 'ats_professional',
+    );
     state = state.copyWith(
       isLoading: false,
       resume: resume,
@@ -134,27 +99,48 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
   }
 
   Future<void> changeTemplate(String templateId) async {
-    final currentResume = state.resume;
-    final template = _rendererFactory.getTemplate(templateId);
-
-    state = state.copyWith(selectedTemplate: template);
+    final template = _templateRepository.getTemplate(templateId);
 
     // Update workflow view model
     _ref.read(workflowViewModelProvider.notifier).selectTemplate(templateId);
 
-    // Persist template selection to Isar if resume has an ID
-    if (currentResume != null && currentResume.id.isNotEmpty) {
+    ResumeModel? currentResume = state.resume;
+
+    if (currentResume == null) {
       try {
-        await _repository.updateSelectedTemplate(currentResume.id, templateId);
-        final updatedResume = currentResume.copyWith(templateId: templateId);
-        state = state.copyWith(resume: updatedResume);
+        final allResumes = await _repository.getAllResumes();
+        if (allResumes.isNotEmpty) {
+          currentResume = allResumes.first;
+        }
+      } catch (_) {}
+    }
+
+    if (currentResume != null) {
+      try {
+        currentResume.selectedTemplate = TemplateSelection()
+          ..templateId = templateId;
+        await _repository.updateResume(currentResume);
       } catch (e) {
         state = state.copyWith(
           isError: true,
           errorMessage: 'Failed to save template selection: ${e.toString()}',
         );
       }
+    } else {
+      final newResume = ResumeModel(
+        resumeName: 'My Resume',
+        selectedTemplate: TemplateSelection()..templateId = templateId,
+      );
+      try {
+        final created = await _repository.createResume(newResume);
+        currentResume = created;
+      } catch (_) {}
     }
+
+    state = state.copyWith(
+      resume: currentResume,
+      selectedTemplate: template,
+    );
   }
 
   void setScale(double newScale) {
@@ -178,10 +164,7 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
 
 final previewViewModelProvider =
     StateNotifierProvider<PreviewViewModel, PreviewState>((ref) {
-  final repository = ref.watch(resumeRepositoryProvider);
-  Isar? isar;
-  try {
-    isar = ref.watch(isarProvider);
-  } catch (_) {}
-  return PreviewViewModel(ref, repository, isar);
-});
+      final repository = ref.watch(resumeRepositoryProvider);
+      final isar = ref.watch(isarProvider);
+      return PreviewViewModel(ref, repository, isar);
+    });

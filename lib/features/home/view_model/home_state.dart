@@ -1,5 +1,5 @@
 import '../../../data/models/enums/resume_status.dart';
-import '../../../data/models/resume/resume_model.dart';
+import '../../../data/models/resume_model.dart';
 
 // Sort options enum
 enum SortOption {
@@ -54,7 +54,7 @@ class HomeState {
   });
 
   List<ResumeModel> get filteredResumes {
-    List<ResumeModel> result = resumes;
+    List<ResumeModel> result = List.from(resumes);
 
     // Apply filter
     switch (selectedFilter) {
@@ -64,20 +64,28 @@ class HomeState {
         result = result.where((r) => r.status == ResumeStatus.draft).toList();
         break;
       case FilterOption.completed:
-        result = result.where((r) => r.status == ResumeStatus.completed).toList();
+        result = result
+            .where((r) => r.status == ResumeStatus.completed)
+            .toList();
         break;
       case FilterOption.archived:
-        result = result.where((r) => r.status == ResumeStatus.archived).toList();
+        result = result
+            .where((r) => r.status == ResumeStatus.archived)
+            .toList();
         break;
     }
 
-    // Apply search across resume title/name, personal info full name, and job title (case-insensitive)
+    // Apply search
     if (searchQuery.isNotEmpty) {
       final query = searchQuery.toLowerCase();
       result = result.where((r) {
-        final titleMatch = r.title.toLowerCase().contains(query);
-        final nameMatch = r.personalInfo.fullName.toLowerCase().contains(query);
-        final jobTitleMatch = r.personalInfo.jobTitle.toLowerCase().contains(query);
+        final titleMatch = (r.resumeName ?? '').toLowerCase().contains(query);
+        final nameMatch = (r.personalInfo?.fullName ?? '')
+            .toLowerCase()
+            .contains(query);
+        final jobTitleMatch = (r.personalInfo?.jobTitle ?? '')
+            .toLowerCase()
+            .contains(query);
         return titleMatch || nameMatch || jobTitleMatch;
       }).toList();
     }
@@ -85,27 +93,31 @@ class HomeState {
     // Apply sort
     switch (selectedSort) {
       case SortOption.recentlyUpdated:
-        result.sort((a, b) => b.lastUpdated.compareTo(a.lastUpdated));
+        result.sort(
+          (a, b) => (b.lastUpdated ?? DateTime.now()).compareTo(
+            a.lastUpdated ?? DateTime.now(),
+          ),
+        );
         break;
       case SortOption.newest:
-        result.sort((a, b) {
-          final aId = int.tryParse(a.id) ?? 0;
-          final bId = int.tryParse(b.id) ?? 0;
-          return bId.compareTo(aId);
-        });
+        result.sort((a, b) => b.id.compareTo(a.id));
         break;
       case SortOption.oldest:
-        result.sort((a, b) {
-          final aId = int.tryParse(a.id) ?? 0;
-          final bId = int.tryParse(b.id) ?? 0;
-          return aId.compareTo(bId);
-        });
+        result.sort((a, b) => a.id.compareTo(b.id));
         break;
       case SortOption.alphabeticalAZ:
-        result.sort((a, b) => a.title.toLowerCase().compareTo(b.title.toLowerCase()));
+        result.sort(
+          (a, b) => (a.resumeName ?? '').toLowerCase().compareTo(
+            (b.resumeName ?? '').toLowerCase(),
+          ),
+        );
         break;
       case SortOption.alphabeticalZA:
-        result.sort((a, b) => b.title.toLowerCase().compareTo(a.title.toLowerCase()));
+        result.sort(
+          (a, b) => (b.resumeName ?? '').toLowerCase().compareTo(
+            (a.resumeName ?? '').toLowerCase(),
+          ),
+        );
         break;
     }
 
@@ -134,8 +146,9 @@ class HomeState {
       isError: clearError ? false : (isError ?? this.isError),
       errorMessage: clearError ? null : (errorMessage ?? this.errorMessage),
       resumes: resumes ?? this.resumes,
-      selectedResume:
-          clearSelectedResume ? null : (selectedResume ?? this.selectedResume),
+      selectedResume: clearSelectedResume
+          ? null
+          : (selectedResume ?? this.selectedResume),
       selectedFilter: selectedFilter ?? this.selectedFilter,
       selectedSort: selectedSort ?? this.selectedSort,
       totalCount: totalCount ?? this.totalCount,

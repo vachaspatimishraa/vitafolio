@@ -23,8 +23,8 @@ class TemplateGrid extends ConsumerWidget {
         final crossAxisCount = constraints.maxWidth >= 720
             ? 4
             : constraints.maxWidth >= 480
-                ? 3
-                : 2;
+            ? 3
+            : 2;
 
         return GridView.builder(
           padding: const EdgeInsets.all(AppSpacing.lg),

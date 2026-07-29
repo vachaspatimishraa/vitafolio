@@ -27,7 +27,9 @@ class _SearchFieldState extends State<SearchField> {
   @override
   void initState() {
     super.initState();
-    _controller = widget.controller ?? TextEditingController(text: widget.initialValue ?? '');
+    _controller =
+        widget.controller ??
+        TextEditingController(text: widget.initialValue ?? '');
   }
 
   @override
@@ -85,12 +87,12 @@ class _SearchFieldState extends State<SearchField> {
         ),
         focusedBorder: OutlineInputBorder(
           borderRadius: const BorderRadius.all(Radius.circular(28)),
-          borderSide: BorderSide(
-            color: colorScheme.primary,
-            width: 1.5,
-          ),
+          borderSide: BorderSide(color: colorScheme.primary, width: 1.5),
         ),
-        contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+        contentPadding: const EdgeInsets.symmetric(
+          horizontal: 20,
+          vertical: 14,
+        ),
       ),
     );
   }

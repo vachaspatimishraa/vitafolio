@@ -4,13 +4,14 @@ part 'certification_model.g.dart';
 
 @embedded
 class CertificationModel {
-  String id = DateTime.now().microsecondsSinceEpoch.toString();
+  String? id;
   String? certificateName;
   String? organization;
   DateTime? issueDate;
   String? credentialUrl;
 
   CertificationModel({
+    this.id,
     this.certificateName,
     this.organization,
     this.issueDate,
@@ -24,13 +25,12 @@ class CertificationModel {
     DateTime? issueDate,
     String? credentialUrl,
   }) {
-    final model = CertificationModel(
+    return CertificationModel(
+      id: id ?? this.id,
       certificateName: certificateName ?? this.certificateName,
       organization: organization ?? this.organization,
       issueDate: issueDate ?? this.issueDate,
       credentialUrl: credentialUrl ?? this.credentialUrl,
     );
-    model.id = id ?? this.id;
-    return model;
   }
 }

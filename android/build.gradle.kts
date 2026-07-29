@@ -12,13 +12,16 @@ val newBuildDir: Directory =
 rootProject.layout.buildDirectory.value(newBuildDir)
 
 subprojects {
-    plugins.withId("com.android.library") {
-        configure<com.android.build.gradle.LibraryExtension> {
-            if (namespace == null) {
-                namespace = if (project.name == "isar_flutter_libs") {
-                    "dev.isar.isar_flutter_libs"
-                } else {
-                    "dev.isar.${project.name.replace("-", ".")}"
+    afterEvaluate {
+        if (plugins.hasPlugin("com.android.library")) {
+            configure<com.android.build.gradle.LibraryExtension> {
+                compileSdk = 35
+                if (namespace == null) {
+                    namespace = if (project.name == "isar_flutter_libs") {
+                        "dev.isar.isar_flutter_libs"
+                    } else {
+                        "dev.isar.${project.name.replace("-", ".")}"
+                    }
                 }
             }
         }
