@@ -4,6 +4,7 @@ import '../base/pdf_renderer.dart';
 import '../../widgets/pdf_section_title.dart';
 import '../../widgets/pdf_timeline_item.dart';
 import '../../widgets/pdf_footer.dart';
+import '../../helpers/pdf_section_helper.dart';
 import '../../../../data/models/resume_model.dart';
 import '../../../../data/models/embedded/personal_information.dart';
 
@@ -11,6 +12,93 @@ class ModernPdfRenderer implements PdfRenderer {
   @override
   Future<pw.Document> render(ResumeModel resume) async {
     final pdf = pw.Document();
+
+    final hasContact = resume.personalInfo != null &&
+        ((resume.personalInfo!.email?.trim().isNotEmpty ?? false) ||
+            (resume.personalInfo!.phone?.trim().isNotEmpty ?? false) ||
+            (resume.personalInfo!.linkedIn?.trim().isNotEmpty ?? false) ||
+            (resume.personalInfo!.github?.trim().isNotEmpty ?? false) ||
+            (resume.personalInfo!.portfolioWebsite?.trim().isNotEmpty ?? false));
+
+    final hasSkills = PdfSectionHelper.hasSkills(resume.skills);
+    final hasLanguages = PdfSectionHelper.hasLanguages(resume.languages);
+
+    final sidebarChildren = <pw.Widget>[];
+
+    if (resume.personalInfo?.fullName?.trim().isNotEmpty ?? false) {
+      sidebarChildren.add(
+        pw.Text(
+          resume.personalInfo!.fullName!.trim(),
+          style: pw.TextStyle(
+            color: PdfColors.white,
+            fontSize: 20,
+            fontWeight: pw.FontWeight.bold,
+          ),
+        ),
+      );
+    }
+
+    if (resume.personalInfo?.jobTitle?.trim().isNotEmpty ?? false) {
+      sidebarChildren.add(pw.SizedBox(height: 5));
+      sidebarChildren.add(
+        pw.Text(
+          resume.personalInfo!.jobTitle!.trim(),
+          style: const pw.TextStyle(
+            color: PdfColors.white,
+            fontSize: 12,
+          ),
+        ),
+      );
+    }
+
+    if (sidebarChildren.isNotEmpty) {
+      sidebarChildren.add(pw.SizedBox(height: 30));
+    }
+
+    if (hasContact) {
+      sidebarChildren.add(_buildContactSection(resume.personalInfo));
+    }
+
+    if (hasSkills) {
+      if (sidebarChildren.isNotEmpty && sidebarChildren.last is! pw.SizedBox) {
+        sidebarChildren.add(pw.SizedBox(height: 30));
+      }
+      sidebarChildren.add(_buildSkillsSection(resume));
+    }
+
+    if (hasLanguages) {
+      if (sidebarChildren.isNotEmpty && sidebarChildren.last is! pw.SizedBox) {
+        sidebarChildren.add(pw.SizedBox(height: 30));
+      }
+      sidebarChildren.add(_buildLanguagesSection(resume));
+    }
+
+    final mainContentChildren = <pw.Widget>[];
+
+    if (PdfSectionHelper.hasSummary(resume.professionalSummary?.summary)) {
+      mainContentChildren.addAll([
+        PdfSectionTitle('Summary', color: PdfColors.blue900),
+        pw.Text(resume.professionalSummary!.summary!.trim(),
+            style: const pw.TextStyle(fontSize: 10)),
+        pw.SizedBox(height: 20),
+      ]);
+    }
+
+    if (PdfSectionHelper.hasExperience(resume.experience)) {
+      mainContentChildren.add(_buildExperienceSection(resume));
+    }
+
+    if (PdfSectionHelper.hasEducation(resume.education)) {
+      mainContentChildren.add(_buildEducationSection(resume));
+    }
+
+    if (PdfSectionHelper.hasProjects(resume.projects)) {
+      mainContentChildren.add(_buildProjectsSection(resume));
+    }
+
+    if (PdfSectionHelper.hasCertifications(resume.certifications)) {
+      mainContentChildren.add(_buildCertificationsSection(resume));
+    }
 
     pdf.addPage(
       pw.MultiPage(
@@ -33,30 +121,7 @@ class ModernPdfRenderer implements PdfRenderer {
                   padding: const pw.EdgeInsets.all(20),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      pw.Text(
-                        resume.personalInfo?.fullName ?? '',
-                        style: pw.TextStyle(
-                          color: PdfColors.white,
-                          fontSize: 20,
-                          fontWeight: pw.FontWeight.bold,
-                        ),
-                      ),
-                      pw.SizedBox(height: 5),
-                      pw.Text(
-                        resume.personalInfo?.jobTitle ?? '',
-                        style: const pw.TextStyle(
-                          color: PdfColors.white,
-                          fontSize: 12,
-                        ),
-                      ),
-                      pw.SizedBox(height: 30),
-                      _buildContactSection(resume.personalInfo),
-                      pw.SizedBox(height: 30),
-                      _buildSkillsSection(resume),
-                      pw.SizedBox(height: 30),
-                      _buildLanguagesSection(resume),
-                    ],
+                    children: sidebarChildren,
                   ),
                 ),
                 // Main Content
@@ -65,17 +130,7 @@ class ModernPdfRenderer implements PdfRenderer {
                     padding: const pw.EdgeInsets.all(30),
                     child: pw.Column(
                       crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
-                        if (resume.professionalSummary?.summary?.isNotEmpty ?? false) ...[
-                          PdfSectionTitle('Summary', color: PdfColors.blue900),
-                          pw.Text(resume.professionalSummary!.summary!, style: const pw.TextStyle(fontSize: 10)),
-                          pw.SizedBox(height: 20),
-                        ],
-                        _buildExperienceSection(resume),
-                        _buildEducationSection(resume),
-                        _buildProjectsSection(resume),
-                        _buildCertificationsSection(resume),
-                      ],
+                      children: mainContentChildren,
                     ),
                   ),
                 ),
@@ -91,49 +146,64 @@ class ModernPdfRenderer implements PdfRenderer {
 
   pw.Widget _buildContactSection(PersonalInformation? info) {
     if (info == null) return pw.SizedBox.shrink();
+    final items = <pw.Widget>[];
+    if (info.email?.trim().isNotEmpty ?? false) _addSidebarText(items, info.email!.trim());
+    if (info.phone?.trim().isNotEmpty ?? false) _addSidebarText(items, info.phone!.trim());
+    if (info.linkedIn?.trim().isNotEmpty ?? false) _addSidebarText(items, info.linkedIn!.trim());
+    if (info.github?.trim().isNotEmpty ?? false) _addSidebarText(items, info.github!.trim());
+    if (info.portfolioWebsite?.trim().isNotEmpty ?? false) _addSidebarText(items, info.portfolioWebsite!.trim());
+
+    if (items.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text('CONTACT', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 12)),
         pw.Divider(color: PdfColors.white, thickness: 0.5),
         pw.SizedBox(height: 8),
-        if (info.email != null) _sidebarText(info.email!),
-        if (info.phone != null) _sidebarText(info.phone!),
-        if (info.linkedIn != null) _sidebarText(info.linkedIn!),
-        if (info.github != null) _sidebarText(info.github!),
-        if (info.portfolioWebsite != null) _sidebarText(info.portfolioWebsite!),
+        ...items,
       ],
     );
   }
 
   pw.Widget _buildSkillsSection(ResumeModel resume) {
-    if (resume.skills == null || resume.skills!.isEmpty) return pw.SizedBox.shrink();
+    final validSkills = PdfSectionHelper.validSkillModels(resume.skills);
+    if (validSkills.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text('SKILLS', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 12)),
         pw.Divider(color: PdfColors.white, thickness: 0.5),
         pw.SizedBox(height: 8),
-        ...resume.skills!.map((s) => _sidebarText(s.name ?? '')),
+        ...validSkills.map((s) => _sidebarText(s.name!.trim())),
       ],
     );
   }
 
   pw.Widget _buildLanguagesSection(ResumeModel resume) {
-    if (resume.languages == null || resume.languages!.isEmpty) return pw.SizedBox.shrink();
+    final validLanguages = PdfSectionHelper.validLanguages(resume.languages);
+    if (validLanguages.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Text('LANGUAGES', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 12)),
         pw.Divider(color: PdfColors.white, thickness: 0.5),
         pw.SizedBox(height: 8),
-        ...resume.languages!.map((l) => _sidebarText('${l.language ?? ""} (${l.proficiency.name})')),
+        ...validLanguages.map((l) => _sidebarText('${l.language!.trim()} (${l.proficiency.name})')),
       ],
     );
   }
 
+  void _addSidebarText(List<pw.Widget> list, String text) {
+    list.add(
+      pw.Padding(
+        padding: const pw.EdgeInsets.only(bottom: 4),
+        child: pw.Text(text, style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+      ),
+    );
+  }
+
   pw.Widget _sidebarText(String text) {
-    if (text.isEmpty) return pw.SizedBox.shrink();
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 4),
       child: pw.Text(text, style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
@@ -141,62 +211,66 @@ class ModernPdfRenderer implements PdfRenderer {
   }
 
   pw.Widget _buildExperienceSection(ResumeModel resume) {
-    if (resume.experience == null || resume.experience!.isEmpty) return pw.SizedBox.shrink();
+    final validExperiences = PdfSectionHelper.validExperiences(resume.experience);
+    if (validExperiences.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Experience', color: PdfColors.blue900),
-        ...resume.experience!.map((e) => PdfTimelineItem(
-          title: e.company ?? '',
-          subtitle: e.position,
+        ...validExperiences.map((e) => PdfTimelineItem(
+          title: e.company?.trim() ?? '',
+          subtitle: e.position?.trim(),
           date: '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
-          location: e.location,
-          description: e.description,
+          location: e.location?.trim(),
+          description: e.description?.trim(),
         )),
       ],
     );
   }
 
   pw.Widget _buildEducationSection(ResumeModel resume) {
-    if (resume.education == null || resume.education!.isEmpty) return pw.SizedBox.shrink();
+    final validEducation = PdfSectionHelper.validEducation(resume.education);
+    if (validEducation.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Education', color: PdfColors.blue900),
-        ...resume.education!.map((e) => PdfTimelineItem(
-          title: e.school ?? '',
-          subtitle: '${e.degree ?? ""} ${e.fieldOfStudy ?? ""}',
+        ...validEducation.map((e) => PdfTimelineItem(
+          title: e.school?.trim() ?? '',
+          subtitle: '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'.trim(),
           date: '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
-          description: e.grade != null && e.grade!.isNotEmpty ? 'Grade: ${e.grade}' : null,
+          description: e.grade != null && e.grade!.trim().isNotEmpty ? 'Grade: ${e.grade!.trim()}' : null,
         )),
       ],
     );
   }
 
   pw.Widget _buildProjectsSection(ResumeModel resume) {
-    if (resume.projects == null || resume.projects!.isEmpty) return pw.SizedBox.shrink();
+    final validProjects = PdfSectionHelper.validProjects(resume.projects);
+    if (validProjects.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Projects', color: PdfColors.blue900),
-        ...resume.projects!.map((p) => PdfTimelineItem(
-          title: p.projectName ?? '',
-          subtitle: p.technologies,
-          description: p.description,
+        ...validProjects.map((p) => PdfTimelineItem(
+          title: p.projectName?.trim() ?? '',
+          subtitle: p.technologies?.trim(),
+          description: p.description?.trim(),
         )),
       ],
     );
   }
 
   pw.Widget _buildCertificationsSection(ResumeModel resume) {
-    if (resume.certifications == null || resume.certifications!.isEmpty) return pw.SizedBox.shrink();
+    final validCerts = PdfSectionHelper.validCertifications(resume.certifications);
+    if (validCerts.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Certifications', color: PdfColors.blue900),
-        ...resume.certifications!.map((c) => PdfTimelineItem(
-          title: c.certificateName ?? '',
-          subtitle: c.organization,
+        ...validCerts.map((c) => PdfTimelineItem(
+          title: c.certificateName?.trim() ?? '',
+          subtitle: c.organization?.trim(),
           date: _formatDate(c.issueDate),
         )),
       ],
@@ -208,3 +282,4 @@ class ModernPdfRenderer implements PdfRenderer {
     return '${date.month}/${date.year}';
   }
 }
+

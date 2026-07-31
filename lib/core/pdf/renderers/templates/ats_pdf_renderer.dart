@@ -6,6 +6,7 @@ import '../../widgets/pdf_section_title.dart';
 import '../../widgets/pdf_contact_row.dart';
 import '../../widgets/pdf_timeline_item.dart';
 import '../../widgets/pdf_footer.dart';
+import '../../helpers/pdf_section_helper.dart';
 import '../../../../data/models/resume_model.dart';
 import '../../../../data/models/embedded/personal_information.dart';
 
@@ -14,27 +15,57 @@ class AtsPdfRenderer implements PdfRenderer {
   Future<pw.Document> render(ResumeModel resume) async {
     final pdf = pw.Document();
 
+    final widgets = <pw.Widget>[];
+
+    if (resume.personalInfo != null &&
+        (resume.personalInfo!.fullName?.trim().isNotEmpty ?? false)) {
+      widgets.add(_buildHeader(resume.personalInfo!));
+    }
+
+    final contactWidget = _buildContactInfo(resume);
+    if (contactWidget is! pw.SizedBox) {
+      widgets.add(contactWidget);
+    }
+
+    if (PdfSectionHelper.hasSummary(resume.professionalSummary?.summary)) {
+      widgets.addAll([
+        PdfSectionTitle('Professional Summary'),
+        pw.Text(resume.professionalSummary!.summary!.trim(),
+            style: const pw.TextStyle(fontSize: 10)),
+        pw.SizedBox(height: 12),
+      ]);
+    }
+
+    if (PdfSectionHelper.hasExperience(resume.experience)) {
+      widgets.add(_buildExperience(resume));
+    }
+
+    if (PdfSectionHelper.hasEducation(resume.education)) {
+      widgets.add(_buildEducation(resume));
+    }
+
+    if (PdfSectionHelper.hasSkills(resume.skills)) {
+      widgets.add(_buildSkills(resume));
+    }
+
+    if (PdfSectionHelper.hasProjects(resume.projects)) {
+      widgets.add(_buildProjects(resume));
+    }
+
+    if (PdfSectionHelper.hasCertifications(resume.certifications)) {
+      widgets.add(_buildCertifications(resume));
+    }
+
+    if (PdfSectionHelper.hasLanguages(resume.languages)) {
+      widgets.add(_buildLanguages(resume));
+    }
+
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
         margin: const pw.EdgeInsets.all(40),
         footer: (context) => PdfFooter(),
-        build: (context) => [
-          if (resume.personalInfo != null) _buildHeader(resume.personalInfo!),
-          _buildContactInfo(resume),
-          if (resume.professionalSummary?.summary?.isNotEmpty ?? false) ...[
-            PdfSectionTitle('Professional Summary'),
-            pw.Text(resume.professionalSummary!.summary!,
-                style: const pw.TextStyle(fontSize: 10)),
-            pw.SizedBox(height: 12),
-          ],
-          _buildExperience(resume),
-          _buildEducation(resume),
-          _buildSkills(resume),
-          _buildProjects(resume),
-          _buildCertifications(resume),
-          _buildLanguages(resume),
-        ],
+        build: (context) => widgets,
       ),
     );
 
@@ -49,23 +80,31 @@ class AtsPdfRenderer implements PdfRenderer {
     final info = resume.personalInfo;
     if (info == null) return pw.SizedBox.shrink();
 
+    final contactRows = <pw.Widget>[];
+    if (info.email?.trim().isNotEmpty ?? false) {
+      contactRows.add(PdfContactRow(label: 'Email', value: info.email!.trim()));
+    }
+    if (info.phone?.trim().isNotEmpty ?? false) {
+      contactRows.add(PdfContactRow(label: 'Phone', value: info.phone!.trim()));
+    }
+    if (info.linkedIn?.trim().isNotEmpty ?? false) {
+      contactRows.add(PdfContactRow(label: 'LinkedIn', value: info.linkedIn!.trim()));
+    }
+    if (info.github?.trim().isNotEmpty ?? false) {
+      contactRows.add(PdfContactRow(label: 'GitHub', value: info.github!.trim()));
+    }
+    if (info.portfolioWebsite?.trim().isNotEmpty ?? false) {
+      contactRows.add(PdfContactRow(label: 'Portfolio', value: info.portfolioWebsite!.trim()));
+    }
+
+    if (contactRows.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         pw.Wrap(
           spacing: 10,
-          children: [
-            if (info.email != null && info.email!.isNotEmpty)
-              PdfContactRow(label: 'Email', value: info.email!),
-            if (info.phone != null && info.phone!.isNotEmpty)
-              PdfContactRow(label: 'Phone', value: info.phone!),
-            if (info.linkedIn != null && info.linkedIn!.isNotEmpty)
-              PdfContactRow(label: 'LinkedIn', value: info.linkedIn!),
-            if (info.github != null && info.github!.isNotEmpty)
-              PdfContactRow(label: 'GitHub', value: info.github!),
-            if (info.portfolioWebsite != null && info.portfolioWebsite!.isNotEmpty)
-              PdfContactRow(label: 'Portfolio', value: info.portfolioWebsite!),
-          ],
+          children: contactRows,
         ),
         pw.Divider(thickness: 0.5, color: PdfColors.grey300),
         pw.SizedBox(height: 10),
@@ -74,54 +113,54 @@ class AtsPdfRenderer implements PdfRenderer {
   }
 
   pw.Widget _buildExperience(ResumeModel resume) {
-    if (resume.experience == null || resume.experience!.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
+    final validList = PdfSectionHelper.validExperiences(resume.experience);
+    if (validList.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Experience'),
-        ...resume.experience!.map((e) => PdfTimelineItem(
-              title: e.company ?? '',
-              subtitle: e.position,
+        ...validList.map((e) => PdfTimelineItem(
+              title: e.company?.trim() ?? '',
+              subtitle: e.position?.trim(),
               date:
                   '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
-              location: e.location,
-              description: e.description,
+              location: e.location?.trim(),
+              description: e.description?.trim(),
             )),
       ],
     );
   }
 
   pw.Widget _buildEducation(ResumeModel resume) {
-    if (resume.education == null || resume.education!.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
+    final validList = PdfSectionHelper.validEducation(resume.education);
+    if (validList.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Education'),
-        ...resume.education!.map((e) => PdfTimelineItem(
-              title: e.school ?? '',
-              subtitle: '${e.degree ?? ""} ${e.fieldOfStudy ?? ""}',
+        ...validList.map((e) => PdfTimelineItem(
+              title: e.school?.trim() ?? '',
+              subtitle: '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'.trim(),
               date:
                   '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
               description:
-                  e.grade != null && e.grade!.isNotEmpty ? 'Grade: ${e.grade}' : null,
+                  e.grade != null && e.grade!.trim().isNotEmpty ? 'Grade: ${e.grade!.trim()}' : null,
             )),
       ],
     );
   }
 
   pw.Widget _buildSkills(ResumeModel resume) {
-    if (resume.skills == null || resume.skills!.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
+    final validList = PdfSectionHelper.validSkillModels(resume.skills);
+    if (validList.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Skills'),
-        pw.Text(resume.skills!.map((s) => s.name).join(', '),
+        pw.Text(validList.map((s) => s.name!.trim()).join(', '),
             style: const pw.TextStyle(fontSize: 10)),
         pw.SizedBox(height: 12),
       ],
@@ -129,33 +168,33 @@ class AtsPdfRenderer implements PdfRenderer {
   }
 
   pw.Widget _buildProjects(ResumeModel resume) {
-    if (resume.projects == null || resume.projects!.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
+    final validList = PdfSectionHelper.validProjects(resume.projects);
+    if (validList.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Projects'),
-        ...resume.projects!.map((p) => PdfTimelineItem(
-              title: p.projectName ?? '',
-              subtitle: p.technologies,
-              description: p.description,
+        ...validList.map((p) => PdfTimelineItem(
+              title: p.projectName?.trim() ?? '',
+              subtitle: p.technologies?.trim(),
+              description: p.description?.trim(),
             )),
       ],
     );
   }
 
   pw.Widget _buildCertifications(ResumeModel resume) {
-    if (resume.certifications == null || resume.certifications!.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
+    final validList = PdfSectionHelper.validCertifications(resume.certifications);
+    if (validList.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Certifications'),
-        ...resume.certifications!.map((c) => PdfTimelineItem(
-              title: c.certificateName ?? '',
-              subtitle: c.organization,
+        ...validList.map((c) => PdfTimelineItem(
+              title: c.certificateName?.trim() ?? '',
+              subtitle: c.organization?.trim(),
               date: _formatDate(c.issueDate),
             )),
       ],
@@ -163,16 +202,16 @@ class AtsPdfRenderer implements PdfRenderer {
   }
 
   pw.Widget _buildLanguages(ResumeModel resume) {
-    if (resume.languages == null || resume.languages!.isEmpty) {
-      return pw.SizedBox.shrink();
-    }
+    final validList = PdfSectionHelper.validLanguages(resume.languages);
+    if (validList.isEmpty) return pw.SizedBox.shrink();
+
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Languages'),
         pw.Text(
-            resume.languages!
-                .map((l) => '${l.language ?? ""} (${l.proficiency.name})')
+            validList
+                .map((l) => '${l.language!.trim()} (${l.proficiency.name})')
                 .join(', '),
             style: const pw.TextStyle(fontSize: 10)),
         pw.SizedBox(height: 12),
@@ -185,3 +224,4 @@ class AtsPdfRenderer implements PdfRenderer {
     return '${date.month}/${date.year}';
   }
 }
+

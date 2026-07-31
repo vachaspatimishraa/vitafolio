@@ -6,6 +6,8 @@ import '../../../app/constants/app_strings.dart';
 import '../../../app/router.dart';
 import '../../../data/models/resume_model.dart';
 import '../../../shared/widgets/dialogs/delete_dialog.dart';
+import '../../editor/view_model/editor_view_model.dart';
+import '../../preview/view_model/preview_view_model.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
 import '../view_model/home_view_model.dart';
 
@@ -82,12 +84,15 @@ class ResumeCardMenu extends ConsumerWidget {
   void _handleMenuAction(BuildContext context, WidgetRef ref, String action) {
     switch (action) {
       case 'edit':
+        ref.read(editorViewModelProvider.notifier).loadResume(resume);
         ref.read(workflowViewModelProvider.notifier).loadExistingResume(resume);
-        context.pushNamed(AppRoutes.editor);
+        ref.read(previewViewModelProvider.notifier).loadActiveResume(resume.id);
+        context.push(AppRoutes.editor);
         break;
       case 'preview':
         ref.read(workflowViewModelProvider.notifier).loadExistingResume(resume);
-        context.pushNamed(AppRoutes.preview);
+        ref.read(previewViewModelProvider.notifier).loadActiveResume(resume.id);
+        context.push(AppRoutes.preview);
         break;
       case 'duplicate':
         _showDuplicateConfirmation(context, ref);

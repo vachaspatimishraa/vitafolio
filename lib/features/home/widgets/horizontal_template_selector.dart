@@ -52,6 +52,7 @@ class HorizontalTemplateSelector extends ConsumerWidget {
                 padding: const EdgeInsets.only(right: AppSpacing.md),
                 child: InkWell(
                   onTap: () {
+                    ref.read(workflowViewModelProvider.notifier).createNewResume();
                     ref
                         .read(workflowViewModelProvider.notifier)
                         .selectTemplate(template.id);

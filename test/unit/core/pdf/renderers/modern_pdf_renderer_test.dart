@@ -5,6 +5,7 @@ import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 import 'package:vitafolio/data/models/embedded/personal_information.dart';
 import 'package:vitafolio/data/models/embedded/experience_model.dart';
 import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
 
 void main() {
   group('ModernPdfRenderer', () {
@@ -116,5 +117,64 @@ void main() {
 
       expect(pdf.document.pdfPageList.pages.length, greaterThanOrEqualTo(1));
     });
+
+    test('Edge Case 1: Only Personal Information exists', () async {
+      resume = WorkflowState(
+        personalInfo: PersonalInformation(
+          fullName: 'John Doe',
+          jobTitle: 'Flutter Developer',
+        ),
+        summary: '',
+        education: const [],
+        experience: const [],
+        skills: const [],
+        projects: const [],
+        certifications: const [],
+        languages: const [],
+      );
+
+      final pdf = renderer.buildPdf(resume);
+      final bytes = await pdf.save();
+      expect(bytes, isNotEmpty);
+    });
+
+    test('Edge Case 2: Only Skills exist', () async {
+      resume = WorkflowState(
+        personalInfo: PersonalInformation(fullName: 'John Doe'),
+        summary: '',
+        skills: const ['Flutter', 'Dart', 'Firebase'],
+        education: const [],
+        experience: const [],
+        projects: const [],
+        certifications: const [],
+        languages: const [],
+      );
+
+      final pdf = renderer.buildPdf(resume);
+      final bytes = await pdf.save();
+      expect(bytes, isNotEmpty);
+    });
+
+    test('Edge Case 3: Only Education and Projects exist', () async {
+      resume = WorkflowState(
+        personalInfo: PersonalInformation(fullName: 'John Doe'),
+        summary: '',
+        education: [
+          EducationModel(school: 'MIT', degree: 'B.S. CS'),
+        ],
+        projects: [
+          ProjectModel(projectName: 'Vitafolio', description: 'Resume App'),
+        ],
+        experience: const [],
+        skills: const [],
+        certifications: const [],
+        languages: const [],
+      );
+
+      final pdf = renderer.buildPdf(resume);
+      final bytes = await pdf.save();
+      expect(bytes, isNotEmpty);
+    });
   });
 }
+

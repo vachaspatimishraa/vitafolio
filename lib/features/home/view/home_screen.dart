@@ -9,6 +9,7 @@ import '../../../shared/widgets/buttons/primary_button.dart';
 import '../../../shared/widgets/empty_states/empty_state.dart';
 import '../../../shared/widgets/loaders/loading_indicator.dart';
 import '../../editor/view_model/editor_view_model.dart';
+import '../../workflow/view_model/workflow_view_model.dart';
 import '../view_model/home_view_model.dart';
 import '../widgets/dashboard_header.dart';
 import '../widgets/resume_list.dart';
@@ -39,6 +40,7 @@ class HomeScreen extends ConsumerWidget {
       floatingActionButton: FloatingActionButton.extended(
         onPressed: () {
           ref.read(editorViewModelProvider.notifier).resetState();
+          ref.read(workflowViewModelProvider.notifier).createNewResume();
           context.push(AppRoutes.editor);
         },
         icon: const Icon(Icons.add),
@@ -123,6 +125,7 @@ class HomeScreen extends ConsumerWidget {
                   primaryActionLabel: AppStrings.createResume,
                   onPrimaryAction: () {
                     ref.read(editorViewModelProvider.notifier).resetState();
+                    ref.read(workflowViewModelProvider.notifier).createNewResume();
                     context.push(AppRoutes.editor);
                   },
                 ),
