@@ -148,16 +148,21 @@ class ModernPdfRenderer implements PdfRenderer {
   pw.Widget _buildContactSection(PersonalInformation? info) {
     if (info == null) return pw.SizedBox.shrink();
     final items = <pw.Widget>[];
-    if (info.email?.trim().isNotEmpty ?? false)
+    if (info.email?.trim().isNotEmpty ?? false) {
       _addSidebarText(items, info.email!.trim());
-    if (info.phone?.trim().isNotEmpty ?? false)
+    }
+    if (info.phone?.trim().isNotEmpty ?? false) {
       _addSidebarText(items, info.phone!.trim());
-    if (info.linkedIn?.trim().isNotEmpty ?? false)
+    }
+    if (info.linkedIn?.trim().isNotEmpty ?? false) {
       _addSidebarText(items, info.linkedIn!.trim());
-    if (info.github?.trim().isNotEmpty ?? false)
+    }
+    if (info.github?.trim().isNotEmpty ?? false) {
       _addSidebarText(items, info.github!.trim());
-    if (info.portfolioWebsite?.trim().isNotEmpty ?? false)
+    }
+    if (info.portfolioWebsite?.trim().isNotEmpty ?? false) {
       _addSidebarText(items, info.portfolioWebsite!.trim());
+    }
 
     if (items.isEmpty) return pw.SizedBox.shrink();
 
