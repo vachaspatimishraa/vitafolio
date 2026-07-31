@@ -25,7 +25,7 @@ class BackupService {
     try {
       DatabaseLogger.info('Starting backup export...');
       final resumes = await _repository.getAllResumes();
-      
+
       final list = resumes.map((r) => _serializeResume(r)).toList();
       final backupMap = {
         'version': 1,
@@ -46,7 +46,7 @@ class BackupService {
     try {
       DatabaseLogger.info('Starting backup import...');
       final Map<String, dynamic> backupMap = jsonDecode(backupJson);
-      
+
       final resumesList = backupMap['resumes'] as List<dynamic>;
       for (final raw in resumesList) {
         final resume = _deserializeResume(raw as Map<String, dynamic>);
@@ -71,69 +71,91 @@ class BackupService {
       'createdDate': r.createdDate?.toIso8601String(),
       'lastUpdated': r.lastUpdated?.toIso8601String(),
       'status': r.status.name,
-      'selectedTemplate': r.selectedTemplate == null ? null : {
-        'templateId': r.selectedTemplate!.templateId,
-        'templateName': r.selectedTemplate!.templateName,
-        'category': r.selectedTemplate!.category,
-        'isAtsFriendly': r.selectedTemplate!.isAtsFriendly,
-        'themeColor': r.selectedTemplate!.themeColor,
-      },
-      'personalInfo': r.personalInfo == null ? null : {
-        'fullName': r.personalInfo!.fullName,
-        'jobTitle': r.personalInfo!.jobTitle,
-        'email': r.personalInfo!.email,
-        'phone': r.personalInfo!.phone,
-        'linkedIn': r.personalInfo!.linkedIn,
-        'github': r.personalInfo!.github,
-        'portfolioWebsite': r.personalInfo!.portfolioWebsite,
-      },
+      'selectedTemplate': r.selectedTemplate == null
+          ? null
+          : {
+              'templateId': r.selectedTemplate!.templateId,
+              'templateName': r.selectedTemplate!.templateName,
+              'category': r.selectedTemplate!.category,
+              'isAtsFriendly': r.selectedTemplate!.isAtsFriendly,
+              'themeColor': r.selectedTemplate!.themeColor,
+            },
+      'personalInfo': r.personalInfo == null
+          ? null
+          : {
+              'fullName': r.personalInfo!.fullName,
+              'jobTitle': r.personalInfo!.jobTitle,
+              'email': r.personalInfo!.email,
+              'phone': r.personalInfo!.phone,
+              'linkedIn': r.personalInfo!.linkedIn,
+              'github': r.personalInfo!.github,
+              'portfolioWebsite': r.personalInfo!.portfolioWebsite,
+            },
       'professionalSummary': r.professionalSummary?.summary,
-      'education': r.education?.map((e) => {
-        'id': e.id,
-        'school': e.school,
-        'degree': e.degree,
-        'fieldOfStudy': e.fieldOfStudy,
-        'grade': e.grade,
-        'startDate': e.startDate?.toIso8601String(),
-        'endDate': e.endDate?.toIso8601String(),
-        'isCurrentlyStudying': e.isCurrentlyStudying,
-      }).toList(),
-      'experience': r.experience?.map((e) => {
-        'id': e.id,
-        'company': e.company,
-        'position': e.position,
-        'location': e.location,
-        'employmentType': e.employmentType.name,
-        'startDate': e.startDate?.toIso8601String(),
-        'endDate': e.endDate?.toIso8601String(),
-        'isCurrentlyWorking': e.isCurrentlyWorking,
-        'description': e.description,
-      }).toList(),
-      'skills': r.skills?.map((e) => {
-        'id': e.id,
-        'name': e.name,
-        'category': e.category,
-      }).toList(),
-      'projects': r.projects?.map((e) => {
-        'id': e.id,
-        'projectName': e.projectName,
-        'description': e.description,
-        'technologies': e.technologies,
-        'githubUrl': e.githubUrl,
-        'liveDemoUrl': e.liveDemoUrl,
-      }).toList(),
-      'certifications': r.certifications?.map((e) => {
-        'id': e.id,
-        'certificateName': e.certificateName,
-        'organization': e.organization,
-        'issueDate': e.issueDate?.toIso8601String(),
-        'credentialUrl': e.credentialUrl,
-      }).toList(),
-      'languages': r.languages?.map((e) => {
-        'id': e.id,
-        'language': e.language,
-        'proficiency': e.proficiency.name,
-      }).toList(),
+      'education': r.education
+          ?.map(
+            (e) => {
+              'id': e.id,
+              'school': e.school,
+              'degree': e.degree,
+              'fieldOfStudy': e.fieldOfStudy,
+              'grade': e.grade,
+              'startDate': e.startDate?.toIso8601String(),
+              'endDate': e.endDate?.toIso8601String(),
+              'isCurrentlyStudying': e.isCurrentlyStudying,
+            },
+          )
+          .toList(),
+      'experience': r.experience
+          ?.map(
+            (e) => {
+              'id': e.id,
+              'company': e.company,
+              'position': e.position,
+              'location': e.location,
+              'employmentType': e.employmentType.name,
+              'startDate': e.startDate?.toIso8601String(),
+              'endDate': e.endDate?.toIso8601String(),
+              'isCurrentlyWorking': e.isCurrentlyWorking,
+              'description': e.description,
+            },
+          )
+          .toList(),
+      'skills': r.skills
+          ?.map((e) => {'id': e.id, 'name': e.name, 'category': e.category})
+          .toList(),
+      'projects': r.projects
+          ?.map(
+            (e) => {
+              'id': e.id,
+              'projectName': e.projectName,
+              'description': e.description,
+              'technologies': e.technologies,
+              'githubUrl': e.githubUrl,
+              'liveDemoUrl': e.liveDemoUrl,
+            },
+          )
+          .toList(),
+      'certifications': r.certifications
+          ?.map(
+            (e) => {
+              'id': e.id,
+              'certificateName': e.certificateName,
+              'organization': e.organization,
+              'issueDate': e.issueDate?.toIso8601String(),
+              'credentialUrl': e.credentialUrl,
+            },
+          )
+          .toList(),
+      'languages': r.languages
+          ?.map(
+            (e) => {
+              'id': e.id,
+              'language': e.language,
+              'proficiency': e.proficiency.name,
+            },
+          )
+          .toList(),
     };
   }
 
@@ -172,8 +194,12 @@ class BackupService {
     return ResumeModel(
       id: map['id'] as int,
       resumeName: map['resumeName'] as String?,
-      createdDate: map['createdDate'] != null ? DateTime.tryParse(map['createdDate'] as String) : null,
-      lastUpdated: map['lastUpdated'] != null ? DateTime.tryParse(map['lastUpdated'] as String) : null,
+      createdDate: map['createdDate'] != null
+          ? DateTime.tryParse(map['createdDate'] as String)
+          : null,
+      lastUpdated: map['lastUpdated'] != null
+          ? DateTime.tryParse(map['lastUpdated'] as String)
+          : null,
       status: status,
       selectedTemplate: selectedTemplate,
       personalInfo: personalInfo,
@@ -188,8 +214,12 @@ class BackupService {
           degree: m['degree'] as String?,
           fieldOfStudy: m['fieldOfStudy'] as String?,
           grade: m['grade'] as String?,
-          startDate: m['startDate'] != null ? DateTime.tryParse(m['startDate'] as String) : null,
-          endDate: m['endDate'] != null ? DateTime.tryParse(m['endDate'] as String) : null,
+          startDate: m['startDate'] != null
+              ? DateTime.tryParse(m['startDate'] as String)
+              : null,
+          endDate: m['endDate'] != null
+              ? DateTime.tryParse(m['endDate'] as String)
+              : null,
           isCurrentlyStudying: m['isCurrentlyStudying'] as bool?,
         );
       }).toList(),
@@ -206,8 +236,12 @@ class BackupService {
           position: m['position'] as String?,
           location: m['location'] as String?,
           employmentType: empType,
-          startDate: m['startDate'] != null ? DateTime.tryParse(m['startDate'] as String) : null,
-          endDate: m['endDate'] != null ? DateTime.tryParse(m['endDate'] as String) : null,
+          startDate: m['startDate'] != null
+              ? DateTime.tryParse(m['startDate'] as String)
+              : null,
+          endDate: m['endDate'] != null
+              ? DateTime.tryParse(m['endDate'] as String)
+              : null,
           isCurrentlyWorking: m['isCurrentlyWorking'] as bool?,
           description: m['description'] as String?,
         );
@@ -237,7 +271,9 @@ class BackupService {
           id: m['id'] as String?,
           certificateName: m['certificateName'] as String?,
           organization: m['organization'] as String?,
-          issueDate: m['issueDate'] != null ? DateTime.tryParse(m['issueDate'] as String) : null,
+          issueDate: m['issueDate'] != null
+              ? DateTime.tryParse(m['issueDate'] as String)
+              : null,
           credentialUrl: m['credentialUrl'] as String?,
         );
       }).toList(),

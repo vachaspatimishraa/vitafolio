@@ -13,7 +13,8 @@ class TemplateSelector extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final previewState = ref.watch(previewViewModelProvider);
     final workflowState = ref.watch(workflowViewModelProvider);
-    final selectedTemplateId = previewState.selectedTemplate?.id ??
+    final selectedTemplateId =
+        previewState.selectedTemplate?.id ??
         workflowState.selectedTemplateId ??
         'ats_professional';
 
@@ -35,7 +36,11 @@ class TemplateSelector extends ConsumerWidget {
             padding: const EdgeInsets.only(right: AppSpacing.sm),
             child: FilterChip(
               avatar: isSelected
-                  ? Icon(Icons.check, size: 16, color: colorScheme.onPrimaryContainer)
+                  ? Icon(
+                      Icons.check,
+                      size: 16,
+                      color: colorScheme.onPrimaryContainer,
+                    )
                   : null,
               label: Text(template.name),
               selected: isSelected,

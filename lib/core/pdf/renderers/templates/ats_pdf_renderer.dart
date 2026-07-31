@@ -30,8 +30,10 @@ class AtsPdfRenderer implements PdfRenderer {
     if (PdfSectionHelper.hasSummary(resume.professionalSummary?.summary)) {
       widgets.addAll([
         PdfSectionTitle('Professional Summary'),
-        pw.Text(resume.professionalSummary!.summary!.trim(),
-            style: const pw.TextStyle(fontSize: 10)),
+        pw.Text(
+          resume.professionalSummary!.summary!.trim(),
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 12),
       ]);
     }
@@ -88,13 +90,19 @@ class AtsPdfRenderer implements PdfRenderer {
       contactRows.add(PdfContactRow(label: 'Phone', value: info.phone!.trim()));
     }
     if (info.linkedIn?.trim().isNotEmpty ?? false) {
-      contactRows.add(PdfContactRow(label: 'LinkedIn', value: info.linkedIn!.trim()));
+      contactRows.add(
+        PdfContactRow(label: 'LinkedIn', value: info.linkedIn!.trim()),
+      );
     }
     if (info.github?.trim().isNotEmpty ?? false) {
-      contactRows.add(PdfContactRow(label: 'GitHub', value: info.github!.trim()));
+      contactRows.add(
+        PdfContactRow(label: 'GitHub', value: info.github!.trim()),
+      );
     }
     if (info.portfolioWebsite?.trim().isNotEmpty ?? false) {
-      contactRows.add(PdfContactRow(label: 'Portfolio', value: info.portfolioWebsite!.trim()));
+      contactRows.add(
+        PdfContactRow(label: 'Portfolio', value: info.portfolioWebsite!.trim()),
+      );
     }
 
     if (contactRows.isEmpty) return pw.SizedBox.shrink();
@@ -102,10 +110,7 @@ class AtsPdfRenderer implements PdfRenderer {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Wrap(
-          spacing: 10,
-          children: contactRows,
-        ),
+        pw.Wrap(spacing: 10, children: contactRows),
         pw.Divider(thickness: 0.5, color: PdfColors.grey300),
         pw.SizedBox(height: 10),
       ],
@@ -120,14 +125,16 @@ class AtsPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Experience'),
-        ...validList.map((e) => PdfTimelineItem(
-              title: e.company?.trim() ?? '',
-              subtitle: e.position?.trim(),
-              date:
-                  '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
-              location: e.location?.trim(),
-              description: e.description?.trim(),
-            )),
+        ...validList.map(
+          (e) => PdfTimelineItem(
+            title: e.company?.trim() ?? '',
+            subtitle: e.position?.trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
+            location: e.location?.trim(),
+            description: e.description?.trim(),
+          ),
+        ),
       ],
     );
   }
@@ -140,14 +147,19 @@ class AtsPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Education'),
-        ...validList.map((e) => PdfTimelineItem(
-              title: e.school?.trim() ?? '',
-              subtitle: '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'.trim(),
-              date:
-                  '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
-              description:
-                  e.grade != null && e.grade!.trim().isNotEmpty ? 'Grade: ${e.grade!.trim()}' : null,
-            )),
+        ...validList.map(
+          (e) => PdfTimelineItem(
+            title: e.school?.trim() ?? '',
+            subtitle:
+                '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'
+                    .trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
+            description: e.grade != null && e.grade!.trim().isNotEmpty
+                ? 'Grade: ${e.grade!.trim()}'
+                : null,
+          ),
+        ),
       ],
     );
   }
@@ -160,8 +172,10 @@ class AtsPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Skills'),
-        pw.Text(validList.map((s) => s.name!.trim()).join(', '),
-            style: const pw.TextStyle(fontSize: 10)),
+        pw.Text(
+          validList.map((s) => s.name!.trim()).join(', '),
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 12),
       ],
     );
@@ -175,28 +189,34 @@ class AtsPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Projects'),
-        ...validList.map((p) => PdfTimelineItem(
-              title: p.projectName?.trim() ?? '',
-              subtitle: p.technologies?.trim(),
-              description: p.description?.trim(),
-            )),
+        ...validList.map(
+          (p) => PdfTimelineItem(
+            title: p.projectName?.trim() ?? '',
+            subtitle: p.technologies?.trim(),
+            description: p.description?.trim(),
+          ),
+        ),
       ],
     );
   }
 
   pw.Widget _buildCertifications(ResumeModel resume) {
-    final validList = PdfSectionHelper.validCertifications(resume.certifications);
+    final validList = PdfSectionHelper.validCertifications(
+      resume.certifications,
+    );
     if (validList.isEmpty) return pw.SizedBox.shrink();
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Certifications'),
-        ...validList.map((c) => PdfTimelineItem(
-              title: c.certificateName?.trim() ?? '',
-              subtitle: c.organization?.trim(),
-              date: _formatDate(c.issueDate),
-            )),
+        ...validList.map(
+          (c) => PdfTimelineItem(
+            title: c.certificateName?.trim() ?? '',
+            subtitle: c.organization?.trim(),
+            date: _formatDate(c.issueDate),
+          ),
+        ),
       ],
     );
   }
@@ -210,10 +230,11 @@ class AtsPdfRenderer implements PdfRenderer {
       children: [
         PdfSectionTitle('Languages'),
         pw.Text(
-            validList
-                .map((l) => '${l.language!.trim()} (${l.proficiency.name})')
-                .join(', '),
-            style: const pw.TextStyle(fontSize: 10)),
+          validList
+              .map((l) => '${l.language!.trim()} (${l.proficiency.name})')
+              .join(', '),
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 12),
       ],
     );
@@ -224,4 +245,3 @@ class AtsPdfRenderer implements PdfRenderer {
     return '${date.month}/${date.year}';
   }
 }
-

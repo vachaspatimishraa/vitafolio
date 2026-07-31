@@ -2,12 +2,7 @@ import 'package:flutter/material.dart';
 import '../renderers/template_renderer.dart';
 import '../themes/template_theme.dart';
 
-enum TemplateCategory {
-  ats,
-  professional,
-  executive,
-  academic,
-}
+enum TemplateCategory { ats, professional, executive, academic }
 
 extension TemplateCategoryExtension on TemplateCategory {
   String get label {

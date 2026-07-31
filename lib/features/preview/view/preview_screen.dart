@@ -11,7 +11,6 @@ class PreviewScreen extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-
     return Scaffold(
       appBar: const PreviewAppBar(),
       bottomNavigationBar: const PreviewActionBar(),

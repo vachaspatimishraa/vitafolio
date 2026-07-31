@@ -14,8 +14,10 @@ class ExecutivePdfRenderer implements PdfRenderer {
 
     final widgets = <pw.Widget>[];
 
-    final hasHeaderName = resume.personalInfo?.fullName?.trim().isNotEmpty ?? false;
-    final hasHeaderJob = resume.personalInfo?.jobTitle?.trim().isNotEmpty ?? false;
+    final hasHeaderName =
+        resume.personalInfo?.fullName?.trim().isNotEmpty ?? false;
+    final hasHeaderJob =
+        resume.personalInfo?.jobTitle?.trim().isNotEmpty ?? false;
     final contactLines = <pw.Widget>[];
 
     if (resume.personalInfo?.phone?.trim().isNotEmpty == true) {
@@ -31,7 +33,9 @@ class ExecutivePdfRenderer implements PdfRenderer {
       contactLines.add(_contactText(resume.personalInfo!.github!.trim()));
     }
     if (resume.personalInfo?.portfolioWebsite?.trim().isNotEmpty == true) {
-      contactLines.add(_contactText(resume.personalInfo!.portfolioWebsite!.trim()));
+      contactLines.add(
+        _contactText(resume.personalInfo!.portfolioWebsite!.trim()),
+      );
     }
 
     if (hasHeaderName || hasHeaderJob || contactLines.isNotEmpty) {
@@ -47,14 +51,18 @@ class ExecutivePdfRenderer implements PdfRenderer {
                   pw.Text(
                     resume.personalInfo!.fullName!.trim().toUpperCase(),
                     style: pw.TextStyle(
-                        fontSize: 24,
-                        fontWeight: pw.FontWeight.bold,
-                        color: PdfColors.grey900),
+                      fontSize: 24,
+                      fontWeight: pw.FontWeight.bold,
+                      color: PdfColors.grey900,
+                    ),
                   ),
                 if (hasHeaderJob)
                   pw.Text(
                     resume.personalInfo!.jobTitle!.trim(),
-                    style: const pw.TextStyle(fontSize: 14, color: PdfColors.grey800),
+                    style: const pw.TextStyle(
+                      fontSize: 14,
+                      color: PdfColors.grey800,
+                    ),
                   ),
               ],
             ),
@@ -75,8 +83,10 @@ class ExecutivePdfRenderer implements PdfRenderer {
 
     if (PdfSectionHelper.hasSummary(resume.professionalSummary?.summary)) {
       widgets.addAll([
-        pw.Text(resume.professionalSummary!.summary!.trim(),
-            style: const pw.TextStyle(fontSize: 10)),
+        pw.Text(
+          resume.professionalSummary!.summary!.trim(),
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 20),
       ]);
     }
@@ -117,14 +127,16 @@ class ExecutivePdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Professional Experience'),
-        ...validExp.map((e) => PdfTimelineItem(
-              title: e.company?.trim() ?? '',
-              subtitle: e.position?.trim(),
-              date:
-                  '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
-              location: e.location?.trim(),
-              description: e.description?.trim(),
-            )),
+        ...validExp.map(
+          (e) => PdfTimelineItem(
+            title: e.company?.trim() ?? '',
+            subtitle: e.position?.trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
+            location: e.location?.trim(),
+            description: e.description?.trim(),
+          ),
+        ),
       ],
     );
   }
@@ -137,12 +149,16 @@ class ExecutivePdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Education'),
-        ...validEdu.map((e) => PdfTimelineItem(
-              title: e.school?.trim() ?? '',
-              subtitle: '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'.trim(),
-              date:
-                  '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
-            )),
+        ...validEdu.map(
+          (e) => PdfTimelineItem(
+            title: e.school?.trim() ?? '',
+            subtitle:
+                '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'
+                    .trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
+          ),
+        ),
       ],
     );
   }
@@ -159,8 +175,12 @@ class ExecutivePdfRenderer implements PdfRenderer {
           spacing: 15,
           runSpacing: 5,
           children: validSkills
-              .map((s) => pw.Bullet(
-                  text: s.name!.trim(), style: const pw.TextStyle(fontSize: 10)))
+              .map(
+                (s) => pw.Bullet(
+                  text: s.name!.trim(),
+                  style: const pw.TextStyle(fontSize: 10),
+                ),
+              )
               .toList(),
         ),
         pw.SizedBox(height: 12),
@@ -173,4 +193,3 @@ class ExecutivePdfRenderer implements PdfRenderer {
     return '${date.month}/${date.year}';
   }
 }
-

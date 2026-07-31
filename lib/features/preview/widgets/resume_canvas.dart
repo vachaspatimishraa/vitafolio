@@ -3,7 +3,8 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../workflow/models/workflow_state.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
-import '../../../core/templates/repository/template_repository.dart' as core_repo;
+import '../../../core/templates/repository/template_repository.dart'
+    as core_repo;
 import '../view_model/preview_view_model.dart';
 import 'preview_loading_view.dart';
 
@@ -40,7 +41,9 @@ class ResumeCanvas extends ConsumerWidget {
               const SizedBox(height: 16),
               FilledButton(
                 onPressed: () {
-                  ref.read(previewViewModelProvider.notifier).loadActiveResume();
+                  ref
+                      .read(previewViewModelProvider.notifier)
+                      .loadActiveResume();
                 },
                 child: const Text('Retry'),
               ),
@@ -50,11 +53,14 @@ class ResumeCanvas extends ConsumerWidget {
       );
     }
 
-    final selectedTemplateId = previewState.selectedTemplate?.id ??
+    final selectedTemplateId =
+        previewState.selectedTemplate?.id ??
         workflowState.selectedTemplateId ??
         'ats_professional';
-        
-    final template = core_repo.TemplateRepository().getTemplate(selectedTemplateId);
+
+    final template = core_repo.TemplateRepository().getTemplate(
+      selectedTemplateId,
+    );
 
     // Merge workflow state or create state from loaded domain resume model
     final domainResume = previewState.resume;
@@ -64,7 +70,8 @@ class ResumeCanvas extends ConsumerWidget {
           : (domainResume?.personalInfo ?? workflowState.personalInfo),
       summary: workflowState.summary.isNotEmpty
           ? workflowState.summary
-          : (domainResume?.professionalSummary?.summary ?? workflowState.summary),
+          : (domainResume?.professionalSummary?.summary ??
+                workflowState.summary),
       education: workflowState.education.isNotEmpty
           ? workflowState.education
           : (domainResume?.education ?? workflowState.education),
@@ -73,7 +80,8 @@ class ResumeCanvas extends ConsumerWidget {
           : (domainResume?.experience ?? workflowState.experience),
       skills: workflowState.skills.isNotEmpty
           ? workflowState.skills
-          : (domainResume?.skills?.map((s) => s.name ?? '').toList() ?? workflowState.skills),
+          : (domainResume?.skills?.map((s) => s.name ?? '').toList() ??
+                workflowState.skills),
       projects: workflowState.projects.isNotEmpty
           ? workflowState.projects
           : (domainResume?.projects ?? workflowState.projects),
@@ -123,7 +131,10 @@ class ResumeCanvas extends ConsumerWidget {
                     ),
                     child: Builder(
                       builder: (canvasContext) {
-                        return template.renderer.buildPreview(renderData, canvasContext);
+                        return template.renderer.buildPreview(
+                          renderData,
+                          canvasContext,
+                        );
                       },
                     ),
                   ),

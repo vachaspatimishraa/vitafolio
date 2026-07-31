@@ -11,16 +11,17 @@ class PdfBulletList extends pw.StatelessWidget {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: items
-          .map((item) => pw.Row(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Text(" • ", style: pw.TextStyle(fontSize: fontSize)),
-                  pw.Expanded(
-                    child:
-                        pw.Text(item, style: pw.TextStyle(fontSize: fontSize)),
-                  ),
-                ],
-              ))
+          .map(
+            (item) => pw.Row(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Text(" • ", style: pw.TextStyle(fontSize: fontSize)),
+                pw.Expanded(
+                  child: pw.Text(item, style: pw.TextStyle(fontSize: fontSize)),
+                ),
+              ],
+            ),
+          )
           .toList(),
     );
   }

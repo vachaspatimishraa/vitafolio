@@ -7,7 +7,8 @@ import '../../../../data/models/resume_model.dart';
 import '../../../../data/models/embedded/template_selection.dart';
 import '../../../../data/repositories/resume_repository.dart';
 import '../../../../data/repositories/repository_provider.dart';
-import '../../../core/templates/repository/template_repository.dart' as core_repo;
+import '../../../core/templates/repository/template_repository.dart'
+    as core_repo;
 import '../../workflow/models/workflow_state.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
 import 'preview_state.dart';
@@ -26,7 +27,8 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
     this._repository, [
     this._isar,
     core_repo.TemplateRepository? templateRepository,
-  ]) : _templateRepository = templateRepository ?? core_repo.TemplateRepository(),
+  ]) : _templateRepository =
+           templateRepository ?? core_repo.TemplateRepository(),
        super(const PreviewState()) {
     _listenToChanges();
     loadActiveResume();
@@ -137,10 +139,7 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
       } catch (_) {}
     }
 
-    state = state.copyWith(
-      resume: currentResume,
-      selectedTemplate: template,
-    );
+    state = state.copyWith(resume: currentResume, selectedTemplate: template);
   }
 
   void setScale(double newScale) {

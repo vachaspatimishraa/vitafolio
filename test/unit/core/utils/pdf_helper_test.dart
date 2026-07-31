@@ -9,18 +9,18 @@ void main() {
   setUpAll(() {
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-      const MethodChannel('plugins.flutter.io/path_provider'),
-      (MethodCall methodCall) async {
-        return '.';
-      },
-    );
+          const MethodChannel('plugins.flutter.io/path_provider'),
+          (MethodCall methodCall) async {
+            return '.';
+          },
+        );
     TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
         .setMockMethodCallHandler(
-      const MethodChannel('dev.fluttercommunity.plus/share'),
-      (MethodCall methodCall) async {
-        return null;
-      },
-    );
+          const MethodChannel('dev.fluttercommunity.plus/share'),
+          (MethodCall methodCall) async {
+            return null;
+          },
+        );
   });
 
   group('PdfHelper', () {

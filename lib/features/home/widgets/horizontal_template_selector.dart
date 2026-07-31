@@ -52,7 +52,9 @@ class HorizontalTemplateSelector extends ConsumerWidget {
                 padding: const EdgeInsets.only(right: AppSpacing.md),
                 child: InkWell(
                   onTap: () {
-                    ref.read(workflowViewModelProvider.notifier).createNewResume();
+                    ref
+                        .read(workflowViewModelProvider.notifier)
+                        .createNewResume();
                     ref
                         .read(workflowViewModelProvider.notifier)
                         .selectTemplate(template.id);
@@ -67,7 +69,9 @@ class HorizontalTemplateSelector extends ConsumerWidget {
                       color: colorScheme.surfaceContainerHighest,
                       borderRadius: BorderRadius.circular(12),
                       border: Border.all(
-                        color: colorScheme.outlineVariant.withValues(alpha: 0.5),
+                        color: colorScheme.outlineVariant.withValues(
+                          alpha: 0.5,
+                        ),
                       ),
                     ),
                     child: Column(

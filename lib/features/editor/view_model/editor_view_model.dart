@@ -129,5 +129,5 @@ class EditorViewModel extends StateNotifier<EditorState> {
 
 final editorViewModelProvider =
     StateNotifierProvider<EditorViewModel, EditorState>((ref) {
-  return EditorViewModel();
-});
+      return EditorViewModel();
+    });

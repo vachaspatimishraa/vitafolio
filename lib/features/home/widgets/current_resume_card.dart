@@ -49,7 +49,8 @@ class CurrentResumeCard extends ConsumerWidget {
 
     final resume = resumes.first;
     final templateRepository = TemplateRepository();
-    final templateId = resume.selectedTemplate?.templateId ?? 'ats_professional';
+    final templateId =
+        resume.selectedTemplate?.templateId ?? 'ats_professional';
     final templateName = templateRepository.getTemplate(templateId).name;
     final completion = _calculateCompletion(resume);
     final completionPercentage = (completion * 100).toInt();
@@ -69,7 +70,10 @@ class CurrentResumeCard extends ConsumerWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                    padding: const EdgeInsets.symmetric(
+                      horizontal: 8,
+                      vertical: 4,
+                    ),
                     decoration: BoxDecoration(
                       color: colorScheme.primaryContainer,
                       borderRadius: BorderRadius.circular(6),
@@ -101,7 +105,11 @@ class CurrentResumeCard extends ConsumerWidget {
               const SizedBox(height: 4),
               Row(
                 children: [
-                  Icon(Icons.style_outlined, size: 16, color: colorScheme.secondary),
+                  Icon(
+                    Icons.style_outlined,
+                    size: 16,
+                    color: colorScheme.secondary,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'Template: $templateName',
@@ -150,8 +158,12 @@ class CurrentResumeCard extends ConsumerWidget {
                   children: [
                     FilledButton.icon(
                       onPressed: () {
-                        ref.read(editorViewModelProvider.notifier).loadResume(resume);
-                        ref.read(workflowViewModelProvider.notifier).loadExistingResume(resume);
+                        ref
+                            .read(editorViewModelProvider.notifier)
+                            .loadResume(resume);
+                        ref
+                            .read(workflowViewModelProvider.notifier)
+                            .loadExistingResume(resume);
                         context.push(AppRoutes.editor);
                       },
                       icon: const Icon(Icons.edit_note, size: 18),
@@ -160,7 +172,9 @@ class CurrentResumeCard extends ConsumerWidget {
                     const SizedBox(width: AppSpacing.sm),
                     OutlinedButton.icon(
                       onPressed: () {
-                        ref.read(previewViewModelProvider.notifier).loadActiveResume(resume.id);
+                        ref
+                            .read(previewViewModelProvider.notifier)
+                            .loadActiveResume(resume.id);
                         context.push(AppRoutes.preview);
                       },
                       icon: const Icon(Icons.visibility_outlined, size: 18),

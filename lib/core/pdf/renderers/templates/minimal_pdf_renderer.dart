@@ -50,9 +50,11 @@ class MinimalPdfRenderer implements PdfRenderer {
 
     if (PdfSectionHelper.hasSummary(resume.professionalSummary?.summary)) {
       widgets.addAll([
-        pw.Text(resume.professionalSummary!.summary!.trim(),
-            textAlign: pw.TextAlign.center,
-            style: const pw.TextStyle(fontSize: 10)),
+        pw.Text(
+          resume.professionalSummary!.summary!.trim(),
+          textAlign: pw.TextAlign.center,
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 25),
       ]);
     }
@@ -73,8 +75,12 @@ class MinimalPdfRenderer implements PdfRenderer {
           spacing: 10,
           runSpacing: 5,
           children: validSkills
-              .map((s) => pw.Text(s.name!.trim(),
-                  style: const pw.TextStyle(fontSize: 10)))
+              .map(
+                (s) => pw.Text(
+                  s.name!.trim(),
+                  style: const pw.TextStyle(fontSize: 10),
+                ),
+              )
               .toList(),
         ),
         pw.SizedBox(height: 20),
@@ -101,13 +107,15 @@ class MinimalPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Experience'),
-        ...validExp.map((e) => PdfTimelineItem(
-              title: e.company?.trim() ?? '',
-              subtitle: e.position?.trim(),
-              date:
-                  '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
-              description: e.description?.trim(),
-            )),
+        ...validExp.map(
+          (e) => PdfTimelineItem(
+            title: e.company?.trim() ?? '',
+            subtitle: e.position?.trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
+            description: e.description?.trim(),
+          ),
+        ),
       ],
     );
   }
@@ -120,12 +128,14 @@ class MinimalPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Education'),
-        ...validEdu.map((e) => PdfTimelineItem(
-              title: e.school?.trim() ?? '',
-              subtitle: e.degree?.trim(),
-              date:
-                  '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
-            )),
+        ...validEdu.map(
+          (e) => PdfTimelineItem(
+            title: e.school?.trim() ?? '',
+            subtitle: e.degree?.trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
+          ),
+        ),
       ],
     );
   }
@@ -135,4 +145,3 @@ class MinimalPdfRenderer implements PdfRenderer {
     return '${date.month}/${date.year}';
   }
 }
-

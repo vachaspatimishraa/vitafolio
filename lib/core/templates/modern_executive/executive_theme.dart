@@ -14,19 +14,13 @@ final executiveTheme = ResumeTheme(
     fontWeight: FontWeight.bold,
     color: Colors.deepPurple[900]!,
   ),
-  headerSubtitleStyle: TextStyle(
-    fontSize: 13,
-    color: Colors.deepPurple[600]!,
-  ),
+  headerSubtitleStyle: TextStyle(fontSize: 13, color: Colors.deepPurple[600]!),
   sectionTitleStyle: TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.bold,
     color: Colors.deepPurple[800]!,
   ),
-  bodyStyle: const TextStyle(
-    fontSize: 10,
-    color: Colors.black87,
-  ),
+  bodyStyle: const TextStyle(fontSize: 10, color: Colors.black87),
   italicStyle: const TextStyle(
     fontSize: 10,
     fontStyle: FontStyle.italic,

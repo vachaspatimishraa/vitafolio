@@ -31,7 +31,10 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
     if (PdfSectionHelper.hasSummary(resumeData.summary)) {
       widgets.addAll([
         _buildSectionTitle('Profile'),
-        pw.Text(resumeData.summary.trim(), style: const pw.TextStyle(fontSize: 10)),
+        pw.Text(
+          resumeData.summary.trim(),
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 12),
       ]);
     }
@@ -43,15 +46,33 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
         pw.Wrap(
           spacing: 8,
           runSpacing: 6,
-          children: validSkills.map((skill) => pw.Container(
-                padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: pw.BoxDecoration(
-                  color: PdfColors.deepPurple50,
-                  border: pw.Border.all(color: PdfColors.deepPurple200, width: 0.5),
-                  borderRadius: const pw.BorderRadius.all(pw.Radius.circular(4)),
+          children: validSkills
+              .map(
+                (skill) => pw.Container(
+                  padding: const pw.EdgeInsets.symmetric(
+                    horizontal: 8,
+                    vertical: 4,
+                  ),
+                  decoration: pw.BoxDecoration(
+                    color: PdfColors.deepPurple50,
+                    border: pw.Border.all(
+                      color: PdfColors.deepPurple200,
+                      width: 0.5,
+                    ),
+                    borderRadius: const pw.BorderRadius.all(
+                      pw.Radius.circular(4),
+                    ),
+                  ),
+                  child: pw.Text(
+                    skill,
+                    style: const pw.TextStyle(
+                      fontSize: 9,
+                      color: PdfColors.deepPurple900,
+                    ),
+                  ),
                 ),
-                child: pw.Text(skill, style: const pw.TextStyle(fontSize: 9, color: PdfColors.deepPurple900)),
-              )).toList(),
+              )
+              .toList(),
         ),
         pw.SizedBox(height: 12),
       ]);
@@ -61,35 +82,62 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
     if (validExp.isNotEmpty) {
       widgets.addAll([
         _buildSectionTitle('Professional Experience'),
-        ...validExp.map((exp) => pw.Container(
-              margin: const pw.EdgeInsets.only(bottom: 10),
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(exp.company?.trim() ?? '', style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: PdfColors.deepPurple900)),
-                      pw.Text(
-                        '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}',
-                        style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+        ...validExp.map(
+          (exp) => pw.Container(
+            margin: const pw.EdgeInsets.only(bottom: 10),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      exp.company?.trim() ?? '',
+                      style: pw.TextStyle(
+                        fontSize: 10,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.deepPurple900,
                       ),
-                    ],
-                  ),
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(exp.position?.trim() ?? '', style: pw.TextStyle(fontSize: 9, fontStyle: pw.FontStyle.italic)),
-                      pw.Text(exp.location?.trim() ?? '', style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700)),
-                    ],
-                  ),
-                  if (exp.description?.trim().isNotEmpty == true) ...[
-                    pw.SizedBox(height: 2),
-                    pw.Text(exp.description!.trim(), style: const pw.TextStyle(fontSize: 9)),
+                    ),
+                    pw.Text(
+                      '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}',
+                      style: const pw.TextStyle(
+                        fontSize: 9,
+                        color: PdfColors.grey700,
+                      ),
+                    ),
                   ],
+                ),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      exp.position?.trim() ?? '',
+                      style: pw.TextStyle(
+                        fontSize: 9,
+                        fontStyle: pw.FontStyle.italic,
+                      ),
+                    ),
+                    pw.Text(
+                      exp.location?.trim() ?? '',
+                      style: const pw.TextStyle(
+                        fontSize: 9,
+                        color: PdfColors.grey700,
+                      ),
+                    ),
+                  ],
+                ),
+                if (exp.description?.trim().isNotEmpty == true) ...[
+                  pw.SizedBox(height: 2),
+                  pw.Text(
+                    exp.description!.trim(),
+                    style: const pw.TextStyle(fontSize: 9),
+                  ),
                 ],
-              ),
-            )),
+              ],
+            ),
+          ),
+        ),
         pw.SizedBox(height: 12),
       ]);
     }
@@ -98,32 +146,54 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
     if (validEdu.isNotEmpty) {
       widgets.addAll([
         _buildSectionTitle('Education'),
-        ...validEdu.map((edu) => pw.Container(
-              margin: const pw.EdgeInsets.only(bottom: 10),
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text(edu.school?.trim() ?? '', style: pw.TextStyle(fontSize: 10, fontWeight: pw.FontWeight.bold, color: PdfColors.deepPurple900)),
-                      pw.Text(
-                        '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}',
-                        style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+        ...validEdu.map(
+          (edu) => pw.Container(
+            margin: const pw.EdgeInsets.only(bottom: 10),
+            child: pw.Column(
+              crossAxisAlignment: pw.CrossAxisAlignment.start,
+              children: [
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      edu.school?.trim() ?? '',
+                      style: pw.TextStyle(
+                        fontSize: 10,
+                        fontWeight: pw.FontWeight.bold,
+                        color: PdfColors.deepPurple900,
                       ),
-                    ],
-                  ),
-                  pw.Row(
-                    mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
-                    children: [
-                      pw.Text('${edu.degree?.trim() ?? ""} ${edu.fieldOfStudy?.trim() ?? ""}'.trim(), style: pw.TextStyle(fontSize: 9, fontStyle: pw.FontStyle.italic)),
-                      if (edu.grade?.trim().isNotEmpty == true)
-                        pw.Text('GPA: ${edu.grade!.trim()}', style: const pw.TextStyle(fontSize: 9)),
-                    ],
-                  ),
-                ],
-              ),
-            )),
+                    ),
+                    pw.Text(
+                      '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}',
+                      style: const pw.TextStyle(
+                        fontSize: 9,
+                        color: PdfColors.grey700,
+                      ),
+                    ),
+                  ],
+                ),
+                pw.Row(
+                  mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                  children: [
+                    pw.Text(
+                      '${edu.degree?.trim() ?? ""} ${edu.fieldOfStudy?.trim() ?? ""}'
+                          .trim(),
+                      style: pw.TextStyle(
+                        fontSize: 9,
+                        fontStyle: pw.FontStyle.italic,
+                      ),
+                    ),
+                    if (edu.grade?.trim().isNotEmpty == true)
+                      pw.Text(
+                        'GPA: ${edu.grade!.trim()}',
+                        style: const pw.TextStyle(fontSize: 9),
+                      ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
         pw.SizedBox(height: 12),
       ]);
     }
@@ -133,7 +203,9 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
       widgets.addAll([
         _buildSectionTitle('Languages'),
         pw.Text(
-          validLangs.map((l) => '${l.language!.trim()} (${l.proficiency.name})').join(', '),
+          validLangs
+              .map((l) => '${l.language!.trim()} (${l.proficiency.name})')
+              .join(', '),
           style: const pw.TextStyle(fontSize: 10),
         ),
       ]);
@@ -157,26 +229,50 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
       if (info.email?.trim().isNotEmpty == true) info.email!.trim(),
       if (info.linkedIn?.trim().isNotEmpty == true) info.linkedIn!.trim(),
       if (info.github?.trim().isNotEmpty == true) info.github!.trim(),
-      if (info.portfolioWebsite?.trim().isNotEmpty == true) info.portfolioWebsite!.trim(),
+      if (info.portfolioWebsite?.trim().isNotEmpty == true)
+        info.portfolioWebsite!.trim(),
     ];
 
     final children = <pw.Widget>[];
     for (var i = 0; i < items.length; i++) {
       if (i > 0) {
         children.add(
-          pw.Text('   |   ', style: const pw.TextStyle(fontSize: 9, color: PdfColors.amber400)),
+          pw.Text(
+            '   |   ',
+            style: const pw.TextStyle(fontSize: 9, color: PdfColors.amber400),
+          ),
         );
       }
-      children.add(pw.Text(items[i], style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700)));
+      children.add(
+        pw.Text(
+          items[i],
+          style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+        ),
+      );
     }
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(info.fullName?.trim().isNotEmpty == true ? info.fullName!.trim() : 'Untitled', style: pw.TextStyle(fontSize: 26, fontWeight: pw.FontWeight.bold, color: PdfColors.deepPurple900)),
+        pw.Text(
+          info.fullName?.trim().isNotEmpty == true
+              ? info.fullName!.trim()
+              : 'Untitled',
+          style: pw.TextStyle(
+            fontSize: 26,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.deepPurple900,
+          ),
+        ),
         if (info.jobTitle?.trim().isNotEmpty == true) ...[
           pw.SizedBox(height: 2),
-          pw.Text(info.jobTitle!.trim(), style: const pw.TextStyle(fontSize: 13, color: PdfColors.deepPurple600)),
+          pw.Text(
+            info.jobTitle!.trim(),
+            style: const pw.TextStyle(
+              fontSize: 13,
+              color: PdfColors.deepPurple600,
+            ),
+          ),
         ],
         pw.SizedBox(height: 8),
         if (children.isNotEmpty)
@@ -192,7 +288,14 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text(title, style: pw.TextStyle(fontSize: 13, fontWeight: pw.FontWeight.bold, color: PdfColors.deepPurple800)),
+        pw.Text(
+          title,
+          style: pw.TextStyle(
+            fontSize: 13,
+            fontWeight: pw.FontWeight.bold,
+            color: PdfColors.deepPurple800,
+          ),
+        ),
         pw.SizedBox(height: 3),
         pw.Divider(thickness: 1.5, color: PdfColors.amber200),
         pw.SizedBox(height: 8),
@@ -205,4 +308,3 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
     return '${date.month}/${date.year}';
   }
 }
-

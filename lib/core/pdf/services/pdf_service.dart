@@ -8,14 +8,15 @@ import '../../templates/repository/template_repository.dart' as core_repo;
 class PdfService {
   final core_repo.TemplateRepository _templateRepository;
 
-  PdfService({
-    core_repo.TemplateRepository? templateRepository,
-  }) : _templateRepository = templateRepository ?? core_repo.TemplateRepository();
+  PdfService({core_repo.TemplateRepository? templateRepository})
+    : _templateRepository =
+          templateRepository ?? core_repo.TemplateRepository();
 
   /// Primary API method to generate an optimized PDF from a [ResumeModel].
   Future<Uint8List> generatePdf(ResumeModel resume) async {
     try {
-      final templateId = resume.selectedTemplate?.templateId ?? 'ats_professional';
+      final templateId =
+          resume.selectedTemplate?.templateId ?? 'ats_professional';
       final template = _templateRepository.getTemplate(templateId);
 
       final renderData = WorkflowState(

@@ -159,9 +159,7 @@ void main() {
       resume = WorkflowState(
         personalInfo: PersonalInformation(fullName: 'John Doe'),
         summary: '',
-        education: [
-          EducationModel(school: 'MIT', degree: 'B.S. CS'),
-        ],
+        education: [EducationModel(school: 'MIT', degree: 'B.S. CS')],
         projects: [
           ProjectModel(projectName: 'Vitafolio', description: 'Resume App'),
         ],
@@ -177,4 +175,3 @@ void main() {
     });
   });
 }
-

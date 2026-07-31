@@ -31,7 +31,9 @@ class PdfPreviewWidget extends StatelessWidget {
               return const Center(child: CircularProgressIndicator());
             }
             if (rasterSnapshot.hasError) {
-              return Center(child: Text('Raster Error: ${rasterSnapshot.error}'));
+              return Center(
+                child: Text('Raster Error: ${rasterSnapshot.error}'),
+              );
             }
             final rasters = rasterSnapshot.data;
             if (rasters == null || rasters.isEmpty) {

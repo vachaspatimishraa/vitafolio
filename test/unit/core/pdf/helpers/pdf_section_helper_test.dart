@@ -20,13 +20,23 @@ void main() {
       expect(PdfSectionHelper.hasExperience(null), false);
       expect(PdfSectionHelper.hasExperience([]), false);
 
-      final emptyItem = ExperienceModel(company: '  ', position: '', description: null);
+      final emptyItem = ExperienceModel(
+        company: '  ',
+        position: '',
+        description: null,
+      );
       expect(PdfSectionHelper.hasExperience([emptyItem]), false);
       expect(PdfSectionHelper.validExperiences([emptyItem]), isEmpty);
 
-      final validItem = ExperienceModel(company: 'Google', position: 'Developer');
+      final validItem = ExperienceModel(
+        company: 'Google',
+        position: 'Developer',
+      );
       expect(PdfSectionHelper.hasExperience([emptyItem, validItem]), true);
-      expect(PdfSectionHelper.validExperiences([emptyItem, validItem]).length, 1);
+      expect(
+        PdfSectionHelper.validExperiences([emptyItem, validItem]).length,
+        1,
+      );
     });
 
     test('hasEducation and validEducation handle empty and valid data', () {
@@ -48,7 +58,10 @@ void main() {
       final validModel = SkillModel(name: 'Flutter');
       expect(PdfSectionHelper.hasSkills([emptyModel]), false);
       expect(PdfSectionHelper.hasSkills([emptyModel, validModel]), true);
-      expect(PdfSectionHelper.validSkillModels([emptyModel, validModel]).length, 1);
+      expect(
+        PdfSectionHelper.validSkillModels([emptyModel, validModel]).length,
+        1,
+      );
 
       final stringList = ['  ', 'Dart'];
       expect(PdfSectionHelper.hasSkills(stringList), true);
@@ -65,15 +78,27 @@ void main() {
       expect(PdfSectionHelper.validProjects([emptyItem, validItem]).length, 1);
     });
 
-    test('hasCertifications and validCertifications handle empty and valid data', () {
-      expect(PdfSectionHelper.hasCertifications(null), false);
-      final emptyItem = CertificationModel(certificateName: '', organization: '  ');
-      expect(PdfSectionHelper.hasCertifications([emptyItem]), false);
+    test(
+      'hasCertifications and validCertifications handle empty and valid data',
+      () {
+        expect(PdfSectionHelper.hasCertifications(null), false);
+        final emptyItem = CertificationModel(
+          certificateName: '',
+          organization: '  ',
+        );
+        expect(PdfSectionHelper.hasCertifications([emptyItem]), false);
 
-      final validItem = CertificationModel(certificateName: 'AWS Certified');
-      expect(PdfSectionHelper.hasCertifications([emptyItem, validItem]), true);
-      expect(PdfSectionHelper.validCertifications([emptyItem, validItem]).length, 1);
-    });
+        final validItem = CertificationModel(certificateName: 'AWS Certified');
+        expect(
+          PdfSectionHelper.hasCertifications([emptyItem, validItem]),
+          true,
+        );
+        expect(
+          PdfSectionHelper.validCertifications([emptyItem, validItem]).length,
+          1,
+        );
+      },
+    );
 
     test('hasLanguages and validLanguages handle empty and valid data', () {
       expect(PdfSectionHelper.hasLanguages(null), false);

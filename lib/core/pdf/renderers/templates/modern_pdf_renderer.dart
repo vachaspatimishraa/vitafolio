@@ -13,12 +13,14 @@ class ModernPdfRenderer implements PdfRenderer {
   Future<pw.Document> render(ResumeModel resume) async {
     final pdf = pw.Document();
 
-    final hasContact = resume.personalInfo != null &&
+    final hasContact =
+        resume.personalInfo != null &&
         ((resume.personalInfo!.email?.trim().isNotEmpty ?? false) ||
             (resume.personalInfo!.phone?.trim().isNotEmpty ?? false) ||
             (resume.personalInfo!.linkedIn?.trim().isNotEmpty ?? false) ||
             (resume.personalInfo!.github?.trim().isNotEmpty ?? false) ||
-            (resume.personalInfo!.portfolioWebsite?.trim().isNotEmpty ?? false));
+            (resume.personalInfo!.portfolioWebsite?.trim().isNotEmpty ??
+                false));
 
     final hasSkills = PdfSectionHelper.hasSkills(resume.skills);
     final hasLanguages = PdfSectionHelper.hasLanguages(resume.languages);
@@ -43,10 +45,7 @@ class ModernPdfRenderer implements PdfRenderer {
       sidebarChildren.add(
         pw.Text(
           resume.personalInfo!.jobTitle!.trim(),
-          style: const pw.TextStyle(
-            color: PdfColors.white,
-            fontSize: 12,
-          ),
+          style: const pw.TextStyle(color: PdfColors.white, fontSize: 12),
         ),
       );
     }
@@ -78,8 +77,10 @@ class ModernPdfRenderer implements PdfRenderer {
     if (PdfSectionHelper.hasSummary(resume.professionalSummary?.summary)) {
       mainContentChildren.addAll([
         PdfSectionTitle('Summary', color: PdfColors.blue900),
-        pw.Text(resume.professionalSummary!.summary!.trim(),
-            style: const pw.TextStyle(fontSize: 10)),
+        pw.Text(
+          resume.professionalSummary!.summary!.trim(),
+          style: const pw.TextStyle(fontSize: 10),
+        ),
         pw.SizedBox(height: 20),
       ]);
     }
@@ -147,18 +148,30 @@ class ModernPdfRenderer implements PdfRenderer {
   pw.Widget _buildContactSection(PersonalInformation? info) {
     if (info == null) return pw.SizedBox.shrink();
     final items = <pw.Widget>[];
-    if (info.email?.trim().isNotEmpty ?? false) _addSidebarText(items, info.email!.trim());
-    if (info.phone?.trim().isNotEmpty ?? false) _addSidebarText(items, info.phone!.trim());
-    if (info.linkedIn?.trim().isNotEmpty ?? false) _addSidebarText(items, info.linkedIn!.trim());
-    if (info.github?.trim().isNotEmpty ?? false) _addSidebarText(items, info.github!.trim());
-    if (info.portfolioWebsite?.trim().isNotEmpty ?? false) _addSidebarText(items, info.portfolioWebsite!.trim());
+    if (info.email?.trim().isNotEmpty ?? false)
+      _addSidebarText(items, info.email!.trim());
+    if (info.phone?.trim().isNotEmpty ?? false)
+      _addSidebarText(items, info.phone!.trim());
+    if (info.linkedIn?.trim().isNotEmpty ?? false)
+      _addSidebarText(items, info.linkedIn!.trim());
+    if (info.github?.trim().isNotEmpty ?? false)
+      _addSidebarText(items, info.github!.trim());
+    if (info.portfolioWebsite?.trim().isNotEmpty ?? false)
+      _addSidebarText(items, info.portfolioWebsite!.trim());
 
     if (items.isEmpty) return pw.SizedBox.shrink();
 
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('CONTACT', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 12)),
+        pw.Text(
+          'CONTACT',
+          style: pw.TextStyle(
+            color: PdfColors.white,
+            fontWeight: pw.FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
         pw.Divider(color: PdfColors.white, thickness: 0.5),
         pw.SizedBox(height: 8),
         ...items,
@@ -172,7 +185,14 @@ class ModernPdfRenderer implements PdfRenderer {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('SKILLS', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 12)),
+        pw.Text(
+          'SKILLS',
+          style: pw.TextStyle(
+            color: PdfColors.white,
+            fontWeight: pw.FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
         pw.Divider(color: PdfColors.white, thickness: 0.5),
         pw.SizedBox(height: 8),
         ...validSkills.map((s) => _sidebarText(s.name!.trim())),
@@ -186,10 +206,19 @@ class ModernPdfRenderer implements PdfRenderer {
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
-        pw.Text('LANGUAGES', style: pw.TextStyle(color: PdfColors.white, fontWeight: pw.FontWeight.bold, fontSize: 12)),
+        pw.Text(
+          'LANGUAGES',
+          style: pw.TextStyle(
+            color: PdfColors.white,
+            fontWeight: pw.FontWeight.bold,
+            fontSize: 12,
+          ),
+        ),
         pw.Divider(color: PdfColors.white, thickness: 0.5),
         pw.SizedBox(height: 8),
-        ...validLanguages.map((l) => _sidebarText('${l.language!.trim()} (${l.proficiency.name})')),
+        ...validLanguages.map(
+          (l) => _sidebarText('${l.language!.trim()} (${l.proficiency.name})'),
+        ),
       ],
     );
   }
@@ -198,7 +227,10 @@ class ModernPdfRenderer implements PdfRenderer {
     list.add(
       pw.Padding(
         padding: const pw.EdgeInsets.only(bottom: 4),
-        child: pw.Text(text, style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+        child: pw.Text(
+          text,
+          style: const pw.TextStyle(color: PdfColors.white, fontSize: 9),
+        ),
       ),
     );
   }
@@ -206,24 +238,32 @@ class ModernPdfRenderer implements PdfRenderer {
   pw.Widget _sidebarText(String text) {
     return pw.Padding(
       padding: const pw.EdgeInsets.only(bottom: 4),
-      child: pw.Text(text, style: const pw.TextStyle(color: PdfColors.white, fontSize: 9)),
+      child: pw.Text(
+        text,
+        style: const pw.TextStyle(color: PdfColors.white, fontSize: 9),
+      ),
     );
   }
 
   pw.Widget _buildExperienceSection(ResumeModel resume) {
-    final validExperiences = PdfSectionHelper.validExperiences(resume.experience);
+    final validExperiences = PdfSectionHelper.validExperiences(
+      resume.experience,
+    );
     if (validExperiences.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Experience', color: PdfColors.blue900),
-        ...validExperiences.map((e) => PdfTimelineItem(
-          title: e.company?.trim() ?? '',
-          subtitle: e.position?.trim(),
-          date: '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
-          location: e.location?.trim(),
-          description: e.description?.trim(),
-        )),
+        ...validExperiences.map(
+          (e) => PdfTimelineItem(
+            title: e.company?.trim() ?? '',
+            subtitle: e.position?.trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyWorking == true ? "Present" : _formatDate(e.endDate)}',
+            location: e.location?.trim(),
+            description: e.description?.trim(),
+          ),
+        ),
       ],
     );
   }
@@ -235,12 +275,19 @@ class ModernPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Education', color: PdfColors.blue900),
-        ...validEducation.map((e) => PdfTimelineItem(
-          title: e.school?.trim() ?? '',
-          subtitle: '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'.trim(),
-          date: '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
-          description: e.grade != null && e.grade!.trim().isNotEmpty ? 'Grade: ${e.grade!.trim()}' : null,
-        )),
+        ...validEducation.map(
+          (e) => PdfTimelineItem(
+            title: e.school?.trim() ?? '',
+            subtitle:
+                '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'
+                    .trim(),
+            date:
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
+            description: e.grade != null && e.grade!.trim().isNotEmpty
+                ? 'Grade: ${e.grade!.trim()}'
+                : null,
+          ),
+        ),
       ],
     );
   }
@@ -252,27 +299,33 @@ class ModernPdfRenderer implements PdfRenderer {
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Projects', color: PdfColors.blue900),
-        ...validProjects.map((p) => PdfTimelineItem(
-          title: p.projectName?.trim() ?? '',
-          subtitle: p.technologies?.trim(),
-          description: p.description?.trim(),
-        )),
+        ...validProjects.map(
+          (p) => PdfTimelineItem(
+            title: p.projectName?.trim() ?? '',
+            subtitle: p.technologies?.trim(),
+            description: p.description?.trim(),
+          ),
+        ),
       ],
     );
   }
 
   pw.Widget _buildCertificationsSection(ResumeModel resume) {
-    final validCerts = PdfSectionHelper.validCertifications(resume.certifications);
+    final validCerts = PdfSectionHelper.validCertifications(
+      resume.certifications,
+    );
     if (validCerts.isEmpty) return pw.SizedBox.shrink();
     return pw.Column(
       crossAxisAlignment: pw.CrossAxisAlignment.start,
       children: [
         PdfSectionTitle('Certifications', color: PdfColors.blue900),
-        ...validCerts.map((c) => PdfTimelineItem(
-          title: c.certificateName?.trim() ?? '',
-          subtitle: c.organization?.trim(),
-          date: _formatDate(c.issueDate),
-        )),
+        ...validCerts.map(
+          (c) => PdfTimelineItem(
+            title: c.certificateName?.trim() ?? '',
+            subtitle: c.organization?.trim(),
+            date: _formatDate(c.issueDate),
+          ),
+        ),
       ],
     );
   }
@@ -282,4 +335,3 @@ class ModernPdfRenderer implements PdfRenderer {
     return '${date.month}/${date.year}';
   }
 }
-

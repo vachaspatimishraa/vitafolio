@@ -18,7 +18,8 @@ final _sampleWorkflowState = WorkflowState(
     email: 'john@example.com',
     phone: '+1 234 567 890',
   ),
-  summary: 'Experienced software engineer specializing in cross-platform mobile architecture, scalable apps, and UI/UX design.',
+  summary:
+      'Experienced software engineer specializing in cross-platform mobile architecture, scalable apps, and UI/UX design.',
   experience: [
     ExperienceModel(
       company: 'Tech Solutions',
@@ -27,10 +28,7 @@ final _sampleWorkflowState = WorkflowState(
     ),
   ],
   education: [
-    EducationModel(
-      school: 'State University',
-      degree: 'B.S. Computer Science',
-    ),
+    EducationModel(school: 'State University', degree: 'B.S. Computer Science'),
   ],
   skills: const ['Flutter', 'Dart', 'Python', 'SQL', 'Git'],
   projects: const [],
@@ -55,28 +53,28 @@ class TemplatePreviewScreen extends ConsumerWidget {
       personalInfo: (workflowState.personalInfo.fullName?.isNotEmpty ?? false)
           ? workflowState.personalInfo
           : ((domainResume?.personalInfo?.fullName?.isNotEmpty ?? false)
-              ? domainResume!.personalInfo!
-              : _sampleWorkflowState.personalInfo),
+                ? domainResume!.personalInfo!
+                : _sampleWorkflowState.personalInfo),
       summary: workflowState.summary.isNotEmpty
           ? workflowState.summary
           : ((domainResume?.professionalSummary?.summary?.isNotEmpty ?? false)
-              ? domainResume!.professionalSummary!.summary!
-              : _sampleWorkflowState.summary),
+                ? domainResume!.professionalSummary!.summary!
+                : _sampleWorkflowState.summary),
       education: workflowState.education.isNotEmpty
           ? workflowState.education
           : ((domainResume?.education?.isNotEmpty ?? false)
-              ? domainResume!.education!
-              : _sampleWorkflowState.education),
+                ? domainResume!.education!
+                : _sampleWorkflowState.education),
       experience: workflowState.experience.isNotEmpty
           ? workflowState.experience
           : ((domainResume?.experience?.isNotEmpty ?? false)
-              ? domainResume!.experience!
-              : _sampleWorkflowState.experience),
+                ? domainResume!.experience!
+                : _sampleWorkflowState.experience),
       skills: workflowState.skills.isNotEmpty
           ? workflowState.skills
           : ((domainResume?.skills?.isNotEmpty ?? false)
-              ? domainResume!.skills!.map((s) => s.name ?? '').toList()
-              : _sampleWorkflowState.skills),
+                ? domainResume!.skills!.map((s) => s.name ?? '').toList()
+                : _sampleWorkflowState.skills),
       projects: workflowState.projects.isNotEmpty
           ? workflowState.projects
           : (domainResume?.projects ?? workflowState.projects),
@@ -131,7 +129,10 @@ class TemplatePreviewScreen extends ConsumerWidget {
                         child: InteractiveViewer(
                           minScale: 0.5,
                           maxScale: 3.0,
-                          child: template.renderer.buildPreview(renderData, context),
+                          child: template.renderer.buildPreview(
+                            renderData,
+                            context,
+                          ),
                         ),
                       ),
                     ),
@@ -157,7 +158,8 @@ class TemplatePreviewScreen extends ConsumerWidget {
                             ),
                           ),
                           const SizedBox(height: AppSpacing.md),
-                          if (template.category == core.TemplateCategory.ats) ...[
+                          if (template.category ==
+                              core.TemplateCategory.ats) ...[
                             Row(
                               children: [
                                 const TemplateBadge(),

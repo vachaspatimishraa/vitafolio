@@ -125,7 +125,9 @@ class HomeScreen extends ConsumerWidget {
                   primaryActionLabel: AppStrings.createResume,
                   onPrimaryAction: () {
                     ref.read(editorViewModelProvider.notifier).resetState();
-                    ref.read(workflowViewModelProvider.notifier).createNewResume();
+                    ref
+                        .read(workflowViewModelProvider.notifier)
+                        .createNewResume();
                     context.push(AppRoutes.editor);
                   },
                 ),

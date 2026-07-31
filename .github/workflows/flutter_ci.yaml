@@ -16,7 +16,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.41.9'
           channel: 'stable'
       
       - name: Install Dependencies
@@ -28,8 +28,8 @@ jobs:
       - name: Run Tests
         run: flutter test
 
-  build:
-    name: Build App
+  build-android:
+    name: Build Android
     runs-on: ubuntu-latest
     
     steps:
@@ -37,7 +37,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.41.9'
           channel: 'stable'
       
       - name: Install Dependencies
@@ -45,6 +45,21 @@ jobs:
       
       - name: Build Android
         run: flutter build apk --release
+
+  build-ios:
+    name: Build iOS
+    runs-on: macos-latest
+    
+    steps:
+      - uses: actions/checkout@v4
+      
+      - uses: subosito/flutter-action@v2
+        with:
+          flutter-version: '3.41.9'
+          channel: 'stable'
+      
+      - name: Install Dependencies
+        run: flutter pub get
       
       - name: Build iOS
         run: flutter build ios --release --no-codesign
@@ -58,7 +73,7 @@ jobs:
       
       - uses: subosito/flutter-action@v2
         with:
-          flutter-version: '3.24.0'
+          flutter-version: '3.41.9'
           channel: 'stable'
       
       - name: Install Dependencies
@@ -68,4 +83,4 @@ jobs:
         run: flutter analyze --fatal-infos
       
       - name: Check Formatting
-        run: dart format --set-exit-if-changed lib/ test/ integration_test/
+        run: dart format --set-exit-if-changed lib/ test/

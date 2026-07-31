@@ -40,12 +40,14 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       } catch (_) {}
     }
 
-    final selectedTemplateId = previewState.selectedTemplate?.id ??
+    final selectedTemplateId =
+        previewState.selectedTemplate?.id ??
         workflowState.selectedTemplateId ??
         'ats_professional';
 
     // Merge active domain resume with workflow state data to ensure complete section coverage
-    final finalPersonalInfo = (workflowState.personalInfo.fullName?.isNotEmpty ?? false)
+    final finalPersonalInfo =
+        (workflowState.personalInfo.fullName?.isNotEmpty ?? false)
         ? workflowState.personalInfo
         : (resume?.personalInfo ?? workflowState.personalInfo);
 
@@ -63,7 +65,8 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
 
     final finalSkillsList = workflowState.skills.isNotEmpty
         ? workflowState.skills
-        : (resume?.skills?.map((s) => s.name ?? '').toList() ?? workflowState.skills);
+        : (resume?.skills?.map((s) => s.name ?? '').toList() ??
+              workflowState.skills);
 
     final finalProjects = workflowState.projects.isNotEmpty
         ? workflowState.projects
@@ -79,7 +82,9 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
 
     final safeResumeName = (resume?.resumeName?.isNotEmpty ?? false)
         ? resume!.resumeName!
-        : (workflowState.resumeName.isNotEmpty ? workflowState.resumeName : 'My Resume');
+        : (workflowState.resumeName.isNotEmpty
+              ? workflowState.resumeName
+              : 'My Resume');
 
     final targetResume = ResumeModel(
       resumeName: safeResumeName,
@@ -125,9 +130,9 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
       await Share.shareXFiles([XFile(file.path)], text: safeResumeName);
     } catch (e) {
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Failed to export PDF: $e')),
-        );
+        ScaffoldMessenger.of(
+          context,
+        ).showSnackBar(SnackBar(content: Text('Failed to export PDF: $e')));
       }
     } finally {
       if (mounted) {

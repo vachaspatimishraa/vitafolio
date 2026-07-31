@@ -16,7 +16,8 @@ class TemplateRepository {
     ResumeTemplate(
       id: 'ats_professional',
       name: 'ATS Professional',
-      description: 'Compact, black & white, single-column design optimized for ATS parsing systems.',
+      description:
+          'Compact, black & white, single-column design optimized for ATS parsing systems.',
       category: TemplateCategory.ats,
       thumbnail: 'assets/templates/thumbnails/ats.png',
       atsRating: 5,
@@ -28,7 +29,8 @@ class TemplateRepository {
     ResumeTemplate(
       id: 'professional_modern',
       name: 'Professional Modern',
-      description: 'Clean modern layout with subtle borders and clear section hierarchy.',
+      description:
+          'Clean modern layout with subtle borders and clear section hierarchy.',
       category: TemplateCategory.professional,
       thumbnail: 'assets/templates/thumbnails/modern.png',
       atsRating: 5,
@@ -40,7 +42,8 @@ class TemplateRepository {
     ResumeTemplate(
       id: 'awesome_professional',
       name: 'Awesome Professional',
-      description: 'Premium software developer layout featuring elegant cyan highlights.',
+      description:
+          'Premium software developer layout featuring elegant cyan highlights.',
       category: TemplateCategory.professional,
       thumbnail: 'assets/templates/thumbnails/creative.png',
       atsRating: 5,
@@ -52,7 +55,8 @@ class TemplateRepository {
     ResumeTemplate(
       id: 'modern_executive',
       name: 'Modern Executive',
-      description: 'Sophisticated style designed for leadership roles, featuring skill tag chips.',
+      description:
+          'Sophisticated style designed for leadership roles, featuring skill tag chips.',
       category: TemplateCategory.executive,
       thumbnail: 'assets/templates/thumbnails/executive.png',
       atsRating: 4,
@@ -64,7 +68,8 @@ class TemplateRepository {
     ResumeTemplate(
       id: 'academic_blue',
       name: 'Academic Blue',
-      description: 'Structured layout emphasizing research fields, publications, and references.',
+      description:
+          'Structured layout emphasizing research fields, publications, and references.',
       category: TemplateCategory.academic,
       thumbnail: 'assets/templates/thumbnails/minimal.png',
       atsRating: 5,

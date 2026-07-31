@@ -15,40 +15,50 @@ class PdfSectionHelper {
   /// Checks if experience list has any valid experience entries.
   static bool hasExperience(List<ExperienceModel>? experiences) {
     if (experiences == null || experiences.isEmpty) return false;
-    return experiences.any((e) =>
-        (e.company?.trim().isNotEmpty ?? false) ||
-        (e.position?.trim().isNotEmpty ?? false) ||
-        (e.description?.trim().isNotEmpty ?? false));
+    return experiences.any(
+      (e) =>
+          (e.company?.trim().isNotEmpty ?? false) ||
+          (e.position?.trim().isNotEmpty ?? false) ||
+          (e.description?.trim().isNotEmpty ?? false),
+    );
   }
 
   /// Filters valid experience entries.
-  static List<ExperienceModel> validExperiences(List<ExperienceModel>? experiences) {
+  static List<ExperienceModel> validExperiences(
+    List<ExperienceModel>? experiences,
+  ) {
     if (experiences == null) return [];
     return experiences
-        .where((e) =>
-            (e.company?.trim().isNotEmpty ?? false) ||
-            (e.position?.trim().isNotEmpty ?? false) ||
-            (e.description?.trim().isNotEmpty ?? false))
+        .where(
+          (e) =>
+              (e.company?.trim().isNotEmpty ?? false) ||
+              (e.position?.trim().isNotEmpty ?? false) ||
+              (e.description?.trim().isNotEmpty ?? false),
+        )
         .toList();
   }
 
   /// Checks if education list has any valid education entries.
   static bool hasEducation(List<EducationModel>? education) {
     if (education == null || education.isEmpty) return false;
-    return education.any((e) =>
-        (e.school?.trim().isNotEmpty ?? false) ||
-        (e.degree?.trim().isNotEmpty ?? false) ||
-        (e.fieldOfStudy?.trim().isNotEmpty ?? false));
+    return education.any(
+      (e) =>
+          (e.school?.trim().isNotEmpty ?? false) ||
+          (e.degree?.trim().isNotEmpty ?? false) ||
+          (e.fieldOfStudy?.trim().isNotEmpty ?? false),
+    );
   }
 
   /// Filters valid education entries.
   static List<EducationModel> validEducation(List<EducationModel>? education) {
     if (education == null) return [];
     return education
-        .where((e) =>
-            (e.school?.trim().isNotEmpty ?? false) ||
-            (e.degree?.trim().isNotEmpty ?? false) ||
-            (e.fieldOfStudy?.trim().isNotEmpty ?? false))
+        .where(
+          (e) =>
+              (e.school?.trim().isNotEmpty ?? false) ||
+              (e.degree?.trim().isNotEmpty ?? false) ||
+              (e.fieldOfStudy?.trim().isNotEmpty ?? false),
+        )
         .toList();
   }
 
@@ -79,37 +89,46 @@ class PdfSectionHelper {
   /// Checks if projects list has any valid project entries.
   static bool hasProjects(List<ProjectModel>? projects) {
     if (projects == null || projects.isEmpty) return false;
-    return projects.any((p) =>
-        (p.projectName?.trim().isNotEmpty ?? false) ||
-        (p.description?.trim().isNotEmpty ?? false));
+    return projects.any(
+      (p) =>
+          (p.projectName?.trim().isNotEmpty ?? false) ||
+          (p.description?.trim().isNotEmpty ?? false),
+    );
   }
 
   /// Filters valid project entries.
   static List<ProjectModel> validProjects(List<ProjectModel>? projects) {
     if (projects == null) return [];
     return projects
-        .where((p) =>
-            (p.projectName?.trim().isNotEmpty ?? false) ||
-            (p.description?.trim().isNotEmpty ?? false))
+        .where(
+          (p) =>
+              (p.projectName?.trim().isNotEmpty ?? false) ||
+              (p.description?.trim().isNotEmpty ?? false),
+        )
         .toList();
   }
 
   /// Checks if certifications list has any valid certification entries.
   static bool hasCertifications(List<CertificationModel>? certifications) {
     if (certifications == null || certifications.isEmpty) return false;
-    return certifications.any((c) =>
-        (c.certificateName?.trim().isNotEmpty ?? false) ||
-        (c.organization?.trim().isNotEmpty ?? false));
+    return certifications.any(
+      (c) =>
+          (c.certificateName?.trim().isNotEmpty ?? false) ||
+          (c.organization?.trim().isNotEmpty ?? false),
+    );
   }
 
   /// Filters valid certification entries.
   static List<CertificationModel> validCertifications(
-      List<CertificationModel>? certifications) {
+    List<CertificationModel>? certifications,
+  ) {
     if (certifications == null) return [];
     return certifications
-        .where((c) =>
-            (c.certificateName?.trim().isNotEmpty ?? false) ||
-            (c.organization?.trim().isNotEmpty ?? false))
+        .where(
+          (c) =>
+              (c.certificateName?.trim().isNotEmpty ?? false) ||
+              (c.organization?.trim().isNotEmpty ?? false),
+        )
         .toList();
   }
 

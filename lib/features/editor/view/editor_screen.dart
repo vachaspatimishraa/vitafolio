@@ -110,10 +110,9 @@ class _EditorScreenState extends ConsumerState<EditorScreen> {
                     onChanged: (value) => ref
                         .read(workflowViewModelProvider.notifier)
                         .updateResumeName(value),
-                    validator: (value) =>
-                        value == null || value.trim().isEmpty
-                            ? 'Resume name is required'
-                            : null,
+                    validator: (value) => value == null || value.trim().isEmpty
+                        ? 'Resume name is required'
+                        : null,
                   ),
                   const SizedBox(height: AppSpacing.md),
                   const PersonalInformationSection(),

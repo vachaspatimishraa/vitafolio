@@ -1,6 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../../core/templates/models/resume_template.dart' as core;
-import '../../../core/templates/repository/template_repository.dart' as core_repo;
+import '../../../core/templates/repository/template_repository.dart'
+    as core_repo;
 import '../../preview/view_model/preview_view_model.dart';
 import '../../workflow/view_model/workflow_view_model.dart';
 
@@ -77,7 +78,8 @@ class TemplatesState {
 
 class TemplatesViewModel extends StateNotifier<TemplatesState> {
   final Ref _ref;
-  final core_repo.TemplateRepository _repository = core_repo.TemplateRepository();
+  final core_repo.TemplateRepository _repository =
+      core_repo.TemplateRepository();
 
   TemplatesViewModel(this._ref) : super(const TemplatesState()) {
     _loadTemplates();
@@ -86,7 +88,8 @@ class TemplatesViewModel extends StateNotifier<TemplatesState> {
   void _loadTemplates() {
     state = state.copyWith(isLoading: true);
     final list = _repository.getTemplates();
-    final currentSelectedId = _ref.read(workflowViewModelProvider).selectedTemplateId ??
+    final currentSelectedId =
+        _ref.read(workflowViewModelProvider).selectedTemplateId ??
         _ref.read(previewViewModelProvider).selectedTemplate?.id ??
         _repository.defaultTemplate().id;
 

@@ -13,9 +13,7 @@ class ModernTemplateRenderer implements TemplateRenderer {
       children: [
         Expanded(
           child: Column(
-            children: [
-              ResumeHeader(personalInfo: resumeData.personalInfo),
-            ],
+            children: [ResumeHeader(personalInfo: resumeData.personalInfo)],
           ),
         ),
       ],

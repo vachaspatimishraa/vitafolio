@@ -13,11 +13,7 @@ const ProfessionalSummarySchema = Schema(
   name: r'ProfessionalSummary',
   id: -3082694999041872045,
   properties: {
-    r'summary': PropertySchema(
-      id: 0,
-      name: r'summary',
-      type: IsarType.string,
-    )
+    r'summary': PropertySchema(id: 0, name: r'summary', type: IsarType.string),
   },
   estimateSize: _professionalSummaryEstimateSize,
   serialize: _professionalSummarySerialize,
@@ -75,74 +71,82 @@ P _professionalSummaryDeserializeProp<P>(
   }
 }
 
-extension ProfessionalSummaryQueryFilter on QueryBuilder<ProfessionalSummary,
-    ProfessionalSummary, QFilterCondition> {
+extension ProfessionalSummaryQueryFilter
+    on
+        QueryBuilder<
+          ProfessionalSummary,
+          ProfessionalSummary,
+          QFilterCondition
+        > {
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryIsNull() {
+  summaryIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNull(
-        property: r'summary',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNull(property: r'summary'),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryIsNotNull() {
+  summaryIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(const FilterCondition.isNotNull(
-        property: r'summary',
-      ));
+      return query.addFilterCondition(
+        const FilterCondition.isNotNull(property: r'summary'),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryEqualTo(
-    String? value, {
-    bool caseSensitive = true,
-  }) {
+  summaryEqualTo(String? value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'summary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(
+          property: r'summary',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryGreaterThan(
-    String? value, {
-    bool include = false,
-    bool caseSensitive = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        include: include,
-        property: r'summary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
-    });
-  }
-
-  QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryLessThan(
+  summaryGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.lessThan(
-        include: include,
-        property: r'summary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(
+          include: include,
+          property: r'summary',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryBetween(
+  summaryLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(
+        FilterCondition.lessThan(
+          include: include,
+          property: r'summary',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
+    });
+  }
+
+  QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
+  summaryBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -150,87 +154,94 @@ extension ProfessionalSummaryQueryFilter on QueryBuilder<ProfessionalSummary,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.between(
-        property: r'summary',
-        lower: lower,
-        includeLower: includeLower,
-        upper: upper,
-        includeUpper: includeUpper,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.between(
+          property: r'summary',
+          lower: lower,
+          includeLower: includeLower,
+          upper: upper,
+          includeUpper: includeUpper,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryStartsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  summaryStartsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.startsWith(
-        property: r'summary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.startsWith(
+          property: r'summary',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryEndsWith(
-    String value, {
-    bool caseSensitive = true,
-  }) {
+  summaryEndsWith(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.endsWith(
-        property: r'summary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.endsWith(
+          property: r'summary',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryContains(String value, {bool caseSensitive = true}) {
+  summaryContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.contains(
-        property: r'summary',
-        value: value,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.contains(
+          property: r'summary',
+          value: value,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryMatches(String pattern, {bool caseSensitive = true}) {
+  summaryMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.matches(
-        property: r'summary',
-        wildcard: pattern,
-        caseSensitive: caseSensitive,
-      ));
+      return query.addFilterCondition(
+        FilterCondition.matches(
+          property: r'summary',
+          wildcard: pattern,
+          caseSensitive: caseSensitive,
+        ),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryIsEmpty() {
+  summaryIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.equalTo(
-        property: r'summary',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.equalTo(property: r'summary', value: ''),
+      );
     });
   }
 
   QueryBuilder<ProfessionalSummary, ProfessionalSummary, QAfterFilterCondition>
-      summaryIsNotEmpty() {
+  summaryIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(FilterCondition.greaterThan(
-        property: r'summary',
-        value: '',
-      ));
+      return query.addFilterCondition(
+        FilterCondition.greaterThan(property: r'summary', value: ''),
+      );
     });
   }
 }
 
-extension ProfessionalSummaryQueryObject on QueryBuilder<ProfessionalSummary,
-    ProfessionalSummary, QFilterCondition> {}
+extension ProfessionalSummaryQueryObject
+    on
+        QueryBuilder<
+          ProfessionalSummary,
+          ProfessionalSummary,
+          QFilterCondition
+        > {}

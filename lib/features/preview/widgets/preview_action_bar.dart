@@ -22,10 +22,16 @@ class PreviewActionBar extends ConsumerWidget {
             Expanded(
               child: OutlinedButton.icon(
                 onPressed: () {
-                  final activeResume = ref.read(previewViewModelProvider).resume;
+                  final activeResume = ref
+                      .read(previewViewModelProvider)
+                      .resume;
                   if (activeResume != null) {
-                    ref.read(editorViewModelProvider.notifier).loadResume(activeResume);
-                    ref.read(workflowViewModelProvider.notifier).loadExistingResume(activeResume);
+                    ref
+                        .read(editorViewModelProvider.notifier)
+                        .loadResume(activeResume);
+                    ref
+                        .read(workflowViewModelProvider.notifier)
+                        .loadExistingResume(activeResume);
                   }
                   context.push(AppRoutes.editor);
                 },

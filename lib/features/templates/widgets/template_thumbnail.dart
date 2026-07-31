@@ -12,7 +12,8 @@ final _sampleWorkflowState = WorkflowState(
     email: 'john@example.com',
     phone: '+1 234 567 890',
   ),
-  summary: 'Experienced software engineer specializing in cross-platform mobile architecture, scalable apps, and UI/UX design.',
+  summary:
+      'Experienced software engineer specializing in cross-platform mobile architecture, scalable apps, and UI/UX design.',
   experience: [
     ExperienceModel(
       company: 'Tech Solutions',
@@ -21,10 +22,7 @@ final _sampleWorkflowState = WorkflowState(
     ),
   ],
   education: [
-    EducationModel(
-      school: 'State University',
-      degree: 'B.S. Computer Science',
-    ),
+    EducationModel(school: 'State University', degree: 'B.S. Computer Science'),
   ],
   skills: const ['Flutter', 'Dart', 'Python', 'SQL', 'Git'],
   projects: const [],
@@ -58,7 +56,10 @@ class TemplateThumbnail extends StatelessWidget {
             child: SizedBox(
               width: 380,
               height: 537,
-              child: template.renderer.buildPreview(_sampleWorkflowState, context),
+              child: template.renderer.buildPreview(
+                _sampleWorkflowState,
+                context,
+              ),
             ),
           ),
         ),

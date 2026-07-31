@@ -115,9 +115,7 @@ class PersonalInformationSection extends ConsumerWidget {
             keyboardType: TextInputType.url,
             onChanged: (value) => ref
                 .read(workflowViewModelProvider.notifier)
-                .updatePersonalInfo(
-                  info.copyWith(portfolioWebsite: value),
-                ),
+                .updatePersonalInfo(info.copyWith(portfolioWebsite: value)),
             validator: (value) {
               final text = value?.trim() ?? '';
               return ref

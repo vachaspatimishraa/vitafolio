@@ -14,19 +14,13 @@ final academicTheme = ResumeTheme(
     fontWeight: FontWeight.bold,
     color: Color(0xFF00199E),
   ),
-  headerSubtitleStyle: const TextStyle(
-    fontSize: 14,
-    color: Colors.black54,
-  ),
+  headerSubtitleStyle: const TextStyle(fontSize: 14, color: Colors.black54),
   sectionTitleStyle: const TextStyle(
     fontSize: 14,
     fontWeight: FontWeight.bold,
     color: Color(0xFF00199E),
   ),
-  bodyStyle: const TextStyle(
-    fontSize: 10,
-    color: Colors.black87,
-  ),
+  bodyStyle: const TextStyle(fontSize: 10, color: Colors.black87),
   italicStyle: const TextStyle(
     fontSize: 10,
     fontStyle: FontStyle.italic,

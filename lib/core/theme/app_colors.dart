@@ -7,7 +7,9 @@ class AppColors {
   static const Color accent = Color(0xFF3B82F6); // Blue 500
 
   // Light Palette
-  static const Color backgroundLight = Color(0xFFF1F5F9); // Slate 100 light gray
+  static const Color backgroundLight = Color(
+    0xFFF1F5F9,
+  ); // Slate 100 light gray
   static const Color surfaceLight = Colors.white;
   static const Color errorLight = Color(0xFFEF4444); // Red 500
   static const Color textPrimaryLight = Color(0xFF0F172A);

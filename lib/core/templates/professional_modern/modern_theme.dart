@@ -14,19 +14,13 @@ final modernTheme = ResumeTheme(
     fontWeight: FontWeight.bold,
     color: Colors.blueGrey[900]!,
   ),
-  headerSubtitleStyle: TextStyle(
-    fontSize: 13,
-    color: Colors.blueGrey[600]!,
-  ),
+  headerSubtitleStyle: TextStyle(fontSize: 13, color: Colors.blueGrey[600]!),
   sectionTitleStyle: TextStyle(
     fontSize: 13,
     fontWeight: FontWeight.bold,
     color: Colors.blueGrey[800]!,
   ),
-  bodyStyle: const TextStyle(
-    fontSize: 10,
-    color: Colors.black87,
-  ),
+  bodyStyle: const TextStyle(fontSize: 10, color: Colors.black87),
   italicStyle: const TextStyle(
     fontSize: 10,
     fontStyle: FontStyle.italic,

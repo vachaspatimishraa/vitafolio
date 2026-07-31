@@ -29,16 +29,20 @@ class PreviewAppBar extends ConsumerWidget implements PreferredSizeWidget {
       } catch (_) {}
     }
 
-    final selectedId = previewState.selectedTemplate?.id ??
+    final selectedId =
+        previewState.selectedTemplate?.id ??
         workflowState.selectedTemplateId ??
         'ats_professional';
 
     if (resume != null) {
       resume.personalInfo = workflowState.personalInfo;
-      resume.professionalSummary = ProfessionalSummary()..summary = workflowState.summary;
+      resume.professionalSummary = ProfessionalSummary()
+        ..summary = workflowState.summary;
       resume.education = workflowState.education;
       resume.experience = workflowState.experience;
-      resume.skills = workflowState.skills.map((s) => SkillModel()..name = s).toList();
+      resume.skills = workflowState.skills
+          .map((s) => SkillModel()..name = s)
+          .toList();
       resume.projects = workflowState.projects;
       resume.certifications = workflowState.certifications;
       resume.languages = workflowState.languages;
@@ -51,10 +55,13 @@ class PreviewAppBar extends ConsumerWidget implements PreferredSizeWidget {
       final newResume = ResumeModel(
         resumeName: 'My Resume',
         personalInfo: workflowState.personalInfo,
-        professionalSummary: ProfessionalSummary()..summary = workflowState.summary,
+        professionalSummary: ProfessionalSummary()
+          ..summary = workflowState.summary,
         education: workflowState.education,
         experience: workflowState.experience,
-        skills: workflowState.skills.map((s) => SkillModel()..name = s).toList(),
+        skills: workflowState.skills
+            .map((s) => SkillModel()..name = s)
+            .toList(),
         projects: workflowState.projects,
         certifications: workflowState.certifications,
         languages: workflowState.languages,
