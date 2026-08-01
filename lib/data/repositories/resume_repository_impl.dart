@@ -1,6 +1,7 @@
 import 'package:isar/isar.dart';
 import '../datasource/isar_data_source.dart';
 import '../models/resume_model.dart';
+import '../models/embedded/template_selection.dart';
 import '../models/enums/resume_status.dart';
 import 'resume_repository.dart';
 
@@ -147,8 +148,7 @@ class ResumeRepositoryImpl implements ResumeRepository {
   Future<void> updateSelectedTemplate(int id, String templateId) async {
     final resume = await getResume(id);
     if (resume != null) {
-      // Need a way to set templateId on the embedded object
-      // For now, assume we just update the whole resume
+      resume.selectedTemplate = TemplateSelection()..templateId = templateId;
       await updateResume(resume);
     }
   }

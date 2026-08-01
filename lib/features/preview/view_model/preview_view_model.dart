@@ -4,6 +4,8 @@ import 'package:isar/isar.dart';
 
 import '../../../../core/database/database_provider.dart';
 import '../../../../data/models/resume_model.dart';
+import '../../../../data/models/embedded/professional_summary.dart';
+import '../../../../data/models/embedded/skill_model.dart';
 import '../../../../data/models/embedded/template_selection.dart';
 import '../../../../data/repositories/resume_repository.dart';
 import '../../../../data/repositories/repository_provider.dart';
@@ -105,6 +107,7 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
 
     // Update workflow view model
     _ref.read(workflowViewModelProvider.notifier).selectTemplate(templateId);
+    final workflowState = _ref.read(workflowViewModelProvider);
 
     ResumeModel? currentResume = state.resume;
 
@@ -121,6 +124,35 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
       try {
         currentResume.selectedTemplate = TemplateSelection()
           ..templateId = templateId;
+        // Preserve current user-entered section data from workflow or existing resume
+        if (workflowState.personalInfo.fullName?.isNotEmpty ?? false) {
+          currentResume.personalInfo = workflowState.personalInfo;
+        }
+        if (workflowState.summary.isNotEmpty) {
+          currentResume.professionalSummary = ProfessionalSummary()
+            ..summary = workflowState.summary;
+        }
+        if (workflowState.education.isNotEmpty) {
+          currentResume.education = workflowState.education;
+        }
+        if (workflowState.experience.isNotEmpty) {
+          currentResume.experience = workflowState.experience;
+        }
+        if (workflowState.skills.isNotEmpty) {
+          currentResume.skills = workflowState.skills
+              .map((s) => SkillModel()..name = s)
+              .toList();
+        }
+        if (workflowState.projects.isNotEmpty) {
+          currentResume.projects = workflowState.projects;
+        }
+        if (workflowState.certifications.isNotEmpty) {
+          currentResume.certifications = workflowState.certifications;
+        }
+        if (workflowState.languages.isNotEmpty) {
+          currentResume.languages = workflowState.languages;
+        }
+
         await _repository.updateResume(currentResume);
       } catch (e) {
         state = state.copyWith(
@@ -130,7 +162,20 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
       }
     } else {
       final newResume = ResumeModel(
-        resumeName: 'My Resume',
+        resumeName: workflowState.resumeName.isNotEmpty
+            ? workflowState.resumeName
+            : 'My Resume',
+        personalInfo: workflowState.personalInfo,
+        professionalSummary: ProfessionalSummary()
+          ..summary = workflowState.summary,
+        education: workflowState.education,
+        experience: workflowState.experience,
+        skills: workflowState.skills
+            .map((s) => SkillModel()..name = s)
+            .toList(),
+        projects: workflowState.projects,
+        certifications: workflowState.certifications,
+        languages: workflowState.languages,
         selectedTemplate: TemplateSelection()..templateId = templateId,
       );
       try {
