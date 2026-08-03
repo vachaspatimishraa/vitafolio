@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
-import 'template_renderer.dart';
-import '../../preview/widgets/resume_header.dart';
-import '../../preview/widgets/education_block.dart';
-import '../../preview/widgets/experience_block.dart';
-import '../../preview/widgets/skills_block.dart';
-import '../../preview/widgets/projects_block.dart';
-import '../../preview/widgets/certification_block.dart';
-import '../../preview/widgets/language_block.dart';
+import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
+import 'package:vitafolio/features/preview/widgets/resume_header.dart';
+import 'package:vitafolio/features/preview/widgets/education_block.dart';
+import 'package:vitafolio/features/preview/widgets/experience_block.dart';
+import 'package:vitafolio/features/preview/widgets/skills_block.dart';
+import 'package:vitafolio/features/preview/widgets/projects_block.dart';
+import 'package:vitafolio/features/preview/widgets/certification_block.dart';
+import 'package:vitafolio/features/preview/widgets/language_block.dart';
 
 class AtsTemplateRenderer implements TemplateRenderer {
   const AtsTemplateRenderer();

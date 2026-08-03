@@ -1,9 +1,9 @@
-import '../base/pdf_renderer.dart';
-import '../templates/ats_pdf_renderer.dart';
-import '../templates/creative_pdf_renderer.dart';
-import '../templates/executive_pdf_renderer.dart';
-import '../templates/minimal_pdf_renderer.dart';
-import '../templates/modern_pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/renderers/base/pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/renderers/templates/ats_pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/renderers/templates/creative_pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/renderers/templates/executive_pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/renderers/templates/minimal_pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/renderers/templates/modern_pdf_renderer.dart';
 
 class RendererFactory {
   static final RendererFactory _instance = RendererFactory._internal();

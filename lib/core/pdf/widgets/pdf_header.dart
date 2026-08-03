@@ -1,6 +1,6 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../../../../data/models/embedded/personal_information.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
 
 class PdfHeader extends pw.StatelessWidget {
   final PersonalInformation info;

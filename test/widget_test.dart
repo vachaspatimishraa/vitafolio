@@ -3,7 +3,6 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vitafolio/app/app.dart';
 import 'package:vitafolio/data/models/resume_model.dart';
-import 'package:vitafolio/data/models/enums/resume_status.dart';
 import 'package:vitafolio/data/repositories/resume_repository.dart';
 import 'package:vitafolio/data/repositories/repository_provider.dart';
 
@@ -25,8 +24,6 @@ class FakeResumeRepository implements ResumeRepository {
   Future<void> renameResume(int id, String newName) async {}
   @override
   Future<List<ResumeModel>> searchResumes(String query) async => [];
-  @override
-  Future<List<ResumeModel>> filterResumes(ResumeStatus status) async => [];
   @override
   Future<List<ResumeModel>> sortResumes(
     List<ResumeModel> resumes,

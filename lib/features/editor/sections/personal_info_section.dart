@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../features/workflow/view_model/workflow_view_model.dart';
-import '../../../shared/widgets/inputs/app_text_field.dart';
-import '../widgets/editor_section.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/shared/widgets/inputs/app_text_field.dart';
+import 'package:vitafolio/features/editor/widgets/editor_section.dart';
 
 class PersonalInformationSection extends ConsumerWidget {
   const PersonalInformationSection({super.key});

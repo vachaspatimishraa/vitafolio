@@ -1,12 +1,12 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart' as fm;
-import '../../../features/workflow/models/workflow_state.dart';
-import '../../pdf/helpers/pdf_section_helper.dart';
-import '../renderers/template_renderer.dart';
-import '../themes/template_theme.dart';
-import '../widgets/pdf_preview_widget.dart';
-import 'ats_theme.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
+import 'package:vitafolio/core/templates/themes/template_theme.dart';
+import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
+import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
 
 class AtsPdfRenderer extends ResumeTemplateRenderer {
   const AtsPdfRenderer();

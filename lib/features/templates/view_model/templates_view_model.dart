@@ -1,9 +1,9 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/templates/models/resume_template.dart' as core;
-import '../../../core/templates/repository/template_repository.dart'
+import 'package:vitafolio/core/templates/models/resume_template.dart' as core;
+import 'package:vitafolio/core/templates/repository/template_repository.dart'
     as core_repo;
-import '../../preview/view_model/preview_view_model.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
 
 enum TemplateCategory {
   all,

@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import '../models/resume_model.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
 
 /// Data source for accessing ResumeModel data in Isar database.
 ///

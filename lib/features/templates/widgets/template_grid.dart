@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../view_model/templates_view_model.dart';
-import 'template_card.dart';
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/features/templates/view_model/templates_view_model.dart';
+import 'package:vitafolio/features/templates/widgets/template_card.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 /// A responsive grid that displays template cards.
 ///

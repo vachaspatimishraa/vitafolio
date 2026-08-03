@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../shared/widgets/loaders/loading_indicator.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/shared/widgets/loaders/loading_indicator.dart';
 
 class PreviewLoadingView extends StatelessWidget {
   const PreviewLoadingView({super.key});

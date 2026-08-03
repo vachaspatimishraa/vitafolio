@@ -2,18 +2,18 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import '../../../../core/database/database_provider.dart';
-import '../../../../data/models/resume_model.dart';
-import '../../../../data/models/embedded/professional_summary.dart';
-import '../../../../data/models/embedded/skill_model.dart';
-import '../../../../data/models/embedded/template_selection.dart';
-import '../../../../data/repositories/resume_repository.dart';
-import '../../../../data/repositories/repository_provider.dart';
-import '../../../core/templates/repository/template_repository.dart'
+import 'package:vitafolio/core/database/database_provider.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/models/embedded/professional_summary.dart';
+import 'package:vitafolio/data/models/embedded/skill_model.dart';
+import 'package:vitafolio/data/models/embedded/template_selection.dart';
+import 'package:vitafolio/data/repositories/resume_repository.dart';
+import 'package:vitafolio/data/repositories/repository_provider.dart';
+import 'package:vitafolio/core/templates/repository/template_repository.dart'
     as core_repo;
-import '../../workflow/models/workflow_state.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import 'preview_state.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_state.dart';
 
 export 'preview_state.dart';
 
@@ -63,24 +63,44 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
   Future<void> loadActiveResume([int? resumeId]) async {
     state = state.copyWith(isLoading: true, clearError: true);
     try {
-      int? idToLoad = resumeId;
+      final workflowState = _ref.read(workflowViewModelProvider);
+      final int? idToLoad = resumeId ?? workflowState.resumeId;
 
       ResumeModel? resume;
       if (idToLoad != null) {
         resume = await _repository.getResume(idToLoad);
       }
 
-      if (resume == null) {
-        final allResumes = await _repository.getAllResumes();
-        if (allResumes.isNotEmpty) {
-          resume = allResumes.first;
-        }
-      }
-
       if (resume != null) {
         _updateStateWithResume(resume);
       } else {
-        state = state.copyWith(isLoading: false);
+        final template = _templateRepository.getTemplate(
+          workflowState.selectedTemplateId ?? 'ats_professional',
+        );
+        final unsavedResume = ResumeModel(
+          resumeName: workflowState.resumeName.isNotEmpty
+              ? workflowState.resumeName
+              : 'My Resume',
+          personalInfo: workflowState.personalInfo,
+          professionalSummary: ProfessionalSummary()
+            ..summary = workflowState.summary,
+          education: workflowState.education,
+          experience: workflowState.experience,
+          skills: workflowState.skills
+              .map((s) => SkillModel()..name = s)
+              .toList(),
+          projects: workflowState.projects,
+          certifications: workflowState.certifications,
+          languages: workflowState.languages,
+          selectedTemplate: TemplateSelection()
+            ..templateId =
+                workflowState.selectedTemplateId ?? 'ats_professional',
+        );
+        state = state.copyWith(
+          isLoading: false,
+          resume: unsavedResume,
+          selectedTemplate: template,
+        );
       }
     } catch (e) {
       state = state.copyWith(
@@ -109,15 +129,10 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
     _ref.read(workflowViewModelProvider.notifier).selectTemplate(templateId);
     final workflowState = _ref.read(workflowViewModelProvider);
 
-    ResumeModel? currentResume = state.resume;
-
-    if (currentResume == null) {
-      try {
-        final allResumes = await _repository.getAllResumes();
-        if (allResumes.isNotEmpty) {
-          currentResume = allResumes.first;
-        }
-      } catch (_) {}
+    final int? targetId = workflowState.resumeId ?? state.resume?.id;
+    ResumeModel? currentResume;
+    if (targetId != null) {
+      currentResume = await _repository.getResume(targetId);
     }
 
     if (currentResume != null) {
@@ -181,6 +196,7 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
       try {
         final created = await _repository.createResume(newResume);
         currentResume = created;
+        _ref.read(workflowViewModelProvider.notifier).setResumeId(created.id);
       } catch (_) {}
     }
 

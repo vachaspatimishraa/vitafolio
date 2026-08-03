@@ -1,8 +1,8 @@
 import 'package:flutter/foundation.dart';
-import '../../../../data/models/resume_model.dart';
-import '../../../../data/models/embedded/personal_information.dart';
-import '../../../../features/workflow/models/workflow_state.dart';
-import '../../templates/repository/template_repository.dart' as core_repo;
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/templates/repository/template_repository.dart' as core_repo;
 
 /// Centralized service responsible for managing PDF document lifecycle, optimization, and export generation.
 class PdfService {

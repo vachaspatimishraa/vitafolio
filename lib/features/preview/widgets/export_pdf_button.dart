@@ -4,14 +4,14 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
 
-import '../../../../core/pdf/services/pdf_service.dart';
-import '../../../../data/models/embedded/professional_summary.dart';
-import '../../../../data/models/embedded/skill_model.dart';
-import '../../../../data/models/embedded/template_selection.dart';
-import '../../../../data/models/resume_model.dart';
-import '../../../../data/repositories/repository_provider.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../view_model/preview_view_model.dart';
+import 'package:vitafolio/core/pdf/services/pdf_service.dart';
+import 'package:vitafolio/data/models/embedded/professional_summary.dart';
+import 'package:vitafolio/data/models/embedded/skill_model.dart';
+import 'package:vitafolio/data/models/embedded/template_selection.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/repositories/repository_provider.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
 
 /// Button that exports the current resume as a PDF using the selected template.
 class ExportPdfButton extends ConsumerStatefulWidget {
@@ -29,15 +29,10 @@ class _ExportPdfButtonState extends ConsumerState<ExportPdfButton> {
     final workflowState = ref.read(workflowViewModelProvider);
     final repository = ref.read(resumeRepositoryProvider);
 
-    ResumeModel? resume = previewState.resume;
-
-    if (resume == null) {
-      try {
-        final allResumes = await repository.getAllResumes();
-        if (allResumes.isNotEmpty) {
-          resume = allResumes.first;
-        }
-      } catch (_) {}
+    final int? targetId = workflowState.resumeId ?? previewState.resume?.id;
+    ResumeModel? resume;
+    if (targetId != null) {
+      resume = await repository.getResume(targetId);
     }
 
     final selectedTemplateId =

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/certification_model.dart';
+import 'package:vitafolio/data/models/embedded/certification_model.dart';
 
 class CertificationBlock extends StatelessWidget {
   final CertificationModel item;

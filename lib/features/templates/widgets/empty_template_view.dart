@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 /// A dedicated empty state widget displayed when no templates match the
 /// current search query or category filter.

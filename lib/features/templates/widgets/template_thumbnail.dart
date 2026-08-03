@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
-import '../../../core/templates/models/resume_template.dart' as core;
-import '../../../data/models/embedded/education_model.dart';
-import '../../../data/models/embedded/experience_model.dart';
-import '../../../data/models/embedded/personal_information.dart';
-import '../../workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart' as core;
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 
 final _sampleWorkflowState = WorkflowState(
   personalInfo: PersonalInformation(

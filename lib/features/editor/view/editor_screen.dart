@@ -2,21 +2,21 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/constants/app_strings.dart';
-import '../../../app/router.dart';
-import '../../../shared/widgets/buttons/primary_button.dart';
-import '../../../shared/widgets/inputs/app_text_field.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../../workflow/widgets/discard_changes_dialog.dart';
-import '../sections/certifications_section.dart';
-import '../sections/education_section.dart';
-import '../sections/experience_section.dart';
-import '../sections/languages_section.dart';
-import '../sections/personal_info_section.dart';
-import '../sections/projects_section.dart';
-import '../sections/skills_section.dart';
-import '../sections/summary_section.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_strings.dart';
+import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/shared/widgets/buttons/primary_button.dart';
+import 'package:vitafolio/shared/widgets/inputs/app_text_field.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/workflow/widgets/discard_changes_dialog.dart';
+import 'package:vitafolio/features/editor/sections/certifications_section.dart';
+import 'package:vitafolio/features/editor/sections/education_section.dart';
+import 'package:vitafolio/features/editor/sections/experience_section.dart';
+import 'package:vitafolio/features/editor/sections/languages_section.dart';
+import 'package:vitafolio/features/editor/sections/personal_info_section.dart';
+import 'package:vitafolio/features/editor/sections/projects_section.dart';
+import 'package:vitafolio/features/editor/sections/skills_section.dart';
+import 'package:vitafolio/features/editor/sections/summary_section.dart';
 
 class EditorScreen extends ConsumerStatefulWidget {
   const EditorScreen({super.key});

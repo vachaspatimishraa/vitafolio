@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../themes/template_theme.dart';
+import 'package:vitafolio/core/templates/themes/template_theme.dart';
 
 final awesomeTheme = ResumeTheme(
   primaryColor: Colors.blue[600]!,

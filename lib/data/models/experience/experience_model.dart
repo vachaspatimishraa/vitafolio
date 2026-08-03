@@ -1,3 +1,0 @@
-class ExperienceModel {
-  const ExperienceModel();
-}

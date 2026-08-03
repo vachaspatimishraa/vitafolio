@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../app/constants/app_spacing.dart';
-import 'greeting_section.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/features/home/widgets/greeting_section.dart';
 
 class DashboardHeader extends ConsumerWidget {
   const DashboardHeader({super.key});

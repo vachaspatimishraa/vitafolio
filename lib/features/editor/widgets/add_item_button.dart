@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/widgets/buttons/secondary_button.dart';
+import 'package:vitafolio/shared/widgets/buttons/secondary_button.dart';
 
 class AddItemButton extends StatelessWidget {
   final String label;

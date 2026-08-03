@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import 'app_text_field.dart';
+import 'package:vitafolio/features/editor/widgets/app_text_field.dart';
 
 class MultilineField extends StatelessWidget {
   final String label;

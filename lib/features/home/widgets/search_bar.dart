@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/constants/app_strings.dart';
-import '../../../shared/widgets/inputs/search_field.dart';
-import '../view_model/home_view_model.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_strings.dart';
+import 'package:vitafolio/shared/widgets/inputs/search_field.dart';
+import 'package:vitafolio/features/home/view_model/home_view_model.dart';
 
 class HomeSearchBar extends ConsumerStatefulWidget {
   const HomeSearchBar({super.key});

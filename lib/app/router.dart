@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../features/editor/view/editor_screen.dart';
-import '../features/home/view/home_screen.dart';
-import '../features/preview/view/preview_screen.dart';
-import '../features/splash/view/splash_screen.dart';
-import '../features/templates/view/templates_screen.dart';
-import '../features/templates/view/template_preview_screen.dart';
-import '../core/templates/models/resume_template.dart' as core;
+import 'package:vitafolio/features/editor/view/editor_screen.dart';
+import 'package:vitafolio/features/home/view/home_screen.dart';
+import 'package:vitafolio/features/preview/view/preview_screen.dart';
+import 'package:vitafolio/features/splash/view/splash_screen.dart';
+import 'package:vitafolio/features/templates/view/templates_screen.dart';
+import 'package:vitafolio/features/templates/view/template_preview_screen.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart' as core;
 
 class AppRoutes {
   static const splash = '/';

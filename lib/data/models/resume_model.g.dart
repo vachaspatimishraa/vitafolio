@@ -85,13 +85,7 @@ const ResumeModelSchema = CollectionSchema(
       name: r'skills',
       type: IsarType.objectList,
       target: r'SkillModel',
-    ),
-    r'status': PropertySchema(
-      id: 12,
-      name: r'status',
-      type: IsarType.byte,
-      enumMap: _ResumeModelstatusEnumValueMap,
-    ),
+    )
   },
   estimateSize: _resumeModelEstimateSize,
   serialize: _resumeModelSerialize,
@@ -109,7 +103,7 @@ const ResumeModelSchema = CollectionSchema(
           name: r'resumeName',
           type: IndexType.value,
           caseSensitive: true,
-        ),
+        )
       ],
     ),
     r'createdDate': IndexSchema(
@@ -122,7 +116,7 @@ const ResumeModelSchema = CollectionSchema(
           name: r'createdDate',
           type: IndexType.value,
           caseSensitive: false,
-        ),
+        )
       ],
     ),
     r'lastUpdated': IndexSchema(
@@ -135,22 +129,9 @@ const ResumeModelSchema = CollectionSchema(
           name: r'lastUpdated',
           type: IndexType.value,
           caseSensitive: false,
-        ),
+        )
       ],
-    ),
-    r'status': IndexSchema(
-      id: -107785170620420283,
-      name: r'status',
-      unique: false,
-      replace: false,
-      properties: [
-        IndexPropertySchema(
-          name: r'status',
-          type: IndexType.value,
-          caseSensitive: false,
-        ),
-      ],
-    ),
+    )
   },
   links: {},
   embeddedSchemas: {
@@ -162,7 +143,7 @@ const ResumeModelSchema = CollectionSchema(
     r'SkillModel': SkillModelSchema,
     r'ProjectModel': ProjectModelSchema,
     r'CertificationModel': CertificationModelSchema,
-    r'LanguageModel': LanguageModelSchema,
+    r'LanguageModel': LanguageModelSchema
   },
   getId: _resumeModelGetId,
   getLinks: _resumeModelGetLinks,
@@ -184,11 +165,8 @@ int _resumeModelEstimateSize(
         final offsets = allOffsets[CertificationModel]!;
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
-          bytesCount += CertificationModelSchema.estimateSize(
-            value,
-            offsets,
-            allOffsets,
-          );
+          bytesCount +=
+              CertificationModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -201,11 +179,8 @@ int _resumeModelEstimateSize(
         final offsets = allOffsets[EducationModel]!;
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
-          bytesCount += EducationModelSchema.estimateSize(
-            value,
-            offsets,
-            allOffsets,
-          );
+          bytesCount +=
+              EducationModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -218,11 +193,8 @@ int _resumeModelEstimateSize(
         final offsets = allOffsets[ExperienceModel]!;
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
-          bytesCount += ExperienceModelSchema.estimateSize(
-            value,
-            offsets,
-            allOffsets,
-          );
+          bytesCount +=
+              ExperienceModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -235,11 +207,8 @@ int _resumeModelEstimateSize(
         final offsets = allOffsets[LanguageModel]!;
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
-          bytesCount += LanguageModelSchema.estimateSize(
-            value,
-            offsets,
-            allOffsets,
-          );
+          bytesCount +=
+              LanguageModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -247,25 +216,17 @@ int _resumeModelEstimateSize(
   {
     final value = object.personalInfo;
     if (value != null) {
-      bytesCount +=
-          3 +
+      bytesCount += 3 +
           PersonalInformationSchema.estimateSize(
-            value,
-            allOffsets[PersonalInformation]!,
-            allOffsets,
-          );
+              value, allOffsets[PersonalInformation]!, allOffsets);
     }
   }
   {
     final value = object.professionalSummary;
     if (value != null) {
-      bytesCount +=
-          3 +
+      bytesCount += 3 +
           ProfessionalSummarySchema.estimateSize(
-            value,
-            allOffsets[ProfessionalSummary]!,
-            allOffsets,
-          );
+              value, allOffsets[ProfessionalSummary]!, allOffsets);
     }
   }
   {
@@ -276,11 +237,8 @@ int _resumeModelEstimateSize(
         final offsets = allOffsets[ProjectModel]!;
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
-          bytesCount += ProjectModelSchema.estimateSize(
-            value,
-            offsets,
-            allOffsets,
-          );
+          bytesCount +=
+              ProjectModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -294,13 +252,9 @@ int _resumeModelEstimateSize(
   {
     final value = object.selectedTemplate;
     if (value != null) {
-      bytesCount +=
-          3 +
+      bytesCount += 3 +
           TemplateSelectionSchema.estimateSize(
-            value,
-            allOffsets[TemplateSelection]!,
-            allOffsets,
-          );
+              value, allOffsets[TemplateSelection]!, allOffsets);
     }
   }
   {
@@ -311,11 +265,8 @@ int _resumeModelEstimateSize(
         final offsets = allOffsets[SkillModel]!;
         for (var i = 0; i < list.length; i++) {
           final value = list[i];
-          bytesCount += SkillModelSchema.estimateSize(
-            value,
-            offsets,
-            allOffsets,
-          );
+          bytesCount +=
+              SkillModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
     }
@@ -386,7 +337,6 @@ void _resumeModelSerialize(
     SkillModelSchema.serialize,
     object.skills,
   );
-  writer.writeByte(offsets[12], object.status.index);
 }
 
 ResumeModel _resumeModelDeserialize(
@@ -451,9 +401,6 @@ ResumeModel _resumeModelDeserialize(
       allOffsets,
       SkillModel(),
     ),
-    status:
-        _ResumeModelstatusValueEnumMap[reader.readByteOrNull(offsets[12])] ??
-        ResumeStatus.draft,
   );
   return object;
 }
@@ -467,98 +414,74 @@ P _resumeModelDeserializeProp<P>(
   switch (propertyId) {
     case 0:
       return (reader.readObjectList<CertificationModel>(
-            offset,
-            CertificationModelSchema.deserialize,
-            allOffsets,
-            CertificationModel(),
-          ))
-          as P;
+        offset,
+        CertificationModelSchema.deserialize,
+        allOffsets,
+        CertificationModel(),
+      )) as P;
     case 1:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 2:
       return (reader.readObjectList<EducationModel>(
-            offset,
-            EducationModelSchema.deserialize,
-            allOffsets,
-            EducationModel(),
-          ))
-          as P;
+        offset,
+        EducationModelSchema.deserialize,
+        allOffsets,
+        EducationModel(),
+      )) as P;
     case 3:
       return (reader.readObjectList<ExperienceModel>(
-            offset,
-            ExperienceModelSchema.deserialize,
-            allOffsets,
-            ExperienceModel(),
-          ))
-          as P;
+        offset,
+        ExperienceModelSchema.deserialize,
+        allOffsets,
+        ExperienceModel(),
+      )) as P;
     case 4:
       return (reader.readObjectList<LanguageModel>(
-            offset,
-            LanguageModelSchema.deserialize,
-            allOffsets,
-            LanguageModel(),
-          ))
-          as P;
+        offset,
+        LanguageModelSchema.deserialize,
+        allOffsets,
+        LanguageModel(),
+      )) as P;
     case 5:
       return (reader.readDateTimeOrNull(offset)) as P;
     case 6:
       return (reader.readObjectOrNull<PersonalInformation>(
-            offset,
-            PersonalInformationSchema.deserialize,
-            allOffsets,
-          ))
-          as P;
+        offset,
+        PersonalInformationSchema.deserialize,
+        allOffsets,
+      )) as P;
     case 7:
       return (reader.readObjectOrNull<ProfessionalSummary>(
-            offset,
-            ProfessionalSummarySchema.deserialize,
-            allOffsets,
-          ))
-          as P;
+        offset,
+        ProfessionalSummarySchema.deserialize,
+        allOffsets,
+      )) as P;
     case 8:
       return (reader.readObjectList<ProjectModel>(
-            offset,
-            ProjectModelSchema.deserialize,
-            allOffsets,
-            ProjectModel(),
-          ))
-          as P;
+        offset,
+        ProjectModelSchema.deserialize,
+        allOffsets,
+        ProjectModel(),
+      )) as P;
     case 9:
       return (reader.readStringOrNull(offset)) as P;
     case 10:
       return (reader.readObjectOrNull<TemplateSelection>(
-            offset,
-            TemplateSelectionSchema.deserialize,
-            allOffsets,
-          ))
-          as P;
+        offset,
+        TemplateSelectionSchema.deserialize,
+        allOffsets,
+      )) as P;
     case 11:
       return (reader.readObjectList<SkillModel>(
-            offset,
-            SkillModelSchema.deserialize,
-            allOffsets,
-            SkillModel(),
-          ))
-          as P;
-    case 12:
-      return (_ResumeModelstatusValueEnumMap[reader.readByteOrNull(offset)] ??
-              ResumeStatus.draft)
-          as P;
+        offset,
+        SkillModelSchema.deserialize,
+        allOffsets,
+        SkillModel(),
+      )) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
   }
 }
-
-const _ResumeModelstatusEnumValueMap = {
-  'draft': 0,
-  'completed': 1,
-  'archived': 2,
-};
-const _ResumeModelstatusValueEnumMap = {
-  0: ResumeStatus.draft,
-  1: ResumeStatus.completed,
-  2: ResumeStatus.archived,
-};
 
 Id _resumeModelGetId(ResumeModel object) {
   return object.id;
@@ -569,10 +492,7 @@ List<IsarLinkBase<dynamic>> _resumeModelGetLinks(ResumeModel object) {
 }
 
 void _resumeModelAttach(
-  IsarCollection<dynamic> col,
-  Id id,
-  ResumeModel object,
-) {
+    IsarCollection<dynamic> col, Id id, ResumeModel object) {
   object.id = id;
 }
 
@@ -607,27 +527,21 @@ extension ResumeModelQueryWhereSort
       );
     });
   }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhere> anyStatus() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        const IndexWhereClause.any(indexName: r'status'),
-      );
-    });
-  }
 }
 
 extension ResumeModelQueryWhere
     on QueryBuilder<ResumeModel, ResumeModel, QWhereClause> {
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> idEqualTo(Id id) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(IdWhereClause.between(lower: id, upper: id));
+      return query.addWhereClause(IdWhereClause.between(
+        lower: id,
+        upper: id,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> idNotEqualTo(
-    Id id,
-  ) {
+      Id id) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
@@ -649,10 +563,8 @@ extension ResumeModelQueryWhere
     });
   }
 
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> idGreaterThan(
-    Id id, {
-    bool include = false,
-  }) {
+  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> idGreaterThan(Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.greaterThan(lower: id, includeLower: include),
@@ -660,10 +572,8 @@ extension ResumeModelQueryWhere
     });
   }
 
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> idLessThan(
-    Id id, {
-    bool include = false,
-  }) {
+  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> idLessThan(Id id,
+      {bool include = false}) {
     return QueryBuilder.apply(this, (query) {
       return query.addWhereClause(
         IdWhereClause.lessThan(upper: id, includeUpper: include),
@@ -678,103 +588,93 @@ extension ResumeModelQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IdWhereClause.between(
-          lower: lowerId,
-          includeLower: includeLower,
-          upper: upperId,
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addWhereClause(IdWhereClause.between(
+        lower: lowerId,
+        includeLower: includeLower,
+        upper: upperId,
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> resumeNameIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'resumeName', value: [null]),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'resumeName',
+        value: [null],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  resumeNameIsNotNull() {
+      resumeNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'resumeName',
-          lower: [null],
-          includeLower: false,
-          upper: [],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'resumeName',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> resumeNameEqualTo(
-    String? resumeName,
-  ) {
+      String? resumeName) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'resumeName', value: [resumeName]),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'resumeName',
+        value: [resumeName],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  resumeNameNotEqualTo(String? resumeName) {
+      resumeNameNotEqualTo(String? resumeName) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'resumeName',
-                lower: [],
-                upper: [resumeName],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'resumeName',
-                lower: [resumeName],
-                includeLower: false,
-                upper: [],
-              ),
-            );
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'resumeName',
+              lower: [],
+              upper: [resumeName],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'resumeName',
+              lower: [resumeName],
+              includeLower: false,
+              upper: [],
+            ));
       } else {
         return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'resumeName',
-                lower: [resumeName],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'resumeName',
-                lower: [],
-                upper: [resumeName],
-                includeUpper: false,
-              ),
-            );
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'resumeName',
+              lower: [resumeName],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'resumeName',
+              lower: [],
+              upper: [resumeName],
+              includeUpper: false,
+            ));
       }
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  resumeNameGreaterThan(String? resumeName, {bool include = false}) {
+      resumeNameGreaterThan(
+    String? resumeName, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'resumeName',
-          lower: [resumeName],
-          includeLower: include,
-          upper: [],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'resumeName',
+        lower: [resumeName],
+        includeLower: include,
+        upper: [],
+      ));
     });
   }
 
@@ -783,14 +683,12 @@ extension ResumeModelQueryWhere
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'resumeName',
-          lower: [],
-          upper: [resumeName],
-          includeUpper: include,
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'resumeName',
+        lower: [],
+        upper: [resumeName],
+        includeUpper: include,
+      ));
     });
   }
 
@@ -801,159 +699,143 @@ extension ResumeModelQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'resumeName',
-          lower: [lowerResumeName],
-          includeLower: includeLower,
-          upper: [upperResumeName],
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'resumeName',
+        lower: [lowerResumeName],
+        includeLower: includeLower,
+        upper: [upperResumeName],
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  resumeNameStartsWith(String ResumeNamePrefix) {
+      resumeNameStartsWith(String ResumeNamePrefix) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'resumeName',
-          lower: [ResumeNamePrefix],
-          upper: ['$ResumeNamePrefix\u{FFFFF}'],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'resumeName',
+        lower: [ResumeNamePrefix],
+        upper: ['$ResumeNamePrefix\u{FFFFF}'],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  resumeNameIsEmpty() {
+      resumeNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'resumeName', value: ['']),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'resumeName',
+        value: [''],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  resumeNameIsNotEmpty() {
+      resumeNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(
-              IndexWhereClause.lessThan(indexName: r'resumeName', upper: ['']),
-            )
-            .addWhereClause(
-              IndexWhereClause.greaterThan(
-                indexName: r'resumeName',
-                lower: [''],
-              ),
-            );
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'resumeName',
+              upper: [''],
+            ))
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'resumeName',
+              lower: [''],
+            ));
       } else {
         return query
-            .addWhereClause(
-              IndexWhereClause.greaterThan(
-                indexName: r'resumeName',
-                lower: [''],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.lessThan(indexName: r'resumeName', upper: ['']),
-            );
+            .addWhereClause(IndexWhereClause.greaterThan(
+              indexName: r'resumeName',
+              lower: [''],
+            ))
+            .addWhereClause(IndexWhereClause.lessThan(
+              indexName: r'resumeName',
+              upper: [''],
+            ));
       }
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  createdDateIsNull() {
+      createdDateIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'createdDate', value: [null]),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdDate',
+        value: [null],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  createdDateIsNotNull() {
+      createdDateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'createdDate',
-          lower: [null],
-          includeLower: false,
-          upper: [],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdDate',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> createdDateEqualTo(
-    DateTime? createdDate,
-  ) {
+      DateTime? createdDate) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(
-          indexName: r'createdDate',
-          value: [createdDate],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'createdDate',
+        value: [createdDate],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  createdDateNotEqualTo(DateTime? createdDate) {
+      createdDateNotEqualTo(DateTime? createdDate) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'createdDate',
-                lower: [],
-                upper: [createdDate],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'createdDate',
-                lower: [createdDate],
-                includeLower: false,
-                upper: [],
-              ),
-            );
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdDate',
+              lower: [],
+              upper: [createdDate],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdDate',
+              lower: [createdDate],
+              includeLower: false,
+              upper: [],
+            ));
       } else {
         return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'createdDate',
-                lower: [createdDate],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'createdDate',
-                lower: [],
-                upper: [createdDate],
-                includeUpper: false,
-              ),
-            );
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdDate',
+              lower: [createdDate],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'createdDate',
+              lower: [],
+              upper: [createdDate],
+              includeUpper: false,
+            ));
       }
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  createdDateGreaterThan(DateTime? createdDate, {bool include = false}) {
+      createdDateGreaterThan(
+    DateTime? createdDate, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'createdDate',
-          lower: [createdDate],
-          includeLower: include,
-          upper: [],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdDate',
+        lower: [createdDate],
+        includeLower: include,
+        upper: [],
+      ));
     });
   }
 
@@ -962,14 +844,12 @@ extension ResumeModelQueryWhere
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'createdDate',
-          lower: [],
-          upper: [createdDate],
-          includeUpper: include,
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdDate',
+        lower: [],
+        upper: [createdDate],
+        includeUpper: include,
+      ));
     });
   }
 
@@ -980,108 +860,95 @@ extension ResumeModelQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'createdDate',
-          lower: [lowerCreatedDate],
-          includeLower: includeLower,
-          upper: [upperCreatedDate],
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'createdDate',
+        lower: [lowerCreatedDate],
+        includeLower: includeLower,
+        upper: [upperCreatedDate],
+        includeUpper: includeUpper,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  lastUpdatedIsNull() {
+      lastUpdatedIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'lastUpdated', value: [null]),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastUpdated',
+        value: [null],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  lastUpdatedIsNotNull() {
+      lastUpdatedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'lastUpdated',
-          lower: [null],
-          includeLower: false,
-          upper: [],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastUpdated',
+        lower: [null],
+        includeLower: false,
+        upper: [],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> lastUpdatedEqualTo(
-    DateTime? lastUpdated,
-  ) {
+      DateTime? lastUpdated) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(
-          indexName: r'lastUpdated',
-          value: [lastUpdated],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.equalTo(
+        indexName: r'lastUpdated',
+        value: [lastUpdated],
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  lastUpdatedNotEqualTo(DateTime? lastUpdated) {
+      lastUpdatedNotEqualTo(DateTime? lastUpdated) {
     return QueryBuilder.apply(this, (query) {
       if (query.whereSort == Sort.asc) {
         return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'lastUpdated',
-                lower: [],
-                upper: [lastUpdated],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'lastUpdated',
-                lower: [lastUpdated],
-                includeLower: false,
-                upper: [],
-              ),
-            );
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastUpdated',
+              lower: [],
+              upper: [lastUpdated],
+              includeUpper: false,
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastUpdated',
+              lower: [lastUpdated],
+              includeLower: false,
+              upper: [],
+            ));
       } else {
         return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'lastUpdated',
-                lower: [lastUpdated],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'lastUpdated',
-                lower: [],
-                upper: [lastUpdated],
-                includeUpper: false,
-              ),
-            );
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastUpdated',
+              lower: [lastUpdated],
+              includeLower: false,
+              upper: [],
+            ))
+            .addWhereClause(IndexWhereClause.between(
+              indexName: r'lastUpdated',
+              lower: [],
+              upper: [lastUpdated],
+              includeUpper: false,
+            ));
       }
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause>
-  lastUpdatedGreaterThan(DateTime? lastUpdated, {bool include = false}) {
+      lastUpdatedGreaterThan(
+    DateTime? lastUpdated, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'lastUpdated',
-          lower: [lastUpdated],
-          includeLower: include,
-          upper: [],
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastUpdated',
+        lower: [lastUpdated],
+        includeLower: include,
+        upper: [],
+      ));
     });
   }
 
@@ -1090,14 +957,12 @@ extension ResumeModelQueryWhere
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'lastUpdated',
-          lower: [],
-          upper: [lastUpdated],
-          includeUpper: include,
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastUpdated',
+        lower: [],
+        upper: [lastUpdated],
+        includeUpper: include,
+      ));
     });
   }
 
@@ -1108,120 +973,13 @@ extension ResumeModelQueryWhere
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'lastUpdated',
-          lower: [lowerLastUpdated],
-          includeLower: includeLower,
-          upper: [upperLastUpdated],
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> statusEqualTo(
-    ResumeStatus status,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.equalTo(indexName: r'status', value: [status]),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> statusNotEqualTo(
-    ResumeStatus status,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      if (query.whereSort == Sort.asc) {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [],
-                upper: [status],
-                includeUpper: false,
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [status],
-                includeLower: false,
-                upper: [],
-              ),
-            );
-      } else {
-        return query
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [status],
-                includeLower: false,
-                upper: [],
-              ),
-            )
-            .addWhereClause(
-              IndexWhereClause.between(
-                indexName: r'status',
-                lower: [],
-                upper: [status],
-                includeUpper: false,
-              ),
-            );
-      }
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> statusGreaterThan(
-    ResumeStatus status, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'status',
-          lower: [status],
-          includeLower: include,
-          upper: [],
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> statusLessThan(
-    ResumeStatus status, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'status',
-          lower: [],
-          upper: [status],
-          includeUpper: include,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterWhereClause> statusBetween(
-    ResumeStatus lowerStatus,
-    ResumeStatus upperStatus, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addWhereClause(
-        IndexWhereClause.between(
-          indexName: r'status',
-          lower: [lowerStatus],
-          includeLower: includeLower,
-          upper: [upperStatus],
-          includeUpper: includeUpper,
-        ),
-      );
+      return query.addWhereClause(IndexWhereClause.between(
+        indexName: r'lastUpdated',
+        lower: [lowerLastUpdated],
+        includeLower: includeLower,
+        upper: [upperLastUpdated],
+        includeUpper: includeUpper,
+      ));
     });
   }
 }
@@ -1229,60 +987,96 @@ extension ResumeModelQueryWhere
 extension ResumeModelQueryFilter
     on QueryBuilder<ResumeModel, ResumeModel, QFilterCondition> {
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsIsNull() {
+      certificationsIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'certifications'),
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'certifications',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      certificationsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'certifications',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      certificationsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'certifications',
+        length,
+        true,
+        length,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsIsNotNull() {
+      certificationsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'certifications'),
+      return query.listLength(
+        r'certifications',
+        0,
+        true,
+        0,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsLengthEqualTo(int length) {
+      certificationsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'certifications', length, true, length, true);
+      return query.listLength(
+        r'certifications',
+        0,
+        false,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsIsEmpty() {
+      certificationsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'certifications', 0, true, 0, true);
+      return query.listLength(
+        r'certifications',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsIsNotEmpty() {
+      certificationsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'certifications', 0, false, 999999, true);
+      return query.listLength(
+        r'certifications',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'certifications', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'certifications', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsLengthBetween(
+      certificationsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1300,133 +1094,170 @@ extension ResumeModelQueryFilter
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  createdDateIsNull() {
+      createdDateIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'createdDate'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'createdDate',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  createdDateIsNotNull() {
+      createdDateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'createdDate'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'createdDate',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  createdDateEqualTo(DateTime? value) {
+      createdDateEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'createdDate', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'createdDate',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  createdDateGreaterThan(DateTime? value, {bool include = false}) {
+      createdDateGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'createdDate',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'createdDate',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  createdDateLessThan(DateTime? value, {bool include = false}) {
+      createdDateLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'createdDate',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'createdDate',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  createdDateBetween(
+      createdDateBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'createdDate',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'createdDate',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      educationIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'education',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      educationIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'education',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      educationLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'education',
+        length,
+        true,
+        length,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationIsNull() {
+      educationIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'education'),
+      return query.listLength(
+        r'education',
+        0,
+        true,
+        0,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationIsNotNull() {
+      educationIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'education'),
+      return query.listLength(
+        r'education',
+        0,
+        false,
+        999999,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationLengthEqualTo(int length) {
+      educationLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'education', length, true, length, true);
+      return query.listLength(
+        r'education',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationIsEmpty() {
+      educationLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'education', 0, true, 0, true);
+      return query.listLength(
+        r'education',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'education', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'education', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'education', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationLengthBetween(
+      educationLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1444,60 +1275,96 @@ extension ResumeModelQueryFilter
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceIsNull() {
+      experienceIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'experience'),
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'experience',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      experienceIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'experience',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      experienceLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'experience',
+        length,
+        true,
+        length,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceIsNotNull() {
+      experienceIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'experience'),
+      return query.listLength(
+        r'experience',
+        0,
+        true,
+        0,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceLengthEqualTo(int length) {
+      experienceIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'experience', length, true, length, true);
+      return query.listLength(
+        r'experience',
+        0,
+        false,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceIsEmpty() {
+      experienceLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'experience', 0, true, 0, true);
+      return query.listLength(
+        r'experience',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceIsNotEmpty() {
+      experienceLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'experience', 0, false, 999999, true);
+      return query.listLength(
+        r'experience',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'experience', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'experience', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceLengthBetween(
+      experienceLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1515,12 +1382,12 @@ extension ResumeModelQueryFilter
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> idEqualTo(
-    Id value,
-  ) {
+      Id value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'id', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
@@ -1529,13 +1396,11 @@ extension ResumeModelQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
@@ -1544,13 +1409,11 @@ extension ResumeModelQueryFilter
     bool include = false,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'id',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'id',
+        value: value,
+      ));
     });
   }
 
@@ -1561,73 +1424,107 @@ extension ResumeModelQueryFilter
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'id',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'id',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      languagesIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'languages',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      languagesIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'languages',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      languagesLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'languages',
+        length,
+        true,
+        length,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesIsNull() {
+      languagesIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'languages'),
+      return query.listLength(
+        r'languages',
+        0,
+        true,
+        0,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesIsNotNull() {
+      languagesIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'languages'),
+      return query.listLength(
+        r'languages',
+        0,
+        false,
+        999999,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesLengthEqualTo(int length) {
+      languagesLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'languages', length, true, length, true);
+      return query.listLength(
+        r'languages',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesIsEmpty() {
+      languagesLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'languages', 0, true, 0, true);
+      return query.listLength(
+        r'languages',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'languages', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'languages', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'languages', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesLengthBetween(
+      languagesLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1645,169 +1542,206 @@ extension ResumeModelQueryFilter
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  lastUpdatedIsNull() {
+      lastUpdatedIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'lastUpdated'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'lastUpdated',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  lastUpdatedIsNotNull() {
+      lastUpdatedIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'lastUpdated'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'lastUpdated',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  lastUpdatedEqualTo(DateTime? value) {
+      lastUpdatedEqualTo(DateTime? value) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'lastUpdated', value: value),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'lastUpdated',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  lastUpdatedGreaterThan(DateTime? value, {bool include = false}) {
+      lastUpdatedGreaterThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'lastUpdated',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'lastUpdated',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  lastUpdatedLessThan(DateTime? value, {bool include = false}) {
+      lastUpdatedLessThan(
+    DateTime? value, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'lastUpdated',
-          value: value,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'lastUpdated',
+        value: value,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  lastUpdatedBetween(
+      lastUpdatedBetween(
     DateTime? lower,
     DateTime? upper, {
     bool includeLower = true,
     bool includeUpper = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'lastUpdated',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'lastUpdated',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      personalInfoIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'personalInfo',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      personalInfoIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'personalInfo',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      professionalSummaryIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'professionalSummary',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      professionalSummaryIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'professionalSummary',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      projectsIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'projects',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      projectsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'projects',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      projectsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'projects',
+        length,
+        true,
+        length,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  personalInfoIsNull() {
+      projectsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'personalInfo'),
+      return query.listLength(
+        r'projects',
+        0,
+        true,
+        0,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  personalInfoIsNotNull() {
+      projectsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'personalInfo'),
+      return query.listLength(
+        r'projects',
+        0,
+        false,
+        999999,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  professionalSummaryIsNull() {
+      projectsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'professionalSummary'),
+      return query.listLength(
+        r'projects',
+        0,
+        true,
+        length,
+        include,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  professionalSummaryIsNotNull() {
+      projectsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'professionalSummary'),
+      return query.listLength(
+        r'projects',
+        length,
+        include,
+        999999,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsIsNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'projects'),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsIsNotNull() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'projects'),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsLengthEqualTo(int length) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'projects', length, true, length, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsIsEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'projects', 0, true, 0, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsIsNotEmpty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'projects', 0, false, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'projects', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'projects', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  projectsLengthBetween(
+      projectsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -1825,74 +1759,71 @@ extension ResumeModelQueryFilter
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameIsNull() {
+      resumeNameIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'resumeName'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'resumeName',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameIsNotNull() {
+      resumeNameIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'resumeName'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'resumeName',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameEqualTo(String? value, {bool caseSensitive = true}) {
+      resumeNameEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(
-          property: r'resumeName',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'resumeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameGreaterThan(
+      resumeNameGreaterThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'resumeName',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'resumeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameLessThan(
+      resumeNameLessThan(
     String? value, {
     bool include = false,
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'resumeName',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'resumeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameBetween(
+      resumeNameBetween(
     String? lower,
     String? upper, {
     bool includeLower = true,
@@ -1900,161 +1831,195 @@ extension ResumeModelQueryFilter
     bool caseSensitive = true,
   }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'resumeName',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'resumeName',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameStartsWith(String value, {bool caseSensitive = true}) {
+      resumeNameStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.startsWith(
-          property: r'resumeName',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'resumeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameEndsWith(String value, {bool caseSensitive = true}) {
+      resumeNameEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.endsWith(
-          property: r'resumeName',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'resumeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameContains(String value, {bool caseSensitive = true}) {
+      resumeNameContains(String value, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.contains(
-          property: r'resumeName',
-          value: value,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'resumeName',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameMatches(String pattern, {bool caseSensitive = true}) {
+      resumeNameMatches(String pattern, {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.matches(
-          property: r'resumeName',
-          wildcard: pattern,
-          caseSensitive: caseSensitive,
-        ),
-      );
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'resumeName',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameIsEmpty() {
+      resumeNameIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'resumeName', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'resumeName',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  resumeNameIsNotEmpty() {
+      resumeNameIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(property: r'resumeName', value: ''),
-      );
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'resumeName',
+        value: '',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  selectedTemplateIsNull() {
+      selectedTemplateIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'selectedTemplate'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'selectedTemplate',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  selectedTemplateIsNotNull() {
+      selectedTemplateIsNotNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'selectedTemplate'),
-      );
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'selectedTemplate',
+      ));
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> skillsIsNull() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNull(property: r'skills'),
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'skills',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      skillsIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'skills',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
+      skillsLengthEqualTo(int length) {
+    return QueryBuilder.apply(this, (query) {
+      return query.listLength(
+        r'skills',
+        length,
+        true,
+        length,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsIsNotNull() {
+      skillsIsEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        const FilterCondition.isNotNull(property: r'skills'),
+      return query.listLength(
+        r'skills',
+        0,
+        true,
+        0,
+        true,
       );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsLengthEqualTo(int length) {
+      skillsIsNotEmpty() {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'skills', length, true, length, true);
+      return query.listLength(
+        r'skills',
+        0,
+        false,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsIsEmpty() {
+      skillsLengthLessThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'skills', 0, true, 0, true);
+      return query.listLength(
+        r'skills',
+        0,
+        true,
+        length,
+        include,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsIsNotEmpty() {
+      skillsLengthGreaterThan(
+    int length, {
+    bool include = false,
+  }) {
     return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'skills', 0, false, 999999, true);
+      return query.listLength(
+        r'skills',
+        length,
+        include,
+        999999,
+        true,
+      );
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsLengthLessThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'skills', 0, true, length, include);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsLengthGreaterThan(int length, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.listLength(r'skills', length, include, 999999, true);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  skillsLengthBetween(
+      skillsLengthBetween(
     int lower,
     int upper, {
     bool includeLower = true,
@@ -2070,128 +2035,68 @@ extension ResumeModelQueryFilter
       );
     });
   }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> statusEqualTo(
-    ResumeStatus value,
-  ) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.equalTo(property: r'status', value: value),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  statusGreaterThan(ResumeStatus value, {bool include = false}) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.greaterThan(
-          include: include,
-          property: r'status',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> statusLessThan(
-    ResumeStatus value, {
-    bool include = false,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.lessThan(
-          include: include,
-          property: r'status',
-          value: value,
-        ),
-      );
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> statusBetween(
-    ResumeStatus lower,
-    ResumeStatus upper, {
-    bool includeLower = true,
-    bool includeUpper = true,
-  }) {
-    return QueryBuilder.apply(this, (query) {
-      return query.addFilterCondition(
-        FilterCondition.between(
-          property: r'status',
-          lower: lower,
-          includeLower: includeLower,
-          upper: upper,
-          includeUpper: includeUpper,
-        ),
-      );
-    });
-  }
 }
 
 extension ResumeModelQueryObject
     on QueryBuilder<ResumeModel, ResumeModel, QFilterCondition> {
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  certificationsElement(FilterQuery<CertificationModel> q) {
+      certificationsElement(FilterQuery<CertificationModel> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'certifications');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  educationElement(FilterQuery<EducationModel> q) {
+      educationElement(FilterQuery<EducationModel> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'education');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  experienceElement(FilterQuery<ExperienceModel> q) {
+      experienceElement(FilterQuery<ExperienceModel> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'experience');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  languagesElement(FilterQuery<LanguageModel> q) {
+      languagesElement(FilterQuery<LanguageModel> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'languages');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> personalInfo(
-    FilterQuery<PersonalInformation> q,
-  ) {
+      FilterQuery<PersonalInformation> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'personalInfo');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  professionalSummary(FilterQuery<ProfessionalSummary> q) {
+      professionalSummary(FilterQuery<ProfessionalSummary> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'professionalSummary');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> projectsElement(
-    FilterQuery<ProjectModel> q,
-  ) {
+      FilterQuery<ProjectModel> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'projects');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition>
-  selectedTemplate(FilterQuery<TemplateSelection> q) {
+      selectedTemplate(FilterQuery<TemplateSelection> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'selectedTemplate');
     });
   }
 
   QueryBuilder<ResumeModel, ResumeModel, QAfterFilterCondition> skillsElement(
-    FilterQuery<SkillModel> q,
-  ) {
+      FilterQuery<SkillModel> q) {
     return QueryBuilder.apply(this, (query) {
       return query.object(q, r'skills');
     });
@@ -2236,18 +2141,6 @@ extension ResumeModelQuerySortBy
   QueryBuilder<ResumeModel, ResumeModel, QAfterSortBy> sortByResumeNameDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'resumeName', Sort.desc);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterSortBy> sortByStatus() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterSortBy> sortByStatusDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.desc);
     });
   }
 }
@@ -2301,18 +2194,6 @@ extension ResumeModelQuerySortThenBy
       return query.addSortBy(r'resumeName', Sort.desc);
     });
   }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterSortBy> thenByStatus() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.asc);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QAfterSortBy> thenByStatusDesc() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addSortBy(r'status', Sort.desc);
-    });
-  }
 }
 
 extension ResumeModelQueryWhereDistinct
@@ -2329,17 +2210,10 @@ extension ResumeModelQueryWhereDistinct
     });
   }
 
-  QueryBuilder<ResumeModel, ResumeModel, QDistinct> distinctByResumeName({
-    bool caseSensitive = true,
-  }) {
+  QueryBuilder<ResumeModel, ResumeModel, QDistinct> distinctByResumeName(
+      {bool caseSensitive = true}) {
     return QueryBuilder.apply(this, (query) {
       return query.addDistinctBy(r'resumeName', caseSensitive: caseSensitive);
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeModel, QDistinct> distinctByStatus() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addDistinctBy(r'status');
     });
   }
 }
@@ -2353,7 +2227,7 @@ extension ResumeModelQueryProperty
   }
 
   QueryBuilder<ResumeModel, List<CertificationModel>?, QQueryOperations>
-  certificationsProperty() {
+      certificationsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'certifications');
     });
@@ -2366,21 +2240,21 @@ extension ResumeModelQueryProperty
   }
 
   QueryBuilder<ResumeModel, List<EducationModel>?, QQueryOperations>
-  educationProperty() {
+      educationProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'education');
     });
   }
 
   QueryBuilder<ResumeModel, List<ExperienceModel>?, QQueryOperations>
-  experienceProperty() {
+      experienceProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'experience');
     });
   }
 
   QueryBuilder<ResumeModel, List<LanguageModel>?, QQueryOperations>
-  languagesProperty() {
+      languagesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'languages');
     });
@@ -2393,21 +2267,21 @@ extension ResumeModelQueryProperty
   }
 
   QueryBuilder<ResumeModel, PersonalInformation?, QQueryOperations>
-  personalInfoProperty() {
+      personalInfoProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'personalInfo');
     });
   }
 
   QueryBuilder<ResumeModel, ProfessionalSummary?, QQueryOperations>
-  professionalSummaryProperty() {
+      professionalSummaryProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'professionalSummary');
     });
   }
 
   QueryBuilder<ResumeModel, List<ProjectModel>?, QQueryOperations>
-  projectsProperty() {
+      projectsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'projects');
     });
@@ -2420,22 +2294,16 @@ extension ResumeModelQueryProperty
   }
 
   QueryBuilder<ResumeModel, TemplateSelection?, QQueryOperations>
-  selectedTemplateProperty() {
+      selectedTemplateProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'selectedTemplate');
     });
   }
 
   QueryBuilder<ResumeModel, List<SkillModel>?, QQueryOperations>
-  skillsProperty() {
+      skillsProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'skills');
-    });
-  }
-
-  QueryBuilder<ResumeModel, ResumeStatus, QQueryOperations> statusProperty() {
-    return QueryBuilder.apply(this, (query) {
-      return query.addPropertyName(r'status');
     });
   }
 }

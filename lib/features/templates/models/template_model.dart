@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../renderers/template_renderer.dart';
+import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
 
 class TemplateModel {
   final String id;
@@ -15,8 +15,8 @@ class TemplateModel {
     required this.id,
     required this.name,
     required this.category,
-    required this.thumbnail,
-    required this.previewImage,
+    this.thumbnail = '',
+    this.previewImage = '',
     required this.themeColor,
     required this.isAtsFriendly,
     required this.renderer,

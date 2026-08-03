@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'app_text_field.dart';
+import 'package:vitafolio/shared/widgets/inputs/app_text_field.dart';
 
 /// A premium Material 3 Multiline Field wrapper.
 class MultilineField extends StatelessWidget {

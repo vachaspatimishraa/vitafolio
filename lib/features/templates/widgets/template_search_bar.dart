@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../view_model/templates_view_model.dart';
-import '../../../shared/widgets/inputs/search_field.dart';
+import 'package:vitafolio/features/templates/view_model/templates_view_model.dart';
+import 'package:vitafolio/shared/widgets/inputs/search_field.dart';
 
 /// A search bar that filters templates by name or category.
 ///

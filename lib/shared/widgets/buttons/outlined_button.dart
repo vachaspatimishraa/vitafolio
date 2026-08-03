@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 /// A premium Material 3 Outlined Button.
 class AppOutlinedButton extends StatelessWidget {

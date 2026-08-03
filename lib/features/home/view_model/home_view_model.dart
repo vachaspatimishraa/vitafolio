@@ -2,11 +2,11 @@ import 'dart:async';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import '../../../core/database/database_provider.dart';
-import '../../../data/models/resume_model.dart';
-import '../../../data/repositories/resume_repository.dart';
-import '../../../data/repositories/repository_provider.dart';
-import 'home_state.dart';
+import 'package:vitafolio/core/database/database_provider.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/repositories/resume_repository.dart';
+import 'package:vitafolio/data/repositories/repository_provider.dart';
+import 'package:vitafolio/features/home/view_model/home_state.dart';
 
 export 'home_state.dart';
 

@@ -1,6 +1,6 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../../app/constants/app_constants.dart';
+import 'package:vitafolio/app/constants/app_constants.dart';
 
 /// Represents the possible states of the splash screen.
 enum SplashState {
@@ -28,7 +28,6 @@ class SplashViewModel extends StateNotifier<SplashState> {
   /// then transitions to [SplashState.navigateToHome].
   Future<void> start() async {
     state = SplashState.loading;
-    await Future.delayed(AppConstants.splashDuration);
     state = SplashState.navigateToHome;
   }
 }

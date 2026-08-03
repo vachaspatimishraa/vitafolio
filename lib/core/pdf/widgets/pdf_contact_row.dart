@@ -16,7 +16,7 @@ class PdfContactRow extends pw.StatelessWidget {
         mainAxisSize: pw.MainAxisSize.min,
         children: [
           pw.Text(
-            "$label: ",
+            '$label: ',
             style: pw.TextStyle(fontWeight: pw.FontWeight.bold, fontSize: 10),
           ),
           pw.Text(value, style: const pw.TextStyle(fontSize: 10)),

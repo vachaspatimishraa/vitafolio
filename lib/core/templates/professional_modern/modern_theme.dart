@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../themes/template_theme.dart';
+import 'package:vitafolio/core/templates/themes/template_theme.dart';
 
 final modernTheme = ResumeTheme(
   primaryColor: Colors.blueGrey[800]!,

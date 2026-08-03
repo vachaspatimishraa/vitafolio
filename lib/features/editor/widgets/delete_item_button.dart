@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../shared/widgets/buttons/icon_button.dart';
+import 'package:vitafolio/shared/widgets/buttons/icon_button.dart';
 
 class DeleteItemButton extends StatelessWidget {
   final VoidCallback onPressed;

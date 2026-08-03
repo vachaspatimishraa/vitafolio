@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 class SectionTitle extends StatelessWidget {
   final String title;

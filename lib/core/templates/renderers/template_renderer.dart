@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../../../features/workflow/models/workflow_state.dart';
-import '../themes/template_theme.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/templates/themes/template_theme.dart';
 
 abstract class ResumeTemplateRenderer {
   const ResumeTemplateRenderer();

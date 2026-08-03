@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../../workflow/models/workflow_state.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../../../core/templates/repository/template_repository.dart'
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/core/templates/repository/template_repository.dart'
     as core_repo;
-import '../view_model/preview_view_model.dart';
-import 'preview_loading_view.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/preview/widgets/preview_loading_view.dart';
 
 class ResumeCanvas extends ConsumerWidget {
   const ResumeCanvas({super.key});

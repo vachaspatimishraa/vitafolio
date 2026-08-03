@@ -1,6 +1,6 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../fonts/font_manager.dart';
+import 'package:vitafolio/core/pdf/fonts/font_manager.dart';
 
 /// Centralized PDF Theme definition to ensure consistent typography and styling.
 class PdfTheme {

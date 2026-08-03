@@ -1,5 +1,4 @@
-import '../models/resume_model.dart';
-import '../models/enums/resume_status.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
 
 abstract interface class ResumeRepository {
   Future<ResumeModel> createResume(ResumeModel resume);
@@ -10,7 +9,6 @@ abstract interface class ResumeRepository {
   Future<ResumeModel> duplicateResume(int id, String defaultSuffix);
   Future<void> renameResume(int id, String newName);
   Future<List<ResumeModel>> searchResumes(String query);
-  Future<List<ResumeModel>> filterResumes(ResumeStatus status);
   Future<List<ResumeModel>> sortResumes(
     List<ResumeModel> resumes,
     String sortBy,

@@ -1,4 +1,4 @@
-import '../../../../data/models/resume_model.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
 
 class AtsValidationResult {
   final bool isAtsFriendly;

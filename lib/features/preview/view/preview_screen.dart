@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../widgets/preview_action_bar.dart';
-import '../widgets/preview_app_bar.dart';
-import '../widgets/resume_canvas.dart';
-import '../widgets/template_selector.dart';
+import 'package:vitafolio/features/preview/widgets/preview_action_bar.dart';
+import 'package:vitafolio/features/preview/widgets/preview_app_bar.dart';
+import 'package:vitafolio/features/preview/widgets/resume_canvas.dart';
+import 'package:vitafolio/features/preview/widgets/template_selector.dart';
 
 class PreviewScreen extends ConsumerWidget {
   const PreviewScreen({super.key});

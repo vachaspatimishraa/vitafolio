@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'section_title.dart';
+import 'package:vitafolio/features/preview/widgets/section_title.dart';
 
 class ResumeSection extends StatelessWidget {
   final String title;

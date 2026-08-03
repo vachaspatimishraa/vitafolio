@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../view_model/splash_view_model.dart';
-import '../widgets/loading_bar.dart';
-import '../widgets/splash_logo.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/features/splash/view_model/splash_view_model.dart';
+import 'package:vitafolio/features/splash/widgets/loading_bar.dart';
+import 'package:vitafolio/features/splash/widgets/splash_logo.dart';
 
 /// Splash screen displayed on app launch.
 ///

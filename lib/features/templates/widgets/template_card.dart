@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../core/templates/models/resume_template.dart' as core;
-import 'template_thumbnail.dart';
-import 'template_badge.dart';
-import 'selected_badge.dart';
-import 'use_template_button.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/router.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart' as core;
+import 'package:vitafolio/features/templates/widgets/template_thumbnail.dart';
+import 'package:vitafolio/features/templates/widgets/template_badge.dart';
+import 'package:vitafolio/features/templates/widgets/selected_badge.dart';
+import 'package:vitafolio/features/templates/widgets/use_template_button.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/router.dart';
 
 class TemplateCard extends ConsumerWidget {
   final core.ResumeTemplate template;

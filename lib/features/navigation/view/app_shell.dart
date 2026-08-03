@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
 
-import '../widgets/bottom_navigation.dart';
+import 'package:vitafolio/features/navigation/widgets/bottom_navigation.dart';
 
 /// The main application shell container, providing a persistent bottom navigation bar.
 class AppShell extends StatelessWidget {

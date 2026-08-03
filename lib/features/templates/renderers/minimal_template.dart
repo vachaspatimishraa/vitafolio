@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
-import 'template_renderer.dart';
-import '../../preview/widgets/resume_header.dart';
+import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
+import 'package:vitafolio/features/preview/widgets/resume_header.dart';
 
 class MinimalTemplateRenderer implements TemplateRenderer {
   const MinimalTemplateRenderer();

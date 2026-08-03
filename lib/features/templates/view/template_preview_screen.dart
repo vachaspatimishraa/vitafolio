@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/templates/models/resume_template.dart' as core;
-import '../../../data/models/embedded/education_model.dart';
-import '../../../data/models/embedded/experience_model.dart';
-import '../../../data/models/embedded/personal_information.dart';
-import '../../preview/view_model/preview_view_model.dart';
-import '../../workflow/models/workflow_state.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../widgets/template_badge.dart';
-import '../widgets/use_template_button.dart';
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart' as core;
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/templates/widgets/template_badge.dart';
+import 'package:vitafolio/features/templates/widgets/use_template_button.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 final _sampleWorkflowState = WorkflowState(
   personalInfo: PersonalInformation(

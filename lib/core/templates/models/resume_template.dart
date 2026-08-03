@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../renderers/template_renderer.dart';
-import '../themes/template_theme.dart';
+import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
+import 'package:vitafolio/core/templates/themes/template_theme.dart';
 
 enum TemplateCategory { ats, professional, executive, academic }
 

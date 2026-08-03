@@ -3,9 +3,9 @@ import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
-import '../security/exception_handler.dart';
-import '../../data/models/resume_model.dart';
-import 'database_logger.dart';
+import 'package:vitafolio/core/security/exception_handler.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/core/database/database_logger.dart';
 
 /// Singleton database service for managing the Isar database lifecycle.
 ///

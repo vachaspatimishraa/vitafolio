@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/personal_information.dart';
-import 'contact_information.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/features/preview/widgets/contact_information.dart';
 
 class ResumeHeader extends StatelessWidget {
   final PersonalInformation personalInfo;

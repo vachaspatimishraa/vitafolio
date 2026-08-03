@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
-import '../models/resume_template.dart';
-import '../ats_professional/ats_pdf_renderer.dart';
-import '../ats_professional/ats_theme.dart';
-import '../professional_modern/modern_pdf_renderer.dart';
-import '../professional_modern/modern_theme.dart';
-import '../awesome_professional/awesome_pdf_renderer.dart';
-import '../awesome_professional/awesome_theme.dart';
-import '../modern_executive/executive_pdf_renderer.dart';
-import '../modern_executive/executive_theme.dart';
-import '../academic_blue/academic_pdf_renderer.dart';
-import '../academic_blue/academic_theme.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart';
+import 'package:vitafolio/core/templates/ats_professional/ats_pdf_renderer.dart';
+import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
+import 'package:vitafolio/core/templates/professional_modern/modern_pdf_renderer.dart';
+import 'package:vitafolio/core/templates/professional_modern/modern_theme.dart';
+import 'package:vitafolio/core/templates/awesome_professional/awesome_pdf_renderer.dart';
+import 'package:vitafolio/core/templates/awesome_professional/awesome_theme.dart';
+import 'package:vitafolio/core/templates/modern_executive/executive_pdf_renderer.dart';
+import 'package:vitafolio/core/templates/modern_executive/executive_theme.dart';
+import 'package:vitafolio/core/templates/academic_blue/academic_pdf_renderer.dart';
+import 'package:vitafolio/core/templates/academic_blue/academic_theme.dart';
 
 class TemplateRepository {
   static final List<ResumeTemplate> _templates = [
@@ -87,7 +87,7 @@ class TemplateRepository {
   ResumeTemplate getTemplate(String id) {
     return _templates.firstWhere(
       (t) => t.id == id,
-      orElse: () => defaultTemplate(),
+      orElse: defaultTemplate,
     );
   }
 

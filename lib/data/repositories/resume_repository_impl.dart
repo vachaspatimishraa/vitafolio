@@ -1,9 +1,8 @@
 import 'package:isar/isar.dart';
-import '../datasource/isar_data_source.dart';
-import '../models/resume_model.dart';
-import '../models/embedded/template_selection.dart';
-import '../models/enums/resume_status.dart';
-import 'resume_repository.dart';
+import 'package:vitafolio/data/datasource/isar_data_source.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/models/embedded/template_selection.dart';
+import 'package:vitafolio/data/repositories/resume_repository.dart';
 
 class ResumeRepositoryImpl implements ResumeRepository {
   final IsarDataSource _dataSource;
@@ -61,7 +60,6 @@ class ResumeRepositoryImpl implements ResumeRepository {
       resumeName: '${original.resumeName} $defaultSuffix',
       createdDate: DateTime.now(),
       lastUpdated: DateTime.now(),
-      status: ResumeStatus.draft,
     );
 
     await _isar.writeTxn(() async {
@@ -93,11 +91,6 @@ class ResumeRepositoryImpl implements ResumeRepository {
   }
 
   @override
-  Future<List<ResumeModel>> filterResumes(ResumeStatus status) async {
-    return await _isar.resumeModels.filter().statusEqualTo(status).findAll();
-  }
-
-  @override
   Future<List<ResumeModel>> sortResumes(
     List<ResumeModel> resumes,
     String sortBy,
@@ -122,19 +115,8 @@ class ResumeRepositoryImpl implements ResumeRepository {
   @override
   Future<Map<String, int>> getResumeStatistics() async {
     final all = await getAllResumes();
-    int draftCount = 0;
-    int completedCount = 0;
-    for (final r in all) {
-      if (r.status == ResumeStatus.draft) {
-        draftCount++;
-      } else if (r.status == ResumeStatus.completed) {
-        completedCount++;
-      }
-    }
     return {
       'total': all.length,
-      'draft': draftCount,
-      'completed': completedCount,
     };
   }
 

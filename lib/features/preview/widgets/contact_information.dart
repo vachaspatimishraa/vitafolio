@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/personal_information.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
 
 class ContactInformation extends StatelessWidget {
   final PersonalInformation personalInfo;

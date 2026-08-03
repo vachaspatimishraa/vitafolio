@@ -4,8 +4,8 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:path/path.dart' as p;
 import 'package:path_provider/path_provider.dart';
 import 'package:share_plus/share_plus.dart';
-import '../security/input_validator.dart';
-import '../security/exception_handler.dart';
+import 'package:vitafolio/core/security/input_validator.dart';
+import 'package:vitafolio/core/security/exception_handler.dart';
 
 /// Helper class for secure, resilient PDF generation, saving, and sharing operations.
 class PdfHelper {

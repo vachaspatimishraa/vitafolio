@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_colors.dart';
+import 'package:vitafolio/app/constants/app_colors.dart';
 
 class SelectedBadge extends StatelessWidget {
   const SelectedBadge({super.key});

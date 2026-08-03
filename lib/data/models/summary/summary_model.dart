@@ -1,3 +1,0 @@
-class SummaryModel {
-  const SummaryModel();
-}

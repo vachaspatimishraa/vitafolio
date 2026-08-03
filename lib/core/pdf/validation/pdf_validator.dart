@@ -1,5 +1,5 @@
 import 'dart:typed_data';
-import '../../../../data/models/resume_model.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
 
 class PdfValidationResult {
   final bool isValid;

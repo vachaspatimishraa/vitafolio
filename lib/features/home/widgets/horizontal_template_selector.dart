@@ -2,12 +2,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/router.dart';
-import '../../../core/templates/models/resume_template.dart';
-import '../../../core/templates/repository/template_repository.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../../editor/view_model/editor_view_model.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart';
+import 'package:vitafolio/core/templates/repository/template_repository.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/editor/view_model/editor_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
 
 class HorizontalTemplateSelector extends ConsumerWidget {
   const HorizontalTemplateSelector({super.key});
@@ -59,6 +60,9 @@ class HorizontalTemplateSelector extends ConsumerWidget {
                         .read(workflowViewModelProvider.notifier)
                         .selectTemplate(template.id);
                     ref.read(editorViewModelProvider.notifier).resetState();
+                    ref
+                        .read(previewViewModelProvider.notifier)
+                        .loadActiveResume(null);
                     context.push(AppRoutes.editor);
                   },
                   borderRadius: BorderRadius.circular(12),

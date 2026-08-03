@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../models/template_model.dart';
-import '../renderers/modern_template.dart';
-import '../renderers/ats_template.dart';
-import '../renderers/minimal_template.dart';
-import '../renderers/executive_template.dart';
-import '../renderers/creative_template.dart';
+import 'package:vitafolio/features/templates/models/template_model.dart';
+import 'package:vitafolio/features/templates/renderers/modern_template.dart';
+import 'package:vitafolio/features/templates/renderers/ats_template.dart';
+import 'package:vitafolio/features/templates/renderers/minimal_template.dart';
+import 'package:vitafolio/features/templates/renderers/executive_template.dart';
+import 'package:vitafolio/features/templates/renderers/creative_template.dart';
 
 class TemplateRepository {
   static const List<TemplateModel> templates = [
@@ -12,8 +12,8 @@ class TemplateRepository {
       id: 'modern_clean',
       name: 'Modern Clean',
       category: 'Modern',
-      thumbnail: 'assets/templates/thumbnails/modern.png',
-      previewImage: 'assets/templates/previews/modern.png',
+      // thumbnail: 'assets/templates/thumbnails/modern.png',
+      // previewImage: 'assets/templates/previews/modern.png',
       themeColor: Colors.blue,
       isAtsFriendly: true,
       renderer: ModernTemplateRenderer(),

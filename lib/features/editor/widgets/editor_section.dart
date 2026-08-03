@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../shared/widgets/cards/app_card.dart';
-import 'section_header.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/shared/widgets/cards/app_card.dart';
+import 'package:vitafolio/features/editor/widgets/section_header.dart';
 
 class EditorSection extends StatelessWidget {
   final String title;

@@ -1,14 +1,14 @@
 import 'package:pdf/pdf.dart';
 import 'package:pdf/widgets.dart' as pw;
-import '../base/pdf_renderer.dart';
-import '../../widgets/pdf_header.dart';
-import '../../widgets/pdf_section_title.dart';
-import '../../widgets/pdf_contact_row.dart';
-import '../../widgets/pdf_timeline_item.dart';
-import '../../widgets/pdf_footer.dart';
-import '../../helpers/pdf_section_helper.dart';
-import '../../../../data/models/resume_model.dart';
-import '../../../../data/models/embedded/personal_information.dart';
+import 'package:vitafolio/core/pdf/renderers/base/pdf_renderer.dart';
+import 'package:vitafolio/core/pdf/widgets/pdf_header.dart';
+import 'package:vitafolio/core/pdf/widgets/pdf_section_title.dart';
+import 'package:vitafolio/core/pdf/widgets/pdf_contact_row.dart';
+import 'package:vitafolio/core/pdf/widgets/pdf_timeline_item.dart';
+import 'package:vitafolio/core/pdf/widgets/pdf_footer.dart';
+import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
 
 class AtsPdfRenderer implements PdfRenderer {
   @override

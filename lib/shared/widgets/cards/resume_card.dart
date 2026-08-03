@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../data/models/enums/resume_status.dart';
-import 'app_card.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/shared/widgets/cards/app_card.dart';
 
 /// A reusable Card to display details about a resume.
 class ResumeCard extends StatelessWidget {
@@ -9,7 +8,6 @@ class ResumeCard extends StatelessWidget {
   final String? professionalTitle;
   final String lastUpdated;
   final String templateName;
-  final ResumeStatus status;
   final Widget? trailing;
   final VoidCallback? onTap;
 
@@ -19,7 +17,6 @@ class ResumeCard extends StatelessWidget {
     this.professionalTitle,
     required this.lastUpdated,
     required this.templateName,
-    required this.status,
     this.trailing,
     this.onTap,
   });
@@ -143,36 +140,7 @@ class ResumeCard extends StatelessWidget {
                   ),
                 ),
                 const SizedBox(height: AppSpacing.xs),
-                // Status badge
-                Container(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: AppSpacing.sm,
-                    vertical: 2,
-                  ),
-                  decoration: BoxDecoration(
-                    color: status == ResumeStatus.completed
-                        ? Colors.green.withValues(alpha: 0.15)
-                        : colorScheme.secondaryContainer.withValues(alpha: 0.5),
-                    borderRadius: BorderRadius.circular(100),
-                    border: Border.all(
-                      color: status == ResumeStatus.completed
-                          ? Colors.green.withValues(alpha: 0.3)
-                          : colorScheme.outline.withValues(alpha: 0.2),
-                      width: 1,
-                    ),
-                  ),
-                  child: Text(
-                    status == ResumeStatus.completed ? 'Completed' : 'Draft',
-                    style: textTheme.labelSmall?.copyWith(
-                      color: status == ResumeStatus.completed
-                          ? (theme.brightness == Brightness.dark
-                                ? Colors.greenAccent[200]
-                                : Colors.green[700])
-                          : colorScheme.onSecondaryContainer,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
+
               ],
             ),
           ),

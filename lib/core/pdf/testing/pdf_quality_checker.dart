@@ -1,17 +1,16 @@
 import 'dart:typed_data';
-import '../../../../data/models/resume_model.dart';
-import '../../../../data/models/embedded/personal_information.dart';
-import '../../../../data/models/embedded/professional_summary.dart';
-import '../../../../data/models/embedded/education_model.dart';
-import '../../../../data/models/embedded/experience_model.dart';
-import '../../../../data/models/embedded/skill_model.dart';
-import '../../../../data/models/embedded/project_model.dart';
-import '../../../../data/models/embedded/certification_model.dart';
-import '../../../../data/models/embedded/language_model.dart';
-import '../../../../data/models/embedded/template_selection.dart';
-import '../../../../data/models/enums/resume_status.dart';
-import '../../../../data/models/enums/language_proficiency.dart';
-import '../../../../data/models/enums/employment_type.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/data/models/embedded/professional_summary.dart';
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/skill_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
+import 'package:vitafolio/data/models/embedded/certification_model.dart';
+import 'package:vitafolio/data/models/embedded/language_model.dart';
+import 'package:vitafolio/data/models/embedded/template_selection.dart';
+import 'package:vitafolio/data/models/enums/language_proficiency.dart';
+import 'package:vitafolio/data/models/enums/employment_type.dart';
 
 class QualityReport {
   final bool passedAllChecks;
@@ -31,7 +30,6 @@ class PdfQualityChecker {
   static ResumeModel createStressTestResume() {
     return ResumeModel(
       resumeName: 'Stress Test Portfolio Resume',
-      status: ResumeStatus.completed,
       lastUpdated: DateTime.now(),
       selectedTemplate: TemplateSelection()
         ..templateId = 'modern_clean'

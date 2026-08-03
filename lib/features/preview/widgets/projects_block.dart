@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/project_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
 
 class ProjectsBlock extends StatelessWidget {
   final ProjectModel item;

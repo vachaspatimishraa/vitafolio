@@ -1,9 +1,9 @@
-import '../../../data/models/embedded/certification_model.dart';
-import '../../../data/models/embedded/education_model.dart';
-import '../../../data/models/embedded/experience_model.dart';
-import '../../../data/models/embedded/language_model.dart';
-import '../../../data/models/embedded/project_model.dart';
-import '../../../data/models/embedded/skill_model.dart';
+import 'package:vitafolio/data/models/embedded/certification_model.dart';
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/language_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
+import 'package:vitafolio/data/models/embedded/skill_model.dart';
 
 /// Centralized helper for checking section visibility and filtering non-empty items.
 class PdfSectionHelper {

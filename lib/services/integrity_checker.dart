@@ -1,4 +1,4 @@
-import '../core/security/exception_handler.dart';
+import 'package:vitafolio/core/security/exception_handler.dart';
 
 /// Database & App Integrity Checker to validate database state on startup,
 /// repair corrupted records, and ensure safety.

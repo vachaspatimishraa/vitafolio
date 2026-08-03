@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/education_model.dart';
 
 class EducationBlock extends StatelessWidget {
   final EducationModel item;

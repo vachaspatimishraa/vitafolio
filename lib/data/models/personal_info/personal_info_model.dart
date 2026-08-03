@@ -1,3 +1,0 @@
-class PersonalInfoModel {
-  const PersonalInfoModel();
-}

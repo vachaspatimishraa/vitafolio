@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../view_model/templates_view_model.dart';
-import '../widgets/template_grid.dart';
-import '../widgets/template_search_bar.dart';
-import '../widgets/category_filter.dart';
-import '../widgets/empty_template_view.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/constants/app_strings.dart';
+import 'package:vitafolio/features/templates/view_model/templates_view_model.dart';
+import 'package:vitafolio/features/templates/widgets/template_grid.dart';
+import 'package:vitafolio/features/templates/widgets/template_search_bar.dart';
+import 'package:vitafolio/features/templates/widgets/category_filter.dart';
+import 'package:vitafolio/features/templates/widgets/empty_template_view.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_strings.dart';
 
 class TemplatesScreen extends ConsumerWidget {
   const TemplatesScreen({super.key});

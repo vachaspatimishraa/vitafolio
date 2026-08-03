@@ -1,7 +1,9 @@
-import '../core/database/isar_service.dart';
-import '../core/security/exception_handler.dart';
-import '../core/security/release_checker.dart';
-import 'integrity_checker.dart';
+import 'dart:async';
+
+import 'package:vitafolio/core/database/isar_service.dart';
+import 'package:vitafolio/core/security/exception_handler.dart';
+import 'package:vitafolio/core/security/release_checker.dart';
+import 'package:vitafolio/services/integrity_checker.dart';
 
 /// Service responsible for initializing the application before it starts.
 class AppInitializer {
@@ -14,17 +16,14 @@ class AppInitializer {
     if (_initialized) return;
 
     try {
-      // 1. Release Security Verification
-      ReleaseChecker.verifyReleaseSecurity();
-      await ReleaseChecker.verifyRequiredAssets();
-
-      // 2. Database Initialization
+      // 1. Critical Database Initialization
       await _initializeDatabase();
-
-      // 3. Data Integrity & Startup Checks
-      await IntegrityChecker.performStartupCheck();
-
       _initialized = true;
+
+      // 2. Non-blocking Background Audits & Security Checks
+      ReleaseChecker.verifyReleaseSecurity();
+      unawaited(ReleaseChecker.verifyRequiredAssets());
+      unawaited(IntegrityChecker.performStartupCheck());
     } catch (e, stackTrace) {
       _initialized = true;
       ExceptionHandler.logError(

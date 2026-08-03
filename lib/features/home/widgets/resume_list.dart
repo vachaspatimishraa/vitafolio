@@ -2,14 +2,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/router.dart';
-import '../../../data/models/resume_model.dart';
-import '../../../shared/widgets/cards/resume_card.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../../preview/view_model/preview_view_model.dart';
-import '../view_model/home_view_model.dart';
-import 'resume_card_menu.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/shared/widgets/cards/resume_card.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/home/view_model/home_view_model.dart';
+import 'package:vitafolio/features/home/widgets/resume_card_menu.dart';
 
 class ResumeList extends ConsumerWidget {
   const ResumeList({super.key});
@@ -41,7 +41,6 @@ class ResumeList extends ConsumerWidget {
                 ? resume.lastUpdated!.toIso8601String().split('T').first
                 : '',
             templateName: resume.templateName,
-            status: resume.status,
             onTap: () => _openResume(context, ref, resume),
             trailing: ResumeCardMenu(resume: resume),
           ),

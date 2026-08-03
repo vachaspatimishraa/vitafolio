@@ -2,19 +2,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/constants/app_strings.dart';
-import '../../../app/router.dart';
-import '../../../shared/widgets/buttons/primary_button.dart';
-import '../../../shared/widgets/empty_states/empty_state.dart';
-import '../../../shared/widgets/loaders/loading_indicator.dart';
-import '../../editor/view_model/editor_view_model.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../view_model/home_view_model.dart';
-import '../widgets/dashboard_header.dart';
-import '../widgets/resume_list.dart';
-import '../widgets/search_bar.dart';
-import '../widgets/section_title.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_strings.dart';
+import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/shared/widgets/buttons/primary_button.dart';
+import 'package:vitafolio/shared/widgets/empty_states/empty_state.dart';
+import 'package:vitafolio/shared/widgets/loaders/loading_indicator.dart';
+import 'package:vitafolio/features/editor/view_model/editor_view_model.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/home/view_model/home_view_model.dart';
+import 'package:vitafolio/features/home/widgets/dashboard_header.dart';
+import 'package:vitafolio/features/home/widgets/resume_list.dart';
+import 'package:vitafolio/features/home/widgets/search_bar.dart';
+import 'package:vitafolio/features/home/widgets/section_title.dart';
 
 class HomeScreen extends ConsumerWidget {
   const HomeScreen({super.key});
@@ -41,6 +42,7 @@ class HomeScreen extends ConsumerWidget {
         onPressed: () {
           ref.read(editorViewModelProvider.notifier).resetState();
           ref.read(workflowViewModelProvider.notifier).createNewResume();
+          ref.read(previewViewModelProvider.notifier).loadActiveResume(null);
           context.push(AppRoutes.editor);
         },
         icon: const Icon(Icons.add),
@@ -128,6 +130,9 @@ class HomeScreen extends ConsumerWidget {
                     ref
                         .read(workflowViewModelProvider.notifier)
                         .createNewResume();
+                    ref
+                        .read(previewViewModelProvider.notifier)
+                        .loadActiveResume(null);
                     context.push(AppRoutes.editor);
                   },
                 ),

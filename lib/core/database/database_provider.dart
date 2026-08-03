@@ -1,8 +1,8 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
-import 'isar_service.dart';
-import '../../data/datasource/isar_data_source.dart';
+import 'package:vitafolio/core/database/isar_service.dart';
+import 'package:vitafolio/data/datasource/isar_data_source.dart';
 
 /// Provider that gives access to the Isar database instance.
 ///

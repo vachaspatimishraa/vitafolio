@@ -1,6 +1,6 @@
 import 'package:flutter/foundation.dart';
 import 'package:isar/isar.dart';
-import '../../data/models/resume_model.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
 
 /// Centralized database configuration constants.
 ///

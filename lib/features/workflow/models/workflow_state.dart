@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
-import '../../../data/models/embedded/personal_information.dart';
-import '../../../data/models/embedded/education_model.dart';
-import '../../../data/models/embedded/experience_model.dart';
-import '../../../data/models/embedded/project_model.dart';
-import '../../../data/models/embedded/certification_model.dart';
-import '../../../data/models/embedded/language_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
+import 'package:vitafolio/data/models/embedded/certification_model.dart';
+import 'package:vitafolio/data/models/embedded/language_model.dart';
 
 /// Represents the current step in the resume workflow.
 enum WorkflowStep { creating, editing, previewing, templateSelection }
@@ -12,6 +12,7 @@ enum WorkflowStep { creating, editing, previewing, templateSelection }
 /// The single source of truth for the entire resume workflow.
 @immutable
 class WorkflowState {
+  final int? resumeId;
   final String resumeName;
   final PersonalInformation personalInfo;
   final String summary;
@@ -29,6 +30,7 @@ class WorkflowState {
   final bool isValid;
 
   const WorkflowState({
+    this.resumeId,
     this.resumeName = '',
     required this.personalInfo,
     required this.summary,
@@ -47,6 +49,7 @@ class WorkflowState {
 
   factory WorkflowState.initial() {
     return WorkflowState(
+      resumeId: null,
       resumeName: '',
       personalInfo: PersonalInformation(),
       summary: '',
@@ -65,6 +68,8 @@ class WorkflowState {
   }
 
   WorkflowState copyWith({
+    int? resumeId,
+    bool clearResumeId = false,
     String? resumeName,
     PersonalInformation? personalInfo,
     String? summary,
@@ -81,6 +86,7 @@ class WorkflowState {
     bool? isValid,
   }) {
     return WorkflowState(
+      resumeId: clearResumeId ? null : (resumeId ?? this.resumeId),
       resumeName: resumeName ?? this.resumeName,
       personalInfo: personalInfo ?? this.personalInfo,
       summary: summary ?? this.summary,

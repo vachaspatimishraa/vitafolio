@@ -1,6 +1,6 @@
 import 'package:pdf/widgets.dart' as pw;
 
-import '../fonts/font_manager.dart';
+import 'package:vitafolio/core/pdf/fonts/font_manager.dart';
 
 /// Single source of truth for TTF font loading and caching in PDF generation.
 /// Guarantees fonts load only once and provides consistent typography.

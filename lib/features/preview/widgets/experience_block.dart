@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
 
 class ExperienceBlock extends StatelessWidget {
   final ExperienceModel item;

@@ -1,15 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/constants/app_strings.dart';
-import '../../../app/router.dart';
-import '../../../data/models/resume_model.dart';
-import '../../../shared/widgets/dialogs/delete_dialog.dart';
-import '../../editor/view_model/editor_view_model.dart';
-import '../../preview/view_model/preview_view_model.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../view_model/home_view_model.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_strings.dart';
+import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/shared/widgets/dialogs/delete_dialog.dart';
+import 'package:vitafolio/features/editor/view_model/editor_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/home/view_model/home_view_model.dart';
 
 class ResumeCardMenu extends ConsumerWidget {
   final ResumeModel resume;

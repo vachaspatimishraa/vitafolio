@@ -1,5 +1,5 @@
-import '../../data/models/resume_model.dart';
-import 'database_logger.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/core/database/database_logger.dart';
 
 class DatabaseValidator {
   /// Validates a resume's structure and contents.

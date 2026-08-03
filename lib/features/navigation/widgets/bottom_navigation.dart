@@ -1,27 +1,26 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 
-import '../view_model/navigation_view_model.dart';
-
-/// Bottom navigation bar using Material 3 style and integrating with [GoRouter] and [Riverpod].
-class BottomNavigation extends ConsumerWidget {
-  /// The navigation shell containing the routes.
+class BottomNavigation extends StatelessWidget {
   final StatefulNavigationShell navigationShell;
 
-  const BottomNavigation({super.key, required this.navigationShell});
+  const BottomNavigation({
+    super.key,
+    required this.navigationShell,
+  });
+
+  void _onTap(BuildContext context, int index) {
+    navigationShell.goBranch(
+      index,
+      initialLocation: index == navigationShell.currentIndex,
+    );
+  }
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
-    final navState = ref.watch(navigationViewModelProvider);
-
+  Widget build(BuildContext context) {
     return NavigationBar(
-      selectedIndex: navState.selectedIndex,
-      onDestinationSelected: (index) {
-        ref
-            .read(navigationViewModelProvider.notifier)
-            .setIndex(index, navigationShell);
-      },
+      selectedIndex: navigationShell.currentIndex,
+      onDestinationSelected: (int index) => _onTap(context, index),
       destinations: const [
         NavigationDestination(
           icon: Icon(Icons.home_outlined),
@@ -31,11 +30,16 @@ class BottomNavigation extends ConsumerWidget {
         NavigationDestination(
           icon: Icon(Icons.edit_note_outlined),
           selectedIcon: Icon(Icons.edit_note),
-          label: 'Edit Details',
+          label: 'Editor',
         ),
         NavigationDestination(
-          icon: Icon(Icons.dashboard_customize_outlined),
-          selectedIcon: Icon(Icons.dashboard_customize),
+          icon: Icon(Icons.description_outlined),
+          selectedIcon: Icon(Icons.description),
+          label: 'Preview',
+        ),
+        NavigationDestination(
+          icon: Icon(Icons.grid_view_outlined),
+          selectedIcon: Icon(Icons.grid_view),
           label: 'Templates',
         ),
       ],

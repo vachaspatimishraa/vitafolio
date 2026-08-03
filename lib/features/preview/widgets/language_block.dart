@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../../data/models/embedded/language_model.dart';
+import 'package:vitafolio/data/models/embedded/language_model.dart';
 
 class LanguageBlock extends StatelessWidget {
   final LanguageModel item;

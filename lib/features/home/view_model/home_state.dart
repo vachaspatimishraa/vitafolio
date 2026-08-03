@@ -1,5 +1,4 @@
-import '../../../data/models/enums/resume_status.dart';
-import '../../../data/models/resume_model.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
 
 // Sort options enum
 enum SortOption {
@@ -59,19 +58,9 @@ class HomeState {
     // Apply filter
     switch (selectedFilter) {
       case FilterOption.all:
-        break;
       case FilterOption.draft:
-        result = result.where((r) => r.status == ResumeStatus.draft).toList();
-        break;
       case FilterOption.completed:
-        result = result
-            .where((r) => r.status == ResumeStatus.completed)
-            .toList();
-        break;
       case FilterOption.archived:
-        result = result
-            .where((r) => r.status == ResumeStatus.archived)
-            .toList();
         break;
     }
 

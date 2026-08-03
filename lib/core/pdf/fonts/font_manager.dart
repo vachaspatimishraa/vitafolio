@@ -114,7 +114,7 @@ class FontManager {
           );
           break;
         default:
-          throw Exception("Unsupported font family: $familyName");
+          throw Exception('Unsupported font family: $familyName');
       }
       _cachedFonts[normalized] = family;
       return family;

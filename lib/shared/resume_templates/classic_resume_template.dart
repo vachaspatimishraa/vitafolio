@@ -1,3 +1,0 @@
-class ClassicResumeTemplate {
-  const ClassicResumeTemplate();
-}

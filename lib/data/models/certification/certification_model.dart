@@ -1,3 +1,0 @@
-class CertificationModel {
-  const CertificationModel();
-}

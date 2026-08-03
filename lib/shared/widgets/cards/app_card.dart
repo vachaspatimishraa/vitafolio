@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 /// A reusable Card container adhering to Material 3 styling.
 class AppCard extends StatelessWidget {

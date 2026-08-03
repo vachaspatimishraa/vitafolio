@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
 
 class SectionHeader extends StatelessWidget {
   final String title;

@@ -1,4 +1,4 @@
-import '../models/workflow_state.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 
 class ValidationService {
   static List<String> validateResume(WorkflowState state) {

@@ -1,14 +1,13 @@
 import 'package:isar/isar.dart';
-import 'embedded/personal_information.dart';
-import 'embedded/professional_summary.dart';
-import 'embedded/education_model.dart';
-import 'embedded/experience_model.dart';
-import 'embedded/skill_model.dart';
-import 'embedded/project_model.dart';
-import 'embedded/certification_model.dart';
-import 'embedded/language_model.dart';
-import 'embedded/template_selection.dart';
-import 'enums/resume_status.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/data/models/embedded/professional_summary.dart';
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/skill_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
+import 'package:vitafolio/data/models/embedded/certification_model.dart';
+import 'package:vitafolio/data/models/embedded/language_model.dart';
+import 'package:vitafolio/data/models/embedded/template_selection.dart';
 
 part 'resume_model.g.dart';
 
@@ -25,10 +24,6 @@ class ResumeModel {
   @Index()
   DateTime? lastUpdated;
 
-  @enumerated
-  @Index()
-  var status = ResumeStatus.draft;
-
   TemplateSelection? selectedTemplate;
   PersonalInformation? personalInfo;
   ProfessionalSummary? professionalSummary;
@@ -44,7 +39,6 @@ class ResumeModel {
     this.resumeName,
     this.createdDate,
     this.lastUpdated,
-    this.status = ResumeStatus.draft,
     this.selectedTemplate,
     this.personalInfo,
     this.professionalSummary,
@@ -61,7 +55,6 @@ class ResumeModel {
     String? resumeName,
     DateTime? createdDate,
     DateTime? lastUpdated,
-    ResumeStatus? status,
     TemplateSelection? selectedTemplate,
     PersonalInformation? personalInfo,
     ProfessionalSummary? professionalSummary,
@@ -77,7 +70,6 @@ class ResumeModel {
       resumeName: resumeName ?? this.resumeName,
       createdDate: createdDate ?? this.createdDate,
       lastUpdated: lastUpdated ?? this.lastUpdated,
-      status: status ?? this.status,
       selectedTemplate: selectedTemplate ?? this.selectedTemplate,
       personalInfo: personalInfo ?? this.personalInfo,
       professionalSummary: professionalSummary ?? this.professionalSummary,

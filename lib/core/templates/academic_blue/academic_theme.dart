@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import '../themes/template_theme.dart';
+import 'package:vitafolio/core/templates/themes/template_theme.dart';
 
 final academicTheme = ResumeTheme(
   primaryColor: const Color(0xFF00199E),

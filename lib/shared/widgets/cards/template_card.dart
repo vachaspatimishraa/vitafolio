@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import '../../../app/constants/app_spacing.dart';
-import 'app_card.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/shared/widgets/cards/app_card.dart';
 
 /// Reusable template card for the template selection screen.
 class TemplateCard extends StatelessWidget {

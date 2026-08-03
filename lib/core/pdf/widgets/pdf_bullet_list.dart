@@ -15,7 +15,7 @@ class PdfBulletList extends pw.StatelessWidget {
             (item) => pw.Row(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
-                pw.Text(" • ", style: pw.TextStyle(fontSize: fontSize)),
+                pw.Text(' • ', style: pw.TextStyle(fontSize: fontSize)),
                 pw.Expanded(
                   child: pw.Text(item, style: pw.TextStyle(fontSize: fontSize)),
                 ),

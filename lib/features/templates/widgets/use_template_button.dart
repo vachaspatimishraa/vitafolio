@@ -1,10 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import '../../preview/view_model/preview_view_model.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../view_model/templates_view_model.dart';
-import '../../../app/router.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/templates/view_model/templates_view_model.dart';
+import 'package:vitafolio/app/router.dart';
 
 /// A filled "Use Template" button that selects the template in both the
 /// templates and workflow view models, then navigates to the Resume Preview

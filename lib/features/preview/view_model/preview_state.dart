@@ -1,5 +1,5 @@
-import '../../../data/models/resume_model.dart';
-import '../../../core/templates/models/resume_template.dart' as core;
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/core/templates/models/resume_template.dart' as core;
 
 class PreviewState {
   final ResumeModel? resume;

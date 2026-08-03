@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../view_model/templates_view_model.dart';
-import '../../../shared/widgets/chips/filter_chip.dart';
+import 'package:vitafolio/features/templates/view_model/templates_view_model.dart';
+import 'package:vitafolio/shared/widgets/chips/filter_chip.dart';
 
 class CategoryFilter extends ConsumerWidget {
   const CategoryFilter({super.key});

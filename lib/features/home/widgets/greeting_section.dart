@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../core/widgets/app_logo.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../../../app/constants/app_strings.dart';
+import 'package:vitafolio/core/widgets/app_logo.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/app/constants/app_strings.dart';
 
 class GreetingSection extends ConsumerWidget {
   const GreetingSection({super.key});

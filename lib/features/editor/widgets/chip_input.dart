@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 
-import '../../../app/constants/app_spacing.dart';
-import '../../../shared/widgets/chips/skill_chip.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/shared/widgets/chips/skill_chip.dart';
 
 class ChipInput extends StatefulWidget {
   final List<String> chips;

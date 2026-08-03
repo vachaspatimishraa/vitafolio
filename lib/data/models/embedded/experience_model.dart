@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import '../enums/employment_type.dart';
+import 'package:vitafolio/data/models/enums/employment_type.dart';
 
 part 'experience_model.g.dart';
 

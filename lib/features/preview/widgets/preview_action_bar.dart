@@ -1,13 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:go_router/go_router.dart';
-import '../../../app/constants/app_spacing.dart';
-import 'export_pdf_button.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/features/preview/widgets/export_pdf_button.dart';
 
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../editor/view_model/editor_view_model.dart';
-import '../../workflow/view_model/workflow_view_model.dart';
-import '../view_model/preview_view_model.dart';
-import '../../../app/router.dart';
+import 'package:vitafolio/features/editor/view_model/editor_view_model.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/preview/view_model/preview_view_model.dart';
+import 'package:vitafolio/app/router.dart';
 
 class PreviewActionBar extends ConsumerWidget {
   const PreviewActionBar({super.key});

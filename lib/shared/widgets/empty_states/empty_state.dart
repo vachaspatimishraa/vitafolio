@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
-import '../../../core/widgets/app_logo.dart';
-import '../../../app/constants/app_spacing.dart';
-import '../buttons/primary_button.dart';
-import '../buttons/secondary_button.dart';
+import 'package:vitafolio/core/widgets/app_logo.dart';
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/shared/widgets/buttons/primary_button.dart';
+import 'package:vitafolio/shared/widgets/buttons/secondary_button.dart';
 
 /// A reusable premium empty state placeholder.
 class EmptyState extends StatelessWidget {

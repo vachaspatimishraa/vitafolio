@@ -1,5 +1,5 @@
 import 'package:isar/isar.dart';
-import '../enums/language_proficiency.dart';
+import 'package:vitafolio/data/models/enums/language_proficiency.dart';
 
 part 'language_model.g.dart';
 

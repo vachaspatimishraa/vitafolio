@@ -1,12 +1,12 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../../data/models/resume_model.dart';
-import '../../../data/models/embedded/personal_information.dart';
-import '../../../data/models/embedded/education_model.dart';
-import '../../../data/models/embedded/experience_model.dart';
-import '../../../data/models/embedded/project_model.dart';
-import '../../../data/models/embedded/certification_model.dart';
-import '../../../data/models/embedded/language_model.dart';
-import '../models/workflow_state.dart';
+import 'package:vitafolio/data/models/resume_model.dart';
+import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/data/models/embedded/education_model.dart';
+import 'package:vitafolio/data/models/embedded/experience_model.dart';
+import 'package:vitafolio/data/models/embedded/project_model.dart';
+import 'package:vitafolio/data/models/embedded/certification_model.dart';
+import 'package:vitafolio/data/models/embedded/language_model.dart';
+import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 
 class WorkflowViewModel extends StateNotifier<WorkflowState> {
   WorkflowViewModel() : super(WorkflowState.initial());
@@ -28,8 +28,13 @@ class WorkflowViewModel extends StateNotifier<WorkflowState> {
     state = WorkflowState.initial();
   }
 
+  void setResumeId(int id) {
+    state = state.copyWith(resumeId: id);
+  }
+
   void loadExistingResume(ResumeModel resume) {
     state = state.copyWith(
+      resumeId: resume.id,
       resumeName: resume.resumeName ?? '',
       personalInfo: resume.personalInfo ?? PersonalInformation(),
       summary: resume.professionalSummary?.summary ?? '',
