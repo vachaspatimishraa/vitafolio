@@ -420,6 +420,11 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
     if (certificationsList.isNotEmpty) {
       mainWidgets.add(_buildMainTitle('CERTIFICATIONS', textDark, lineGrey));
       for (final cert in certificationsList) {
+        final certOrgDate = [
+          if (cert.organization?.trim().isNotEmpty == true) cert.organization!.trim(),
+          if (cert.issueDate != null) _formatDate(cert.issueDate),
+        ].join(' | ');
+
         mainWidgets.add(
           pw.Padding(
             padding: const pw.EdgeInsets.only(bottom: 4),
@@ -434,10 +439,11 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
                     color: textDark,
                   ),
                 ),
-                pw.Text(
-                  cert.organization?.trim() ?? '',
-                  style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
-                ),
+                if (certOrgDate.isNotEmpty)
+                  pw.Text(
+                    certOrgDate,
+                    style: const pw.TextStyle(fontSize: 9, color: PdfColors.grey700),
+                  ),
               ],
             ),
           ),

@@ -53,6 +53,8 @@ class PdfService {
               fieldOfStudy: e.fieldOfStudy,
               school: e.institution,
               grade: e.grade,
+              startDate: DateTime.tryParse(e.startYear) ?? (int.tryParse(e.startYear) != null ? DateTime(int.parse(e.startYear)) : null),
+              endDate: DateTime.tryParse(e.endYear) ?? (int.tryParse(e.endYear) != null ? DateTime(int.parse(e.endYear)) : null),
               isCurrentlyStudying: e.isCurrentlyStudying,
             ),
           )
@@ -64,6 +66,8 @@ class PdfService {
               position: e.jobTitle,
               company: e.company,
               location: e.location,
+              startDate: DateTime.tryParse(e.startDate) ?? (int.tryParse(e.startDate) != null ? DateTime(int.parse(e.startDate)) : null),
+              endDate: e.endDate != null ? (DateTime.tryParse(e.endDate!) ?? (int.tryParse(e.endDate!) != null ? DateTime(int.parse(e.endDate!)) : null)) : null,
               isCurrentlyWorking: e.isCurrentRole,
               description: e.description,
             ),
@@ -86,6 +90,7 @@ class PdfService {
               id: c.id,
               certificateName: c.name,
               organization: c.organization,
+              issueDate: DateTime.tryParse(c.issueDate) ?? (int.tryParse(c.issueDate) != null ? DateTime(int.parse(c.issueDate)) : null),
               credentialUrl: c.credentialId,
             ),
           )

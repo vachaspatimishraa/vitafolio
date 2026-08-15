@@ -491,8 +491,13 @@ class ModernTemplateRenderer implements TemplateRenderer {
                 // CERTIFICATIONS
                 if (certificationsList.isNotEmpty) ...[
                   _buildMainTitle('CERTIFICATIONS', theme, textDark, lineGrey),
-                  ...certificationsList.map(
-                    (cert) => Padding(
+                  ...certificationsList.map((cert) {
+                    final certOrgDate = [
+                      if (cert.organization?.trim().isNotEmpty == true) cert.organization!.trim(),
+                      if (cert.issueDate != null) _formatDate(cert.issueDate),
+                    ].join(' | ');
+
+                    return Padding(
                       padding: const EdgeInsets.only(bottom: 6.0),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -505,17 +510,19 @@ class ModernTemplateRenderer implements TemplateRenderer {
                               color: textDark,
                             ),
                           ),
-                          Text(
-                            cert.organization?.trim() ?? '',
-                            style: theme.textTheme.bodyMedium?.copyWith(
-                              fontSize: 11,
-                              color: Colors.grey[700],
+                          if (certOrgDate.isNotEmpty)
+                            Text(
+                              certOrgDate,
+                              style: theme.textTheme.bodyMedium?.copyWith(
+                                fontSize: 11,
+                                color: Colors.grey[700],
+                              ),
                             ),
-                          ),
                         ],
                       ),
-                    ),
-                  ),
+                    );
+                  }),
+                  const SizedBox(height: 14),
                 ],
               ],
             ),
