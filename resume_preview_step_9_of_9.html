@@ -1,0 +1,362 @@
+<!DOCTYPE html><html class="light" lang="en" style="width: 390px; height: 1451px; overflow: hidden; position: relative;"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Resume Preview - Vitafolio</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&amp;family=JetBrains+Mono:wght@500&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<script id="tailwind-config">
+        tailwind.config = {
+            darkMode: "class",
+            theme: {
+                extend: {
+                    "colors": {
+                        "surface": "#f8f9fa",
+                        "primary-container": "#2563eb",
+                        "outline-variant": "#c3c6d7",
+                        "on-secondary-fixed": "#141b2b",
+                        "on-secondary-container": "#5c6274",
+                        "on-background": "#191c1d",
+                        "surface-tint": "#0053db",
+                        "on-error-container": "#93000a",
+                        "on-error": "#ffffff",
+                        "background": "#f8f9fa",
+                        "surface-container-lowest": "#ffffff",
+                        "on-primary-fixed": "#00174b",
+                        "secondary-fixed-dim": "#c0c6db",
+                        "on-secondary-fixed-variant": "#404758",
+                        "primary-fixed": "#dbe1ff",
+                        "on-tertiary": "#ffffff",
+                        "on-tertiary-fixed": "#151c27",
+                        "on-tertiary-fixed-variant": "#404754",
+                        "primary-fixed-dim": "#b4c5ff",
+                        "tertiary-fixed-dim": "#c0c7d6",
+                        "error": "#ba1a1a",
+                        "on-primary": "#ffffff",
+                        "surface-bright": "#f8f9fa",
+                        "surface-container-highest": "#e1e3e4",
+                        "outline": "#737686",
+                        "surface-dim": "#d9dadb",
+                        "surface-container-low": "#f3f4f5",
+                        "primary": "#004ac6",
+                        "inverse-surface": "#2e3132",
+                        "surface-variant": "#e1e3e4",
+                        "on-surface": "#191c1d",
+                        "surface-container-high": "#e7e8e9",
+                        "inverse-on-surface": "#f0f1f2",
+                        "on-tertiary-container": "#eaf0ff",
+                        "inverse-primary": "#b4c5ff",
+                        "error-container": "#ffdad6",
+                        "secondary-container": "#d9dff5",
+                        "surface-container": "#edeeef",
+                        "secondary-fixed": "#dce2f7",
+                        "on-primary-fixed-variant": "#003ea8",
+                        "tertiary": "#4e5562",
+                        "secondary": "#575e70",
+                        "on-surface-variant": "#434655",
+                        "on-primary-container": "#eeefff",
+                        "tertiary-container": "#666d7b",
+                        "tertiary-fixed": "#dce2f3",
+                        "on-secondary": "#ffffff"
+                    },
+                    "borderRadius": {
+                        "DEFAULT": "0.125rem",
+                        "lg": "0.25rem",
+                        "xl": "0.5rem",
+                        "full": "0.75rem"
+                    },
+                    "spacing": {
+                        "unit": "4px",
+                        "margin-mobile": "16px",
+                        "sm": "8px",
+                        "xs": "4px",
+                        "lg": "24px",
+                        "xl": "32px",
+                        "gutter": "16px",
+                        "margin-desktop": "48px",
+                        "md": "16px"
+                    },
+                    "fontFamily": {
+                        "body-base": ["Inter"],
+                        "tagline": ["Inter"],
+                        "headline-md": ["Inter"],
+                        "display-lg": ["Inter"],
+                        "mono-label": ["JetBrains Mono"],
+                        "display-lg-mobile": ["Inter"],
+                        "label-sm": ["Inter"]
+                    },
+                    "fontSize": {
+                        "body-base": ["14px", { "lineHeight": "20px", "fontWeight": "400" }],
+                        "tagline": ["16px", { "lineHeight": "24px", "fontWeight": "500" }],
+                        "headline-md": ["20px", { "lineHeight": "28px", "letterSpacing": "-0.01em", "fontWeight": "600" }],
+                        "display-lg": ["30px", { "lineHeight": "36px", "letterSpacing": "-0.02em", "fontWeight": "700" }],
+                        "mono-label": ["11px", { "lineHeight": "14px", "fontWeight": "500" }],
+                        "display-lg-mobile": ["26px", { "lineHeight": "32px", "letterSpacing": "-0.01em", "fontWeight": "700" }],
+                        "label-sm": ["12px", { "lineHeight": "16px", "letterSpacing": "0.01em", "fontWeight": "500" }]
+                    }
+                }
+            }
+        }
+    </script>
+<style>
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .filled-icon {
+            font-variation-settings: 'FILL' 1, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .a4-ratio {
+            aspect-ratio: 1 / 1.414;
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+        .scrollbar-hide {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+    </style>
+</head>
+<body class="bg-surface text-on-surface font-body-base antialiased pb-24 md:pb-0 pt-14 md:pt-16">
+<!-- TopAppBar -->
+<header class="fixed top-0 left-0 w-full z-50 flex items-center justify-between px-margin-mobile h-14 bg-surface border-b border-outline-variant flat no shadows md:h-16 md:px-margin-desktop">
+<button class="text-primary hover:bg-surface-container-low transition-colors p-2 flex items-center justify-center">
+<span class="material-symbols-outlined" data-icon="arrow_back">arrow_back</span>
+</button>
+<h1 class="font-headline-md text-headline-md font-semibold text-on-surface text-center flex-1">Resume Preview</h1>
+<div class="flex items-center gap-2">
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center">
+
+</button>
+<button class="text-on-surface-variant hover:bg-surface-container-low transition-colors p-2 rounded-full flex items-center justify-center">
+
+</button>
+</div>
+</header>
+<main class="max-w-7xl mx-auto px-margin-mobile md:px-margin-desktop mt-md pb-xl">
+<!-- Progress Stepper -->
+<div class="mb-xl">
+<div class="flex items-center justify-between mb-sm">
+<span class="font-mono-label text-mono-label text-on-surface-variant uppercase tracking-wider">STEP 9 OF 9</span>
+<span class="font-mono-label text-mono-label text-primary uppercase tracking-wider">100% Completed</span>
+</div>
+<div class="flex items-center gap-4 overflow-x-auto scrollbar-hide py-2 w-full">
+<!-- Completed Steps -->
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Template</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Personal</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Summary</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Experience</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Education</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Skills</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<div class="flex items-center gap-2 whitespace-nowrap opacity-60 flex-shrink-0">
+<span class="material-symbols-outlined filled-icon text-[16px] text-[#22c55e]">check_circle</span>
+<span class="text-label-sm font-label-sm text-on-surface-variant">Certs</span>
+</div>
+<div class="w-4 h-px bg-outline-variant flex-shrink-0"></div>
+<!-- Active Step -->
+<div class="flex items-center gap-2 whitespace-nowrap flex-shrink-0 bg-primary-container/10 px-3 py-1.5 rounded-full border border-primary-container/20">
+<span class="material-symbols-outlined filled-icon text-[16px] text-primary">circle</span>
+<span class="text-label-sm font-label-sm text-primary font-semibold">Preview</span>
+</div>
+</div>
+<div class="w-full h-1 bg-surface-container-high rounded-full mt-2 overflow-hidden">
+<div class="h-full bg-primary w-full rounded-full"></div>
+</div>
+</div>
+<!-- Review Header -->
+<div class="mb-xl text-center md:text-left">
+<h2 class="font-display-lg-mobile md:font-display-lg text-display-lg-mobile md:text-display-lg text-on-surface mb-2">Review Your Resume</h2>
+<p class="font-body-base text-body-base text-on-surface-variant max-w-2xl">Review every section carefully before saving or exporting. Ensure your experience and skills are highlighted perfectly.</p>
+</div>
+<div class="grid grid-cols-1 lg:grid-cols-12 gap-xl">
+<!-- A4 Preview Area -->
+<div class="lg:col-span-8 flex justify-center">
+<div class="w-full max-w-3xl bg-surface-container-lowest border border-outline-variant rounded-sm shadow-[0_4px_24px_rgba(0,0,0,0.06)] p-4 sm:p-8 md:p-12 a4-ratio relative group overflow-hidden">
+<!-- Overlay Edits (Visible on hover/always on mobile) -->
+<!-- Header Section -->
+<div class="relative mb-6 pb-6 border-b border-surface-container-high group/section">
+<button class="absolute -right-4 -top-2 w-8 h-8 bg-surface border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary shadow-sm opacity-100 lg:opacity-0 group-hover/section:opacity-100 transition-opacity z-10">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<h1 class="text-2xl sm:text-3xl font-bold text-on-surface mb-1">Saanvi Patel</h1>
+<h2 class="text-base sm:text-lg text-primary font-medium mb-3">Retail Sales Associate</h2>
+<div class="flex flex-wrap gap-x-4 gap-y-2 text-sm text-on-surface-variant">
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">mail</span>
+                                spanvi.patel@email.com
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">phone</span>
+                                (555) 123-4567
+                            </div>
+<div class="flex items-center gap-1">
+<span class="material-symbols-outlined text-[14px]">location_on</span>
+                                New York, NY
+                            </div>
+</div>
+</div>
+<!-- Summary -->
+<div class="relative mb-6 group/section">
+<button class="absolute -right-4 -top-2 w-8 h-8 bg-surface border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary shadow-sm opacity-100 lg:opacity-0 group-hover/section:opacity-100 transition-opacity z-10">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<p class="text-sm text-on-surface leading-relaxed">
+                            Dedicated and customer-focused Retail Sales Associate with over 3 years of experience in high-volume environments. Proven track record of exceeding sales targets and delivering exceptional customer service. Adept at visual merchandising, inventory management, and resolving customer inquiries efficiently.
+                        </p>
+</div>
+<!-- Experience -->
+<div class="relative mb-6 group/section">
+<button class="absolute -right-4 -top-2 w-8 h-8 bg-surface border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary shadow-sm opacity-100 lg:opacity-0 group-hover/section:opacity-100 transition-opacity z-10">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<h3 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant border-b border-surface-container-high pb-1 mb-3">Experience</h3>
+<div class="mb-4">
+<div class="flex justify-between items-start mb-1">
+<div>
+<h4 class="font-semibold text-on-surface text-sm">Senior Sales Associate</h4>
+<div class="text-sm text-primary">Urban Outfitters</div>
+</div>
+<div class="text-xs text-on-surface-variant text-right">
+                                    Jan 2021 - Present<br>New York, NY
+                                </div>
+</div>
+<ul class="list-disc list-outside ml-4 text-sm text-on-surface space-y-1">
+<li class="">Consistently exceeded monthly sales quotas by an average of 15%.</li>
+<li class="">Trained and mentored 5 new sales associates on product knowledge and POS systems.</li>
+<li class="">Spearheaded a store reorganization that improved traffic flow and increased accessory sales by 10%.</li>
+</ul>
+</div>
+<div>
+<div class="flex justify-between items-start mb-1">
+<div>
+<h4 class="font-semibold text-on-surface text-sm">Sales Associate</h4>
+<div class="text-sm text-primary">H&amp;M</div>
+</div>
+<div class="text-xs text-on-surface-variant text-right">
+                                    Jun 2019 - Dec 2020<br>Brooklyn, NY
+                                </div>
+</div>
+<ul class="list-disc list-outside ml-4 text-sm text-on-surface space-y-1">
+<li class="">Assisted over 100 customers daily, providing styling advice and resolving issues.</li>
+<li class="">Maintained visual merchandising standards for the women's apparel section.</li>
+<li class="">Processed transactions accurately and efficiently using the centralized POS system.</li>
+</ul>
+</div>
+</div>
+<!-- Education -->
+<div class="relative group/section">
+<button class="absolute -right-4 -top-2 w-8 h-8 bg-surface border border-outline-variant rounded-full flex items-center justify-center text-on-surface-variant hover:text-primary shadow-sm opacity-100 lg:opacity-0 group-hover/section:opacity-100 transition-opacity z-10">
+<span class="material-symbols-outlined text-[16px]" data-icon="edit">edit</span>
+</button>
+<h3 class="text-sm font-bold uppercase tracking-wider text-on-surface-variant border-b border-surface-container-high pb-1 mb-3">Education</h3>
+<div class="flex justify-between items-start">
+<div>
+<h4 class="font-semibold text-on-surface text-sm">Associate of Arts in Business Administration</h4>
+<div class="text-sm text-primary">Borough of Manhattan Community College</div>
+</div>
+<div class="text-xs text-on-surface-variant text-right">
+                                Graduated: May 2019
+                            </div>
+</div>
+</div>
+</div>
+</div>
+<!-- Sidebar Info -->
+<div class="lg:col-span-4 flex flex-col gap-4">
+<!-- Resume Score Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6 flex flex-col gap-4">
+<div class="flex items-center justify-between">
+<h3 class="font-tagline text-tagline text-on-surface">Resume Health</h3>
+<span class="material-symbols-outlined text-primary" data-icon="health_and_safety">health_and_safety</span>
+</div>
+<div class="flex items-end gap-2">
+<span class="text-4xl font-bold text-on-surface">95%</span>
+<span class="text-sm text-[#22c55e] font-medium mb-1">Excellent</span>
+</div>
+<div class="w-full h-2 bg-surface-container-high rounded-full overflow-hidden">
+<div class="h-full bg-[#22c55e] w-[95%] rounded-full"></div>
+</div>
+<div class="grid grid-cols-2 gap-4 mt-2">
+<div class="bg-surface-container-low p-3 rounded-md border border-outline-variant/50">
+<div class="text-xs text-on-surface-variant mb-1 uppercase tracking-wider font-medium">Sections</div>
+<div class="font-semibold text-on-surface">8/8 Completed</div>
+</div>
+<div class="bg-surface-container-low p-3 rounded-md border border-outline-variant/50">
+<div class="text-xs text-on-surface-variant mb-1 uppercase tracking-wider font-medium">Length</div>
+<div class="font-semibold text-on-surface">1 Page (Ideal)</div>
+</div>
+</div>
+</div>
+<!-- Template Card -->
+<div class="bg-surface-container-lowest border border-outline-variant rounded-lg p-6">
+<div class="flex items-center justify-between mb-4">
+<h3 class="font-tagline text-tagline text-on-surface">Template</h3>
+<span class="material-symbols-outlined text-on-surface-variant" data-icon="dashboard">dashboard</span>
+</div>
+<div class="flex items-center gap-4 mb-4">
+<div class="w-12 h-16 bg-surface-container-high border border-outline-variant rounded-sm relative overflow-hidden flex-shrink-0">
+<div class="absolute inset-2 border-t-[4px] border-primary/20 w-3/4"></div>
+<div class="absolute top-5 left-2 border-t-[2px] border-on-surface-variant/20 w-full"></div>
+<div class="absolute top-7 left-2 border-t-[2px] border-on-surface-variant/20 w-5/6"></div>
+</div>
+<div>
+<div class="font-medium text-on-surface text-sm">ATS Professional</div>
+<div class="text-xs text-on-surface-variant">Clean, scannable, classic.</div>
+</div>
+</div>
+<button class="w-full py-2 px-4 border border-outline-variant rounded-md text-sm font-medium text-on-surface hover:bg-surface-container-low transition-colors text-center">
+                        Change Template
+                    </button>
+</div>
+<!-- Action Card (Desktop only, duplicates bottom nav functionality for wider screens) -->
+<div class="hidden md:flex flex-col gap-3 mt-4">
+<button class="w-full py-3 px-4 bg-primary-container text-on-primary-container rounded-md font-semibold hover:bg-primary-container/90 transition-colors flex items-center justify-center gap-2">
+<span class="material-symbols-outlined text-[20px]" data-icon="check_circle">check_circle</span>
+                        Save Resume
+                    </button>
+<button class="w-full py-3 px-4 bg-surface-container-lowest border border-outline-variant text-on-surface rounded-md font-medium hover:bg-surface-container-low transition-colors">
+                        Back to Editing
+                    </button>
+</div>
+</div>
+</div>
+</main>
+<!-- BottomNavBar (Mobile Sticky Footer) -->
+<nav class="md:hidden fixed bottom-0 left-0 w-full z-50 flex justify-around items-center px-margin-mobile py-sm bg-surface/90 backdrop-blur-md border-t border-outline-variant">
+<button class="flex flex-col items-center justify-center text-on-surface-variant px-lg py-sm hover:bg-surface-container-high rounded-lg transition-colors min-w-[80px]">
+<span class="material-symbols-outlined mb-1" data-icon="chevron_left">chevron_left</span>
+<span class="font-label-sm text-label-sm">Previous</span>
+</button>
+<button class="flex items-center justify-center gap-2 bg-primary-container text-on-primary-container rounded-full px-6 py-3 font-semibold shadow-sm active:scale-95 duration-150 flex-1 ml-4">
+<span class="material-symbols-outlined" data-icon="check_circle">check_circle</span>
+<span class="">Save Resume</span>
+</button>
+</nav>
+
+
+</body></html>

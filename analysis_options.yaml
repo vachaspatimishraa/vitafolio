@@ -1,0 +1,29 @@
+include: package:flutter_lints/flutter.yaml
+
+analyzer:
+  exclude:
+    - "**/*.g.dart"
+    - "**/*.freezed.dart"
+    - "build/**"
+
+linter:
+  rules:
+    # Style
+    prefer_single_quotes: true
+    always_declare_return_types: true
+    always_use_package_imports: true
+
+    # Code quality
+    avoid_print: true
+    avoid_unnecessary_containers: true
+    prefer_final_fields: true
+    prefer_final_locals: true
+    unnecessary_lambdas: true
+    use_super_parameters: true
+
+    # Flutter
+    use_key_in_widget_constructors: true
+    sort_child_properties_last: true
+
+    # Documentation
+    public_member_api_docs: false

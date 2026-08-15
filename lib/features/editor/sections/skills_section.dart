@@ -1,0 +1,48 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
+
+import 'package:vitafolio/app/constants/app_spacing.dart';
+import 'package:vitafolio/features/workflow/view_model/workflow_view_model.dart';
+import 'package:vitafolio/features/editor/widgets/chip_input.dart';
+import 'package:vitafolio/features/editor/widgets/editor_section.dart';
+
+class SkillsSection extends ConsumerWidget {
+  const SkillsSection({super.key});
+
+  @override
+  Widget build(BuildContext context, WidgetRef ref) {
+    final skills = ref.watch(
+      workflowViewModelProvider.select((state) => state.skills),
+    );
+    final notifier = ref.read(workflowViewModelProvider.notifier);
+
+    return EditorSection(
+      title: 'Skills',
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          ChipInput(
+            chips: skills,
+            suggestions: WorkflowViewModel.skillSuggestions,
+            onAdd: notifier.addSkill,
+            onRemove: notifier.removeSkill,
+          ),
+          const SizedBox(height: AppSpacing.md),
+          Wrap(
+            spacing: AppSpacing.sm,
+            runSpacing: AppSpacing.sm,
+            children: WorkflowViewModel.skillSuggestions
+                .where((skill) => !skills.contains(skill))
+                .map(
+                  (skill) => ActionChip(
+                    label: Text(skill),
+                    onPressed: () => notifier.addSkill(skill),
+                  ),
+                )
+                .toList(),
+          ),
+        ],
+      ),
+    );
+  }
+}
