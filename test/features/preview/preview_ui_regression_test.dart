@@ -45,6 +45,9 @@ class _FakeResumeRepository implements ResumeRepository {
   Future<Resume> saveSelectedTemplate(ResumeId resumeId, TemplateId templateId) async => resume;
 
   @override
+  Future<Resume> saveSelectedFont(ResumeId resumeId, String fontFamily) async => resume;
+
+  @override
   Future<Resume> updateResume(Resume resume) async => resume;
 
   @override

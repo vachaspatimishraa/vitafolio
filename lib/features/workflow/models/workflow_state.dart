@@ -24,6 +24,7 @@ class WorkflowState {
   final List<LanguageModel> languages;
 
   final String? selectedTemplateId;
+  final String fontFamily;
   final bool hasUnsavedChanges;
   final WorkflowStep currentStep;
   final bool isLoading;
@@ -41,6 +42,7 @@ class WorkflowState {
     required this.certifications,
     required this.languages,
     this.selectedTemplateId,
+    this.fontFamily = 'roboto',
     this.hasUnsavedChanges = false,
     this.currentStep = WorkflowStep.creating,
     this.isLoading = false,
@@ -60,6 +62,7 @@ class WorkflowState {
       certifications: [CertificationModel(id: 'certification-0')],
       languages: [LanguageModel(id: 'language-0')],
       selectedTemplateId: 'modern_clean',
+      fontFamily: 'roboto',
       hasUnsavedChanges: false,
       currentStep: WorkflowStep.creating,
       isLoading: false,
@@ -80,6 +83,7 @@ class WorkflowState {
     List<CertificationModel>? certifications,
     List<LanguageModel>? languages,
     String? selectedTemplateId,
+    String? fontFamily,
     bool? hasUnsavedChanges,
     WorkflowStep? currentStep,
     bool? isLoading,
@@ -97,6 +101,7 @@ class WorkflowState {
       certifications: certifications ?? this.certifications,
       languages: languages ?? this.languages,
       selectedTemplateId: selectedTemplateId ?? this.selectedTemplateId,
+      fontFamily: fontFamily ?? this.fontFamily,
       hasUnsavedChanges: hasUnsavedChanges ?? this.hasUnsavedChanges,
       currentStep: currentStep ?? this.currentStep,
       isLoading: isLoading ?? this.isLoading,

@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart' as fm;
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/core/pdf/optimization/font_cache.dart';
 import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
@@ -21,7 +22,8 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
 
   @override
   pw.Document buildPdf(WorkflowState resumeData) {
-    final pdf = pw.Document();
+    final themeData = FontCache().getThemeForFontSync(resumeData.fontFamily);
+    final pdf = pw.Document(theme: themeData);
 
     final darkTitleColor = PdfColor.fromHex('1E2749');
     final textDark = PdfColor.fromHex('222222');
@@ -87,12 +89,10 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
             pw.SizedBox(height: 16),
 
             // Two-Column Body with Vertical Divider
-            pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
+            pw.Partitions(
               children: [
                 // Left Column (~60% width): SUMMARY & EXPERIENCE & PROJECTS
-                pw.Expanded(
-                  flex: 6,
+                pw.Partition(
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
@@ -282,17 +282,11 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
                   ),
                 ),
 
-                // Vertical Column Divider
-                pw.SizedBox(width: 16),
-                pw.Container(
-                  width: 1,
-                  color: textDark,
-                ),
-                pw.SizedBox(width: 16),
-
                 // Right Column (~40% width): SKILLS, EDUCATION, CERTIFICATIONS, LANGUAGE
-                pw.Expanded(
-                  flex: 4,
+              pw.Partition(
+                width: 190,
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.only(left: 20),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
@@ -461,15 +455,16 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
                     ],
                   ),
                 ),
-              ],
-            ),
-          ];
-        },
-      ),
-    );
+              ),
+            ],
+          ),
+        ];
+      },
+    ),
+  );
 
-    return pdf;
-  }
+  return pdf;
+}
 
   pw.Widget _buildBulletDot(PdfColor color) {
     return pw.Container(

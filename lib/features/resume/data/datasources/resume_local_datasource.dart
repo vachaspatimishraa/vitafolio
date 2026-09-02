@@ -8,6 +8,7 @@ abstract class ResumeLocalDataSource {
   Future<ResumeDbModel?> getResume(int id);
   Future<List<ResumeDbModel>> getAllResumes();
   Future<void> saveSelectedTemplate(int resumeId, String templateId);
+  Future<void> saveSelectedFont(int resumeId, String fontFamily);
   Future<ResumeDbModel> duplicateResume(int id, [String? nameSuffix]);
 }
 
@@ -60,6 +61,16 @@ class ResumeLocalDataSourceImpl implements ResumeLocalDataSource {
     final resume = await isar!.collection<ResumeDbModel>().get(resumeId);
     if (resume != null) {
       resume.selectedTemplateId = templateId;
+      await updateResume(resume);
+    }
+  }
+
+  @override
+  Future<void> saveSelectedFont(int resumeId, String fontFamily) async {
+    if (isar == null) return;
+    final resume = await isar!.collection<ResumeDbModel>().get(resumeId);
+    if (resume != null) {
+      resume.fontFamily = fontFamily;
       await updateResume(resume);
     }
   }

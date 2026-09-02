@@ -45,53 +45,58 @@ const ResumeDbModelSchema = CollectionSchema(
       type: IsarType.objectList,
       target: r'ExperienceModel',
     ),
-    r'isTitleManuallySet': PropertySchema(
+    r'fontFamily': PropertySchema(
       id: 5,
+      name: r'fontFamily',
+      type: IsarType.string,
+    ),
+    r'isTitleManuallySet': PropertySchema(
+      id: 6,
       name: r'isTitleManuallySet',
       type: IsarType.bool,
     ),
     r'languages': PropertySchema(
-      id: 6,
+      id: 7,
       name: r'languages',
       type: IsarType.objectList,
       target: r'LanguageModel',
     ),
     r'personalDetails': PropertySchema(
-      id: 7,
+      id: 8,
       name: r'personalDetails',
       type: IsarType.object,
       target: r'PersonalDetailsModel',
     ),
     r'projects': PropertySchema(
-      id: 8,
+      id: 9,
       name: r'projects',
       type: IsarType.objectList,
       target: r'ProjectDbModel',
     ),
     r'selectedTemplateId': PropertySchema(
-      id: 9,
+      id: 10,
       name: r'selectedTemplateId',
       type: IsarType.string,
     ),
     r'skills': PropertySchema(
-      id: 10,
+      id: 11,
       name: r'skills',
       type: IsarType.objectList,
       target: r'SkillModel',
     ),
     r'summary': PropertySchema(
-      id: 11,
+      id: 12,
       name: r'summary',
       type: IsarType.object,
       target: r'ProfessionalSummaryModel',
     ),
     r'title': PropertySchema(
-      id: 12,
+      id: 13,
       name: r'title',
       type: IsarType.string,
     ),
     r'updatedAt': PropertySchema(
-      id: 13,
+      id: 14,
       name: r'updatedAt',
       type: IsarType.dateTime,
     )
@@ -171,6 +176,12 @@ int _resumeDbModelEstimateSize(
               ExperienceModelSchema.estimateSize(value, offsets, allOffsets);
         }
       }
+    }
+  }
+  {
+    final value = object.fontFamily;
+    if (value != null) {
+      bytesCount += 3 + value.length * 3;
     }
   }
   {
@@ -262,40 +273,41 @@ void _resumeDbModelSerialize(
     ExperienceModelSchema.serialize,
     object.experiences,
   );
-  writer.writeBool(offsets[5], object.isTitleManuallySet);
+  writer.writeString(offsets[5], object.fontFamily);
+  writer.writeBool(offsets[6], object.isTitleManuallySet);
   writer.writeObjectList<LanguageModel>(
-    offsets[6],
+    offsets[7],
     allOffsets,
     LanguageModelSchema.serialize,
     object.languages,
   );
   writer.writeObject<PersonalDetailsModel>(
-    offsets[7],
+    offsets[8],
     allOffsets,
     PersonalDetailsModelSchema.serialize,
     object.personalDetails,
   );
   writer.writeObjectList<ProjectDbModel>(
-    offsets[8],
+    offsets[9],
     allOffsets,
     ProjectDbModelSchema.serialize,
     object.projects,
   );
-  writer.writeString(offsets[9], object.selectedTemplateId);
+  writer.writeString(offsets[10], object.selectedTemplateId);
   writer.writeObjectList<SkillModel>(
-    offsets[10],
+    offsets[11],
     allOffsets,
     SkillModelSchema.serialize,
     object.skills,
   );
   writer.writeObject<ProfessionalSummaryModel>(
-    offsets[11],
+    offsets[12],
     allOffsets,
     ProfessionalSummaryModelSchema.serialize,
     object.summary,
   );
-  writer.writeString(offsets[12], object.title);
-  writer.writeDateTime(offsets[13], object.updatedAt);
+  writer.writeString(offsets[13], object.title);
+  writer.writeDateTime(offsets[14], object.updatedAt);
 }
 
 ResumeDbModel _resumeDbModelDeserialize(
@@ -325,39 +337,40 @@ ResumeDbModel _resumeDbModelDeserialize(
     allOffsets,
     ExperienceModel(),
   );
+  object.fontFamily = reader.readStringOrNull(offsets[5]);
   object.id = id;
-  object.isTitleManuallySet = reader.readBoolOrNull(offsets[5]);
+  object.isTitleManuallySet = reader.readBoolOrNull(offsets[6]);
   object.languages = reader.readObjectList<LanguageModel>(
-    offsets[6],
+    offsets[7],
     LanguageModelSchema.deserialize,
     allOffsets,
     LanguageModel(),
   );
   object.personalDetails = reader.readObjectOrNull<PersonalDetailsModel>(
-    offsets[7],
+    offsets[8],
     PersonalDetailsModelSchema.deserialize,
     allOffsets,
   );
   object.projects = reader.readObjectList<ProjectDbModel>(
-    offsets[8],
+    offsets[9],
     ProjectDbModelSchema.deserialize,
     allOffsets,
     ProjectDbModel(),
   );
-  object.selectedTemplateId = reader.readString(offsets[9]);
+  object.selectedTemplateId = reader.readString(offsets[10]);
   object.skills = reader.readObjectList<SkillModel>(
-    offsets[10],
+    offsets[11],
     SkillModelSchema.deserialize,
     allOffsets,
     SkillModel(),
   );
   object.summary = reader.readObjectOrNull<ProfessionalSummaryModel>(
-    offsets[11],
+    offsets[12],
     ProfessionalSummaryModelSchema.deserialize,
     allOffsets,
   );
-  object.title = reader.readString(offsets[12]);
-  object.updatedAt = reader.readDateTime(offsets[13]);
+  object.title = reader.readString(offsets[13]);
+  object.updatedAt = reader.readDateTime(offsets[14]);
   return object;
 }
 
@@ -394,45 +407,47 @@ P _resumeDbModelDeserializeProp<P>(
         ExperienceModel(),
       )) as P;
     case 5:
-      return (reader.readBoolOrNull(offset)) as P;
+      return (reader.readStringOrNull(offset)) as P;
     case 6:
+      return (reader.readBoolOrNull(offset)) as P;
+    case 7:
       return (reader.readObjectList<LanguageModel>(
         offset,
         LanguageModelSchema.deserialize,
         allOffsets,
         LanguageModel(),
       )) as P;
-    case 7:
+    case 8:
       return (reader.readObjectOrNull<PersonalDetailsModel>(
         offset,
         PersonalDetailsModelSchema.deserialize,
         allOffsets,
       )) as P;
-    case 8:
+    case 9:
       return (reader.readObjectList<ProjectDbModel>(
         offset,
         ProjectDbModelSchema.deserialize,
         allOffsets,
         ProjectDbModel(),
       )) as P;
-    case 9:
-      return (reader.readString(offset)) as P;
     case 10:
+      return (reader.readString(offset)) as P;
+    case 11:
       return (reader.readObjectList<SkillModel>(
         offset,
         SkillModelSchema.deserialize,
         allOffsets,
         SkillModel(),
       )) as P;
-    case 11:
+    case 12:
       return (reader.readObjectOrNull<ProfessionalSummaryModel>(
         offset,
         ProfessionalSummaryModelSchema.deserialize,
         allOffsets,
       )) as P;
-    case 12:
-      return (reader.readString(offset)) as P;
     case 13:
+      return (reader.readString(offset)) as P;
+    case 14:
       return (reader.readDateTime(offset)) as P;
     default:
       throw IsarError('Unknown property with id $propertyId');
@@ -1063,6 +1078,160 @@ extension ResumeDbModelQueryFilter
         upper,
         includeUpper,
       );
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyIsNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNull(
+        property: r'fontFamily',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyIsNotNull() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(const FilterCondition.isNotNull(
+        property: r'fontFamily',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyEqualTo(
+    String? value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fontFamily',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyGreaterThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        include: include,
+        property: r'fontFamily',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyLessThan(
+    String? value, {
+    bool include = false,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.lessThan(
+        include: include,
+        property: r'fontFamily',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyBetween(
+    String? lower,
+    String? upper, {
+    bool includeLower = true,
+    bool includeUpper = true,
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.between(
+        property: r'fontFamily',
+        lower: lower,
+        includeLower: includeLower,
+        upper: upper,
+        includeUpper: includeUpper,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyStartsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.startsWith(
+        property: r'fontFamily',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyEndsWith(
+    String value, {
+    bool caseSensitive = true,
+  }) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.endsWith(
+        property: r'fontFamily',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyContains(String value, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.contains(
+        property: r'fontFamily',
+        value: value,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyMatches(String pattern, {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.matches(
+        property: r'fontFamily',
+        wildcard: pattern,
+        caseSensitive: caseSensitive,
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyIsEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.equalTo(
+        property: r'fontFamily',
+        value: '',
+      ));
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterFilterCondition>
+      fontFamilyIsNotEmpty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addFilterCondition(FilterCondition.greaterThan(
+        property: r'fontFamily',
+        value: '',
+      ));
     });
   }
 
@@ -1941,6 +2110,19 @@ extension ResumeDbModelQuerySortBy
     });
   }
 
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterSortBy> sortByFontFamily() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fontFamily', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterSortBy>
+      sortByFontFamilyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fontFamily', Sort.desc);
+    });
+  }
+
   QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterSortBy>
       sortByIsTitleManuallySet() {
     return QueryBuilder.apply(this, (query) {
@@ -2020,6 +2202,19 @@ extension ResumeDbModelQuerySortThenBy
       thenByDomainIdDesc() {
     return QueryBuilder.apply(this, (query) {
       return query.addSortBy(r'domainId', Sort.desc);
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterSortBy> thenByFontFamily() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fontFamily', Sort.asc);
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QAfterSortBy>
+      thenByFontFamilyDesc() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addSortBy(r'fontFamily', Sort.desc);
     });
   }
 
@@ -2104,6 +2299,13 @@ extension ResumeDbModelQueryWhereDistinct
     });
   }
 
+  QueryBuilder<ResumeDbModel, ResumeDbModel, QDistinct> distinctByFontFamily(
+      {bool caseSensitive = true}) {
+    return QueryBuilder.apply(this, (query) {
+      return query.addDistinctBy(r'fontFamily', caseSensitive: caseSensitive);
+    });
+  }
+
   QueryBuilder<ResumeDbModel, ResumeDbModel, QDistinct>
       distinctByIsTitleManuallySet() {
     return QueryBuilder.apply(this, (query) {
@@ -2171,6 +2373,12 @@ extension ResumeDbModelQueryProperty
       experiencesProperty() {
     return QueryBuilder.apply(this, (query) {
       return query.addPropertyName(r'experiences');
+    });
+  }
+
+  QueryBuilder<ResumeDbModel, String?, QQueryOperations> fontFamilyProperty() {
+    return QueryBuilder.apply(this, (query) {
+      return query.addPropertyName(r'fontFamily');
     });
   }
 

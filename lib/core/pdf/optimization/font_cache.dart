@@ -16,6 +16,8 @@ class FontCache {
 
   bool _isInitialized = false;
 
+  final Map<String, pw.ThemeData> _fontThemes = {};
+
   /// Preloads standard fonts into memory cache.
   Future<void> initialize() async {
     if (_isInitialized) return;
@@ -43,7 +45,7 @@ class FontCache {
   pw.Font get bold => _boldFont ?? pw.Font.helveticaBold();
   pw.Font get italic => _italicFont ?? pw.Font.helveticaOblique();
 
-  /// Theme-ready Font Theme for pw.Document
+  /// Theme-ready Font Theme for pw.Document using default font (Roboto)
   pw.ThemeData get pdfThemeData {
     final baseFont = regular;
     final boldFont = bold;
@@ -57,12 +59,44 @@ class FontCache {
     );
   }
 
+  /// Theme-ready Font Theme for pw.Document for any selected font family (sync lookup).
+  pw.ThemeData getThemeForFontSync(String fontFamilyName) {
+    final clean = fontFamilyName.toLowerCase().replaceAll(' ', '_').trim();
+    if (_fontThemes.containsKey(clean)) {
+      return _fontThemes[clean]!;
+    }
+    return pdfThemeData;
+  }
+
+  /// Theme-ready Font Theme for pw.Document for any selected font family.
+  Future<pw.ThemeData> getThemeForFont(String fontFamilyName) async {
+    final clean = fontFamilyName.toLowerCase().replaceAll(' ', '_').trim();
+    if (_fontThemes.containsKey(clean)) {
+      return _fontThemes[clean]!;
+    }
+
+    try {
+      final family = await FontManager.instance.getFontFamily(clean);
+      final theme = pw.ThemeData.withFont(
+        base: family.regular,
+        bold: family.bold,
+        italic: pw.Font.helveticaOblique(),
+        boldItalic: family.bold,
+      );
+      _fontThemes[clean] = theme;
+      return theme;
+    } catch (_) {
+      return pdfThemeData;
+    }
+  }
+
   /// Clears cache when memory cleanup is triggered.
   void clear() {
     _regularFont = null;
     _mediumFont = null;
     _boldFont = null;
     _italicFont = null;
+    _fontThemes.clear();
     _isInitialized = false;
   }
 }

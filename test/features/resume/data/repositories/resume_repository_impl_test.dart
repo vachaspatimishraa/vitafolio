@@ -34,6 +34,9 @@ class MockLocalDataSource implements ResumeLocalDataSource {
   Future<void> saveSelectedTemplate(int resumeId, String templateId) async {}
 
   @override
+  Future<void> saveSelectedFont(int resumeId, String fontFamily) async {}
+
+  @override
   Future<ResumeDbModel> updateResume(ResumeDbModel resume) async => resume;
 
   @override

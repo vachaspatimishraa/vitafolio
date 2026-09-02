@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:isar/isar.dart';
 
 import 'package:vitafolio/core/database/database_provider.dart';
+import 'package:vitafolio/core/pdf/optimization/font_cache.dart';
 import 'package:vitafolio/core/templates/repository/template_repository.dart'
     as core_repo;
 import 'package:vitafolio/features/preview/view_model/preview_state.dart';
@@ -123,6 +124,31 @@ class PreviewViewModel extends StateNotifier<PreviewState> {
       state = state.copyWith(
         isError: true,
         errorMessage: 'Failed to save template selection: ${e.toString()}',
+      );
+    }
+  }
+
+  Future<void> changeFont(String fontName) async {
+    try {
+      ResumeId? targetId = state.resume?.id ?? _ref.read(activeResumeIdProvider);
+      if (targetId == null) {
+        final allResumes = await _repository.getAllResumes();
+        if (allResumes.isNotEmpty) {
+          targetId = allResumes.first.id;
+        }
+      }
+      if (targetId == null) return;
+
+      final updated = await _repository.saveSelectedFont(
+        targetId,
+        fontName,
+      );
+      await FontCache().getThemeForFont(fontName);
+      state = state.copyWith(resume: updated);
+    } catch (e) {
+      state = state.copyWith(
+        isError: true,
+        errorMessage: 'Failed to save font selection: ${e.toString()}',
       );
     }
   }

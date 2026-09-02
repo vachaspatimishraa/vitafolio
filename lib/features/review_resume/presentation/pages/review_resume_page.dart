@@ -1,9 +1,6 @@
-import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:path_provider/path_provider.dart';
-import 'package:share_plus/share_plus.dart';
 import 'package:vitafolio/app/constants/app_spacing.dart';
 import 'package:vitafolio/app/router.dart';
 import 'package:vitafolio/features/review_resume/presentation/viewmodels/review_resume_viewmodel.dart';
@@ -27,27 +24,7 @@ class ReviewResumePage extends ConsumerWidget {
   }
 
   Future<void> _handleGenerateResume(BuildContext context, WidgetRef ref) async {
-    final state = ref.read(reviewResumeViewModelProvider);
-    final resumeTitle = state.resume?.title ?? 'Resume';
-    final bytes = await ref.read(reviewResumeViewModelProvider.notifier).generateResume();
-    if (!context.mounted) return;
-    
-    if (bytes != null && bytes.isNotEmpty) {
-      try {
-        final tempDir = await getTemporaryDirectory();
-        final safeTitle = resumeTitle.replaceAll(RegExp(r'\s+'), '_');
-        final file = File('${tempDir.path}/$safeTitle.pdf');
-        await file.writeAsBytes(bytes, flush: true);
-
-        await Share.shareXFiles([XFile(file.path)], text: resumeTitle);
-      } catch (e) {
-        if (context.mounted) {
-          ScaffoldMessenger.of(context).showSnackBar(
-            SnackBar(content: Text('Generated PDF saved (${bytes.length} bytes), share error: $e')),
-          );
-        }
-      }
-    }
+    context.push(AppRoutes.preview);
   }
 
   void _handlePreview(BuildContext context) {

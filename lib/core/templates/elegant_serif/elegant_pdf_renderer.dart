@@ -4,6 +4,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart' as fm;
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/core/pdf/optimization/font_cache.dart';
 import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
@@ -22,7 +23,8 @@ class ElegantPdfRenderer extends ResumeTemplateRenderer {
 
   @override
   pw.Document buildPdf(WorkflowState resumeData) {
-    final pdf = pw.Document();
+    final themeData = FontCache().getThemeForFontSync(resumeData.fontFamily);
+    final pdf = pw.Document(theme: themeData);
 
     final darkHeaderBg = PdfColor.fromHex('221E1F');
     final sidebarBg = PdfColor.fromHex('E4DDD6');
@@ -129,13 +131,13 @@ class ElegantPdfRenderer extends ResumeTemplateRenderer {
             ),
 
             // Two-Column Body
-            pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
+            pw.Partitions(
               children: [
                 // Left Sidebar (Beige Background)
-                pw.Container(
+                pw.Partition(
                   width: 190,
-                  color: sidebarBg,
+                  child: pw.Container(
+                    color: sidebarBg,
                   padding: const pw.EdgeInsets.all(18),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -273,14 +275,15 @@ class ElegantPdfRenderer extends ResumeTemplateRenderer {
                     ],
                   ),
                 ),
+              ),
 
-                // Right Main Column (White Background)
-                pw.Expanded(
-                  child: pw.Container(
-                    padding: const pw.EdgeInsets.all(22),
-                    child: pw.Column(
-                      crossAxisAlignment: pw.CrossAxisAlignment.start,
-                      children: [
+              // Right Main Column (White Background)
+              pw.Partition(
+                child: pw.Container(
+                  padding: const pw.EdgeInsets.all(22),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
                         // ABOUT ME / SUMMARY
                         if (PdfSectionHelper.hasSummary(resumeData.summary)) ...[
                           _buildMainHeader('About Me', textDark, lineGrey),

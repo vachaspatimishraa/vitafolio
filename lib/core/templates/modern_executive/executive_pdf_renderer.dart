@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart' as fm;
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/core/pdf/optimization/font_cache.dart';
 import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
@@ -21,7 +22,8 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
 
   @override
   pw.Document buildPdf(WorkflowState resumeData) {
-    final pdf = pw.Document();
+    final themeData = FontCache().getThemeForFontSync(resumeData.fontFamily);
+    final pdf = pw.Document(theme: themeData);
 
     final darkNavy = PdfColor.fromHex('13324C');
     final textDark = PdfColor.fromHex('222222');
@@ -47,7 +49,7 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
     pdf.addPage(
       pw.MultiPage(
         pageFormat: PdfPageFormat.a4,
-        margin: pw.EdgeInsets.zero,
+        margin: const pw.EdgeInsets.all(24),
         build: (context) {
           return [
             // Header Banner
@@ -96,349 +98,333 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
                 ],
               ),
             ),
+            pw.SizedBox(height: 16),
 
-            pw.Padding(
-              padding: const pw.EdgeInsets.all(24),
-              child: pw.Column(
-                crossAxisAlignment: pw.CrossAxisAlignment.start,
-                children: [
-                  // SUMMARY
-                  if (PdfSectionHelper.hasSummary(resumeData.summary)) ...[
-                    _buildSectionHeader('SUMMARY', darkNavy),
-                    pw.Text(
-                      resumeData.summary.trim(),
-                      style: pw.TextStyle(
-                        fontSize: 10,
-                        color: textDark,
-                        lineSpacing: 2,
-                      ),
-                    ),
-                    pw.SizedBox(height: 16),
-                  ],
+            // SUMMARY
+            if (PdfSectionHelper.hasSummary(resumeData.summary)) ...[
+              _buildSectionHeader('SUMMARY', darkNavy),
+              pw.Text(
+                resumeData.summary.trim(),
+                style: pw.TextStyle(
+                  fontSize: 10,
+                  color: textDark,
+                  lineSpacing: 2,
+                ),
+              ),
+              pw.SizedBox(height: 16),
+            ],
 
-                  // WORK EXPERIENCE
-                  if (experienceList.isNotEmpty) ...[
-                    _buildSectionHeader('WORK EXPERIENCE', darkNavy),
-                    ...experienceList.map((exp) {
-                      final title = exp.position?.trim() ?? '';
-                      final company = exp.company?.trim() ?? '';
-                      final dateStr =
-                          '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+            // WORK EXPERIENCE
+            if (experienceList.isNotEmpty) ...[
+              _buildSectionHeader('WORK EXPERIENCE', darkNavy),
+              ...experienceList.map((exp) {
+                final title = exp.position?.trim() ?? '';
+                final company = exp.company?.trim() ?? '';
+                final dateStr =
+                    '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
 
-                      final descLines = <String>[];
-                      if (exp.description?.trim().isNotEmpty == true) {
-                        final rawLines = exp.description!.split('\n');
-                        for (final line in rawLines) {
-                          final trimmed = line.trim();
-                          if (trimmed.isNotEmpty) {
-                            if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
-                              descLines.add(trimmed.replaceAll(RegExp(r'^[\•\-]\s*'), ''));
-                            } else {
-                              descLines.add(trimmed);
-                            }
-                          }
-                        }
+                final descLines = <String>[];
+                if (exp.description?.trim().isNotEmpty == true) {
+                  final rawLines = exp.description!.split('\n');
+                  for (final line in rawLines) {
+                    final trimmed = line.trim();
+                    if (trimmed.isNotEmpty) {
+                      if (trimmed.startsWith('•') || trimmed.startsWith('-')) {
+                        descLines.add(trimmed.replaceAll(RegExp(r'^[\•\-]\s*'), ''));
+                      } else {
+                        descLines.add(trimmed);
                       }
+                    }
+                  }
+                }
 
-                      return pw.Padding(
-                        padding: const pw.EdgeInsets.only(bottom: 12),
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            if (title.isNotEmpty)
-                              pw.Text(
-                                title,
-                                style: pw.TextStyle(
-                                  fontWeight: pw.FontWeight.bold,
-                                  fontSize: 11,
-                                  color: textDark,
-                                ),
-                              ),
-                            pw.SizedBox(height: 2),
-                            pw.Row(
-                              children: [
-                                if (company.isNotEmpty)
-                                  pw.Text(
-                                    company,
-                                    style: pw.TextStyle(
-                                      fontSize: 10,
-                                      color: subtextColor,
-                                    ),
-                                  ),
-                                if (company.isNotEmpty && dateStr.isNotEmpty)
-                                  pw.Text(
-                                    '  |  ',
-                                    style: pw.TextStyle(
-                                      fontSize: 10,
-                                      color: subtextColor,
-                                    ),
-                                  ),
-                                if (dateStr.isNotEmpty)
-                                  pw.Text(
-                                    dateStr,
-                                    style: pw.TextStyle(
-                                      fontSize: 10,
-                                      color: subtextColor,
-                                    ),
-                                  ),
-                              ],
-                            ),
-                            if (exp.location?.trim().isNotEmpty == true)
-                              pw.Text(
-                                exp.location!.trim(),
-                                style: pw.TextStyle(
-                                  fontStyle: pw.FontStyle.italic,
-                                  fontSize: 9,
-                                  color: subtextColor,
-                                ),
-                              ),
-                            if (descLines.isNotEmpty) ...[
-                              pw.SizedBox(height: 4),
-                              ...descLines.map(
-                                (line) => pw.Padding(
-                                  padding: const pw.EdgeInsets.only(left: 4, bottom: 2),
-                                  child: pw.Row(
-                                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                    children: [
-                                      _buildBulletDot(textDark),
-                                      pw.Expanded(
-                                        child: pw.Text(
-                                          line,
-                                          style: pw.TextStyle(
-                                            fontSize: 9.5,
-                                            color: textDark,
-                                            lineSpacing: 1.5,
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ],
-                        ),
-                      );
-                    }),
-                    pw.SizedBox(height: 10),
-                  ],
-
-                  // PROJECTS
-                  if (projectsList.isNotEmpty) ...[
-                    _buildSectionHeader('PROJECTS', darkNavy),
-                    ...projectsList.map((proj) {
-                      return pw.Padding(
-                        padding: const pw.EdgeInsets.only(bottom: 10),
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
+                return pw.Padding(
+                  padding: const pw.EdgeInsets.only(bottom: 12),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Row(
+                        mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
+                        children: [
+                          if (title.isNotEmpty)
                             pw.Text(
-                              proj.projectName?.trim() ?? '',
+                              title,
                               style: pw.TextStyle(
                                 fontWeight: pw.FontWeight.bold,
                                 fontSize: 11,
                                 color: textDark,
                               ),
                             ),
-                            if (proj.technologies?.trim().isNotEmpty == true) ...[
-                              pw.SizedBox(height: 2),
-                              pw.Text(
-                                'Technologies: ${proj.technologies!.trim()}',
-                                style: pw.TextStyle(
-                                  fontStyle: pw.FontStyle.italic,
-                                  fontSize: 9,
-                                  color: subtextColor,
-                                ),
+                          if (dateStr.isNotEmpty)
+                            pw.Text(
+                              dateStr,
+                              style: pw.TextStyle(
+                                fontStyle: pw.FontStyle.italic,
+                                fontSize: 9.5,
+                                color: subtextColor,
                               ),
-                            ],
-                            if (proj.description?.trim().isNotEmpty == true) ...[
-                              pw.SizedBox(height: 3),
-                              pw.Text(
-                                proj.description!.trim(),
+                            ),
+                        ],
+                      ),
+                      if (company.isNotEmpty) ...[
+                        pw.SizedBox(height: 2),
+                        pw.Text(
+                          company,
+                          style: pw.TextStyle(
+                            fontSize: 10,
+                            color: subtextColor,
+                          ),
+                        ),
+                      ],
+                      if (descLines.isNotEmpty) ...[
+                        pw.SizedBox(height: 4),
+                        ...descLines.map(
+                          (line) => pw.Padding(
+                            padding: const pw.EdgeInsets.only(left: 4, bottom: 2),
+                            child: pw.Row(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                _buildBulletDot(textDark),
+                                pw.Expanded(
+                                  child: pw.Text(
+                                    line,
+                                    style: pw.TextStyle(
+                                      fontSize: 9.5,
+                                      color: textDark,
+                                      lineSpacing: 1.4,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              }),
+              pw.SizedBox(height: 10),
+            ],
+
+            // PROJECTS
+            if (projectsList.isNotEmpty) ...[
+              _buildSectionHeader('PROJECTS', darkNavy),
+              ...projectsList.map((proj) {
+                return pw.Padding(
+                  padding: const pw.EdgeInsets.only(bottom: 10),
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      pw.Text(
+                        proj.projectName?.trim() ?? '',
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 11,
+                          color: textDark,
+                        ),
+                      ),
+                      if (proj.technologies?.trim().isNotEmpty == true) ...[
+                        pw.SizedBox(height: 2),
+                        pw.Text(
+                          'Technologies: ${proj.technologies!.trim()}',
+                          style: pw.TextStyle(
+                            fontStyle: pw.FontStyle.italic,
+                            fontSize: 9,
+                            color: subtextColor,
+                          ),
+                        ),
+                      ],
+                      if (proj.description?.trim().isNotEmpty == true) ...[
+                        pw.SizedBox(height: 3),
+                        pw.Text(
+                          proj.description!.trim(),
+                          style: pw.TextStyle(
+                            fontSize: 9.5,
+                            color: textDark,
+                          ),
+                        ),
+                      ],
+                    ],
+                  ),
+                );
+              }),
+              pw.SizedBox(height: 10),
+            ],
+
+            // Bottom Two Column Section Grid
+            pw.Partitions(
+              children: [
+                // Left Column: Education & Skills
+                pw.Partition(
+                  child: pw.Column(
+                    crossAxisAlignment: pw.CrossAxisAlignment.start,
+                    children: [
+                      if (educationList.isNotEmpty) ...[
+                        _buildSectionHeader('EDUCATION', darkNavy),
+                        ...educationList.map((edu) {
+                          final degree = [
+                            if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),
+                            if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
+                          ].join(' in ');
+
+                          return pw.Padding(
+                            padding: const pw.EdgeInsets.only(bottom: 10),
+                            child: pw.Column(
+                              crossAxisAlignment: pw.CrossAxisAlignment.start,
+                              children: [
+                                if (degree.isNotEmpty)
+                                  pw.Text(
+                                    degree,
+                                    style: pw.TextStyle(
+                                      fontWeight: pw.FontWeight.bold,
+                                      fontSize: 10.5,
+                                      color: textDark,
+                                    ),
+                                  ),
+                                if (edu.school?.trim().isNotEmpty == true) ...[
+                                  pw.SizedBox(height: 2),
+                                  pw.Text(
+                                    edu.school!.trim(),
+                                    style: pw.TextStyle(
+                                      fontSize: 9.5,
+                                      color: subtextColor,
+                                    ),
+                                  ),
+                                ],
+                                if (edu.grade?.trim().isNotEmpty == true) ...[
+                                  pw.SizedBox(height: 2),
+                                  pw.Row(
+                                    children: [
+                                      _buildBulletDot(textDark),
+                                      pw.Text(
+                                        'Grade / CGPA: ${edu.grade!.trim()}',
+                                        style: pw.TextStyle(
+                                          fontSize: 9.5,
+                                          color: textDark,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ],
+                            ),
+                          );
+                        }),
+                        pw.SizedBox(height: 10),
+                      ],
+
+                      if (skillsList.isNotEmpty) ...[
+                        _buildSectionHeader('CORE SKILLS', darkNavy),
+                        pw.Wrap(
+                          spacing: 6,
+                          runSpacing: 6,
+                          children: skillsList.map((skill) {
+                            return pw.Container(
+                              padding: const pw.EdgeInsets.symmetric(horizontal: 8, vertical: 4),
+                              decoration: pw.BoxDecoration(
+                                border: pw.Border.all(color: darkNavy, width: 0.5),
+                                borderRadius: pw.BorderRadius.circular(2),
+                              ),
+                              child: pw.Text(
+                                skill,
                                 style: pw.TextStyle(
-                                  fontSize: 9.5,
+                                  fontSize: 8.5,
                                   color: textDark,
                                 ),
                               ),
-                            ],
-                          ],
+                            );
+                          }).toList(),
                         ),
-                      );
-                    }),
-                    pw.SizedBox(height: 10),
-                  ],
+                      ],
+                    ],
+                  ),
+                ),
 
-                  // Bottom Two Column Section Grid
-                  pw.Row(
-                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                    children: [
-                      // Left Column: Education & Skills
-                      pw.Expanded(
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            if (educationList.isNotEmpty) ...[
-                              _buildSectionHeader('EDUCATION', darkNavy),
-                              ...educationList.map((edu) {
-                                final degree = [
-                                  if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),
-                                  if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
-                                ].join(' in ');
-
-                                return pw.Padding(
-                                  padding: const pw.EdgeInsets.only(bottom: 10),
-                                  child: pw.Column(
-                                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                    children: [
-                                      if (degree.isNotEmpty)
+                // Right Column: Certifications & Languages
+                pw.Partition(
+                  width: 220,
+                  child: pw.Padding(
+                    padding: const pw.EdgeInsets.only(left: 20),
+                    child: pw.Column(
+                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                      children: [
+                        if (certificationsList.isNotEmpty) ...[
+                          _buildSectionHeader('CERTIFICATIONS', darkNavy),
+                          ...certificationsList.map((cert) {
+                            return pw.Padding(
+                              padding: const pw.EdgeInsets.only(bottom: 6),
+                              child: pw.Row(
+                                crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                children: [
+                                  _buildBulletDot(textDark),
+                                  pw.Expanded(
+                                    child: pw.Column(
+                                      crossAxisAlignment: pw.CrossAxisAlignment.start,
+                                      children: [
                                         pw.Text(
-                                          degree,
+                                          cert.certificateName?.trim() ?? '',
                                           style: pw.TextStyle(
+                                            fontSize: 9.5,
                                             fontWeight: pw.FontWeight.bold,
-                                            fontSize: 10.5,
                                             color: textDark,
                                           ),
                                         ),
-                                      if (edu.school?.trim().isNotEmpty == true) ...[
-                                        pw.SizedBox(height: 2),
-                                        pw.Text(
-                                          edu.school!.trim(),
-                                          style: pw.TextStyle(
-                                            fontSize: 9.5,
-                                            color: subtextColor,
-                                          ),
-                                        ),
-                                      ],
-                                      if (edu.grade?.trim().isNotEmpty == true) ...[
-                                        pw.SizedBox(height: 2),
-                                        pw.Row(
-                                          children: [
-                                            _buildBulletDot(textDark),
-                                            pw.Text(
-                                              'Grade / CGPA: ${edu.grade!.trim()}',
-                                              style: pw.TextStyle(
-                                                fontSize: 9,
-                                                color: textDark,
-                                              ),
+                                        if (cert.organization?.trim().isNotEmpty == true)
+                                          pw.Text(
+                                            cert.organization!.trim(),
+                                            style: pw.TextStyle(
+                                              fontSize: 8.5,
+                                              color: subtextColor,
                                             ),
-                                          ],
-                                        ),
+                                          ),
                                       ],
-                                    ],
+                                    ),
                                   ),
-                                );
-                              }),
-                              pw.SizedBox(height: 8),
-                            ],
-                            if (skillsList.isNotEmpty) ...[
-                              _buildSectionHeader('SKILLS', darkNavy),
-                              pw.Wrap(
-                                spacing: 12,
-                                runSpacing: 4,
-                                children: skillsList.map((skill) {
-                                  return pw.Row(
-                                    mainAxisSize: pw.MainAxisSize.min,
-                                    children: [
-                                      _buildBulletDot(textDark),
-                                      pw.Text(
-                                        skill,
-                                        style: pw.TextStyle(
-                                          fontSize: 9.5,
-                                          color: textDark,
-                                        ),
-                                      ),
-                                    ],
-                                  );
-                                }).toList(),
+                                ],
                               ),
-                            ],
-                          ],
-                        ),
-                      ),
-                      pw.SizedBox(width: 20),
-                      // Right Column: Certifications & Languages
-                      pw.Expanded(
-                        child: pw.Column(
-                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                          children: [
-                            if (certificationsList.isNotEmpty) ...[
-                              _buildSectionHeader('CERTIFICATIONS', darkNavy),
-                              ...certificationsList.map((cert) {
-                                return pw.Padding(
-                                  padding: const pw.EdgeInsets.only(bottom: 6),
-                                  child: pw.Row(
-                                    crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                    children: [
-                                      _buildBulletDot(textDark),
-                                      pw.Expanded(
-                                        child: pw.Column(
-                                          crossAxisAlignment: pw.CrossAxisAlignment.start,
-                                          children: [
-                                            pw.Text(
-                                              cert.certificateName?.trim() ?? '',
-                                              style: pw.TextStyle(
-                                                fontSize: 9.5,
-                                                fontWeight: pw.FontWeight.bold,
-                                                color: textDark,
-                                              ),
-                                            ),
-                                            if (cert.organization?.trim().isNotEmpty == true)
-                                              pw.Text(
-                                                cert.organization!.trim(),
-                                                style: pw.TextStyle(
-                                                  fontSize: 8.5,
-                                                  color: subtextColor,
-                                                ),
-                                              ),
-                                          ],
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                );
-                              }),
-                              pw.SizedBox(height: 8),
-                            ],
-                            if (languagesList.isNotEmpty) ...[
-                              _buildSectionHeader('LANGUAGES', darkNavy),
-                              ...languagesList.map((lang) {
-                                final name = lang.language?.trim() ?? '';
-                                final prof = lang.proficiency.name;
+                            );
+                          }),
+                          pw.SizedBox(height: 8),
+                        ],
+                        if (languagesList.isNotEmpty) ...[
+                          _buildSectionHeader('LANGUAGES', darkNavy),
+                          ...languagesList.map((lang) {
+                            final name = lang.language?.trim() ?? '';
+                            final prof = lang.proficiency.name;
 
-                                return pw.Padding(
-                                  padding: const pw.EdgeInsets.only(bottom: 4),
-                                  child: pw.Row(
-                                    children: [
-                                      _buildBulletDot(textDark),
-                                      pw.Text(
-                                        name,
-                                        style: pw.TextStyle(
-                                          fontSize: 9.5,
-                                          fontWeight: pw.FontWeight.bold,
-                                          color: textDark,
-                                        ),
-                                      ),
-                                      if (prof.isNotEmpty) ...[
-                                        pw.Text(
-                                          ' ($prof)',
-                                          style: pw.TextStyle(
-                                            fontSize: 8.5,
-                                            color: subtextColor,
-                                          ),
-                                        ),
-                                      ],
-                                    ],
+                            return pw.Padding(
+                              padding: const pw.EdgeInsets.only(bottom: 4),
+                              child: pw.Row(
+                                children: [
+                                  _buildBulletDot(textDark),
+                                  pw.Text(
+                                    name,
+                                    style: pw.TextStyle(
+                                      fontSize: 9.5,
+                                      fontWeight: pw.FontWeight.bold,
+                                      color: textDark,
+                                    ),
                                   ),
-                                );
-                              }),
-                            ],
-                          ],
-                        ),
-                      ),
-                    ],
+                                  if (prof.isNotEmpty) ...[
+                                    pw.Text(
+                                      ' ($prof)',
+                                      style: pw.TextStyle(
+                                        fontSize: 8.5,
+                                        color: subtextColor,
+                                      ),
+                                    ),
+                                  ],
+                                ],
+                              ),
+                            );
+                          }),
+                        ],
+                      ],
+                    ),
                   ),
-                ],
-              ),
+                ),
+              ],
             ),
           ];
         },

@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 
 import 'package:vitafolio/features/home/view/home_screen.dart';
 import 'package:vitafolio/features/preview/view/preview_screen.dart';
+import 'package:vitafolio/features/preview/view/custom_font_page.dart';
 import 'package:vitafolio/features/splash/view/splash_screen.dart';
 
 import 'package:vitafolio/features/template_selection/presentation/pages/template_selection_page.dart';
@@ -48,6 +49,7 @@ class AppRoutes {
   static const languages = '/languages';
   static const addLanguage = '/add-language';
   static const preview = '/preview';
+  static const customFont = '/custom-font';
   static const review = '/review';
   static const templates = '/templates';
   static const templatePreview = 'template_preview';
@@ -200,6 +202,11 @@ class AppRouter {
         path: AppRoutes.preview,
         name: 'preview',
         builder: (context, state) => const PreviewScreen(),
+      ),
+      GoRoute(
+        path: AppRoutes.customFont,
+        name: 'custom_font',
+        builder: (context, state) => const CustomFontPage(),
       ),
       GoRoute(
         path: AppRoutes.review,

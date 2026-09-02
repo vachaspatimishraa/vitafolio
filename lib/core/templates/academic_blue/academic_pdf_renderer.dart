@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart' as fm;
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/core/pdf/optimization/font_cache.dart';
 import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
@@ -21,7 +22,8 @@ class AcademicPdfRenderer extends ResumeTemplateRenderer {
 
   @override
   pw.Document buildPdf(WorkflowState resumeData) {
-    final pdf = pw.Document();
+    final themeData = FontCache().getThemeForFontSync(resumeData.fontFamily);
+    final pdf = pw.Document(theme: themeData);
 
     final textDark = PdfColor.fromHex('222222');
     final subtextColor = PdfColor.fromHex('555555');
@@ -56,11 +58,10 @@ class AcademicPdfRenderer extends ResumeTemplateRenderer {
         margin: const pw.EdgeInsets.all(32),
         build: (context) {
           return [
-            pw.Row(
-              crossAxisAlignment: pw.CrossAxisAlignment.start,
+            pw.Partitions(
               children: [
                 // Left Column (~38% width)
-                pw.SizedBox(
+                pw.Partition(
                   width: 190,
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
@@ -196,10 +197,10 @@ class AcademicPdfRenderer extends ResumeTemplateRenderer {
                   ),
                 ),
 
-                pw.SizedBox(width: 24),
-
                 // Right Column
-                pw.Expanded(
+              pw.Partition(
+                child: pw.Padding(
+                  padding: const pw.EdgeInsets.only(left: 24),
                   child: pw.Column(
                     crossAxisAlignment: pw.CrossAxisAlignment.start,
                     children: [
@@ -394,15 +395,16 @@ class AcademicPdfRenderer extends ResumeTemplateRenderer {
                     ],
                   ),
                 ),
-              ],
-            ),
-          ];
-        },
-      ),
-    );
+              ),
+            ],
+          ),
+        ];
+      },
+    ),
+  );
 
-    return pdf;
-  }
+  return pdf;
+}
 
   pw.Widget _buildSectionHeader(String title, PdfColor textDark, PdfColor underlineColor) {
     return pw.Column(

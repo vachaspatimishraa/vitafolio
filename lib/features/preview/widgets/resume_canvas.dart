@@ -86,26 +86,12 @@ class ResumeCanvas extends ConsumerWidget {
     final pdfRenderer = PdfService().resolveRenderer(selectedTemplateId);
 
     return SingleChildScrollView(
+      key: ValueKey('${domainResume.selectedTemplateId.value}_${domainResume.fontFamily}'),
       padding: const EdgeInsets.symmetric(horizontal: 16.0, vertical: 24.0),
       child: Center(
-        child: Container(
-          decoration: BoxDecoration(
-            color: Colors.white,
-            borderRadius: BorderRadius.circular(4),
-            border: Border.all(color: Colors.grey.shade300, width: 1),
-            boxShadow: [
-              BoxShadow(
-                color: Colors.black.withValues(alpha: 0.12),
-                blurRadius: 16,
-                spreadRadius: 2,
-                offset: const Offset(0, 6),
-              ),
-            ],
-          ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(4),
-            child: pdfRenderer.buildPreview(workflowState, context),
-          ),
+        child: ConstrainedBox(
+          constraints: const BoxConstraints(maxWidth: 650),
+          child: pdfRenderer.buildPreview(workflowState, context),
         ),
       ),
     );

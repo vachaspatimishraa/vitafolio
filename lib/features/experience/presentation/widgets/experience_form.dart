@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vitafolio/core/utils/employment_type_helper.dart';
 import 'package:vitafolio/features/experience/presentation/widgets/cascading_location_data.dart';
 import 'package:vitafolio/features/personal_details/presentation/widgets/hybrid_search_dropdown.dart';
 
@@ -106,7 +107,10 @@ class ExperienceForm extends StatelessWidget {
 
           // Employment Type Dropdown
           DropdownButtonFormField<String>(
-            initialValue: selectedEmploymentType,
+            initialValue: EmploymentTypeHelper.getSafeDropdownValue(
+              selectedEmploymentType,
+              kEmploymentTypes,
+            ),
             decoration: InputDecoration(
               labelText: 'Employment Type',
               prefixIcon: const Icon(Icons.badge_outlined),

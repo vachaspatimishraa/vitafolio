@@ -21,6 +21,7 @@ class ResumeMapper {
       title: model.title,
       isTitleManuallySet: model.isTitleManuallySet ?? false,
       selectedTemplateId: TemplateId(model.selectedTemplateId),
+      fontFamily: model.fontFamily ?? 'roboto',
       createdAt: model.createdAt,
       updatedAt: model.updatedAt,
       personalDetails: model.personalDetails != null
@@ -42,6 +43,7 @@ class ResumeMapper {
       ..title = domain.title
       ..isTitleManuallySet = domain.isTitleManuallySet
       ..selectedTemplateId = domain.selectedTemplateId.value
+      ..fontFamily = domain.fontFamily
       ..createdAt = domain.createdAt
       ..updatedAt = domain.updatedAt
       ..domainId = domain.id.value

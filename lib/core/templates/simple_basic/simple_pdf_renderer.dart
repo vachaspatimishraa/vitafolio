@@ -3,6 +3,7 @@ import 'package:pdf/widgets.dart' as pw;
 import 'package:flutter/material.dart' as fm;
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
+import 'package:vitafolio/core/pdf/optimization/font_cache.dart';
 import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
@@ -21,7 +22,8 @@ class SimplePdfRenderer extends ResumeTemplateRenderer {
 
   @override
   pw.Document buildPdf(WorkflowState resumeData) {
-    final pdf = pw.Document();
+    final themeData = FontCache().getThemeForFontSync(resumeData.fontFamily);
+    final pdf = pw.Document(theme: themeData);
 
     final peachCircleColor = PdfColor.fromHex('FFE3D3');
     final textDark = PdfColor.fromHex('1E1E1E');

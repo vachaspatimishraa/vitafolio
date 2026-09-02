@@ -67,6 +67,11 @@ class MockResumeRepository implements ResumeRepository {
   }
 
   @override
+  Future<Resume> saveSelectedFont(ResumeId resumeId, String fontFamily) async {
+    throw UnimplementedError();
+  }
+
+  @override
   Future<List<int>> generateResume(ResumeId resumeId) async => [1, 2, 3];
 
   @override

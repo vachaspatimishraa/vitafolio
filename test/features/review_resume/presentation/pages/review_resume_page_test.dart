@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/features/preview/view/preview_screen.dart';
 import 'package:vitafolio/features/resume/domain/entities/resume.dart';
 import 'package:vitafolio/features/resume/domain/value_objects/resume_id.dart';
 import 'package:vitafolio/features/resume/domain/value_objects/template_id.dart';
@@ -84,6 +86,50 @@ void main() {
       expect(find.text('Resume Sections'), findsOneWidget);
       expect(find.text('Previous'), findsOneWidget);
       expect(find.text('Generate Resume'), findsOneWidget);
+    });
+
+    testWidgets('tapping Generate Resume button navigates to preview screen', (tester) async {
+      final sampleResume = Resume(
+        id: const ResumeId('test-1'),
+        title: 'Jane Portfolio',
+        selectedTemplateId: const TemplateId('ats_friendly'),
+        createdAt: DateTime.now(),
+        updatedAt: DateTime.now(),
+      );
+
+      await tester.pumpWidget(
+        ProviderScope(
+          overrides: [
+            reviewResumeViewModelProvider.overrideWith(
+              (ref) => _FakeReviewResumeNotifier(
+                ReviewResumeState(
+                  resume: sampleResume,
+                  templateName: 'Modern Clean',
+                  completedSections: 5,
+                  totalSections: 10,
+                  completionPercentage: 0.5,
+                ),
+              ),
+            ),
+          ],
+          child: MaterialApp.router(
+            routerConfig: AppRouter.router,
+          ),
+        ),
+      );
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      AppRouter.router.go(AppRoutes.review);
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.text('Generate Resume'), findsOneWidget);
+      await tester.tap(find.text('Generate Resume'));
+      await tester.pump();
+      await tester.pump(const Duration(milliseconds: 200));
+
+      expect(find.byType(PreviewScreen), findsOneWidget);
     });
   });
 }

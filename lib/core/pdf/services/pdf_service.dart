@@ -105,6 +105,7 @@ class PdfService {
           )
           .toList(),
       selectedTemplateId: templateId,
+      fontFamily: resume.fontFamily,
     );
   }
 

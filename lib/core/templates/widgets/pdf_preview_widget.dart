@@ -14,10 +14,23 @@ class PdfPreviewWidget extends StatelessWidget {
       future: pdf.save(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const Center(child: CircularProgressIndicator());
+          return const Center(
+            child: Padding(
+              padding: EdgeInsets.all(32.0),
+              child: CircularProgressIndicator(),
+            ),
+          );
         }
         if (snapshot.hasError) {
-          return Center(child: Text('Preview Error: ${snapshot.error}'));
+          return Center(
+            child: Padding(
+              padding: const EdgeInsets.all(16.0),
+              child: Text(
+                'Preview Error: ${snapshot.error}',
+                style: const TextStyle(color: Colors.red),
+              ),
+            ),
+          );
         }
         final bytes = snapshot.data;
         if (bytes == null) {
@@ -25,10 +38,15 @@ class PdfPreviewWidget extends StatelessWidget {
         }
 
         return FutureBuilder<List<PdfRaster>>(
-          future: Printing.raster(bytes, pages: [0], dpi: 150).toList(),
+          future: Printing.raster(bytes, dpi: 150).toList(),
           builder: (context, rasterSnapshot) {
             if (rasterSnapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator());
+              return const Center(
+                child: Padding(
+                  padding: EdgeInsets.all(32.0),
+                  child: CircularProgressIndicator(),
+                ),
+              );
             }
             if (rasterSnapshot.hasError) {
               return Center(
@@ -40,7 +58,62 @@ class PdfPreviewWidget extends StatelessWidget {
               return const Center(child: Text('Could not render page'));
             }
 
-            return Image(image: PdfRasterImage(rasters.first));
+            const a4AspectRatio = 1 / 1.4142; // A4 aspect ratio (width / height)
+
+            return Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                for (int i = 0; i < rasters.length; i++) ...[
+                  if (i > 0) const SizedBox(height: 24),
+                  Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(4),
+                      boxShadow: [
+                        BoxShadow(
+                          color: Colors.black.withValues(alpha: 0.14),
+                          blurRadius: 16,
+                          spreadRadius: 1,
+                          offset: const Offset(0, 6),
+                        ),
+                      ],
+                    ),
+                    child: ClipRRect(
+                      borderRadius: BorderRadius.circular(4),
+                      child: AspectRatio(
+                        aspectRatio: a4AspectRatio,
+                        child: Image(
+                          image: PdfRasterImage(rasters[i]),
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                    ),
+                  ),
+                  if (rasters.length > 1) ...[
+                    const SizedBox(height: 8),
+                    Container(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 4,
+                      ),
+                      decoration: BoxDecoration(
+                        color: Colors.black.withValues(alpha: 0.6),
+                        borderRadius: BorderRadius.circular(12),
+                      ),
+                      child: Text(
+                        'Page ${i + 1} of ${rasters.length}',
+                        style: const TextStyle(
+                          color: Colors.white,
+                          fontSize: 11,
+                          fontWeight: FontWeight.w600,
+                        ),
+                      ),
+                    ),
+                  ],
+                ],
+              ],
+            );
           },
         );
       },

@@ -116,6 +116,21 @@ class ResumeRepositoryImpl implements ResumeRepository {
   }
 
   @override
+  Future<Resume> saveSelectedFont(ResumeId resumeId, String fontFamily) async {
+    try {
+      final intId = int.tryParse(resumeId.value);
+      if (intId == null) throw const DatabaseFailure('Invalid ID format');
+      await _localDataSource.saveSelectedFont(intId, fontFamily);
+      final updatedResume = await getResume(resumeId);
+      if (updatedResume == null) throw const DatabaseFailure('Resume not found after update');
+      return updatedResume;
+    } catch (e) {
+      if (e is DatabaseFailure) rethrow;
+      throw const DatabaseFailure();
+    }
+  }
+
+  @override
   Future<List<int>> generateResume(ResumeId resumeId) async {
     try {
       final resume = await getResume(resumeId);

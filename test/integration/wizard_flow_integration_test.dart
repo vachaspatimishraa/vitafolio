@@ -74,6 +74,20 @@ class InMemoryResumeRepository implements ResumeRepository {
   }
 
   @override
+  Future<Resume> saveSelectedFont(
+    ResumeId resumeId,
+    String fontFamily,
+  ) async {
+    final existing = _storage[resumeId.value];
+    if (existing != null) {
+      final updated = existing.copyWith(fontFamily: fontFamily);
+      _storage[resumeId.value] = updated;
+      return updated;
+    }
+    throw UnimplementedError();
+  }
+
+  @override
   Future<List<int>> generateResume(ResumeId resumeId) async {
     return [1, 2, 3, 4];
   }

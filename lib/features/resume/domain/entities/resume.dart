@@ -23,6 +23,7 @@ class Resume {
   final List<Skill> skills;
   final List<Certification> certifications;
   final List<Language> languages;
+  final String fontFamily;
   final DateTime createdAt;
   final DateTime updatedAt;
 
@@ -31,6 +32,7 @@ class Resume {
     required this.title,
     this.isTitleManuallySet = false,
     required this.selectedTemplateId,
+    this.fontFamily = 'roboto',
     this.personalDetails,
     this.summary,
     this.experiences = const [],
@@ -48,6 +50,7 @@ class Resume {
     String? title,
     bool? isTitleManuallySet,
     TemplateId? selectedTemplateId,
+    String? fontFamily,
     PersonalDetails? personalDetails,
     ProfessionalSummary? summary,
     List<Experience>? experiences,
@@ -64,6 +67,7 @@ class Resume {
       title: title ?? this.title,
       isTitleManuallySet: isTitleManuallySet ?? this.isTitleManuallySet,
       selectedTemplateId: selectedTemplateId ?? this.selectedTemplateId,
+      fontFamily: fontFamily ?? this.fontFamily,
       personalDetails: personalDetails ?? this.personalDetails,
       summary: summary ?? this.summary,
       experiences: experiences ?? this.experiences,
@@ -85,6 +89,7 @@ class Resume {
           id == other.id &&
           title == other.title &&
           selectedTemplateId == other.selectedTemplateId &&
+          fontFamily == other.fontFamily &&
           personalDetails == other.personalDetails &&
           summary == other.summary &&
           createdAt == other.createdAt &&
@@ -95,6 +100,7 @@ class Resume {
       id.hashCode ^
       title.hashCode ^
       selectedTemplateId.hashCode ^
+      fontFamily.hashCode ^
       personalDetails.hashCode ^
       summary.hashCode ^
       createdAt.hashCode ^

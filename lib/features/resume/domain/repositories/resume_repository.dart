@@ -29,6 +29,9 @@ abstract class ResumeRepository {
   /// Persists selected template assignment for a target resume.
   Future<Resume> saveSelectedTemplate(ResumeId resumeId, TemplateId templateId);
 
+  /// Persists selected font assignment for a target resume.
+  Future<Resume> saveSelectedFont(ResumeId resumeId, String fontFamily);
+
   /// Renders/Generates raw PDF document bytes for a given resume entity.
   Future<List<int>> generateResume(ResumeId resumeId);
 

@@ -9,6 +9,7 @@ class ResumeDbModel {
   late String title;
   bool? isTitleManuallySet;
   late String selectedTemplateId;
+  String? fontFamily;
 
   PersonalDetailsModel? personalDetails;
   ProfessionalSummaryModel? summary;
