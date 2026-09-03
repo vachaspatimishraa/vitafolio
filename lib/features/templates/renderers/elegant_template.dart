@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
 
 class ElegantTemplateRenderer implements TemplateRenderer {
@@ -184,8 +185,12 @@ class ElegantTemplateRenderer implements TemplateRenderer {
                             if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
                           ].join(' in ');
 
-                          final dateStr =
-                              '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+                          final dateStr = DateRangeFormatter.formatEducation(
+                            startDate: edu.startDate,
+                            endDate: edu.endDate,
+                            isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                            separator: ' - ',
+                          );
 
                           return Padding(
                             padding: const EdgeInsets.only(bottom: 14.0),
@@ -309,8 +314,12 @@ class ElegantTemplateRenderer implements TemplateRenderer {
                             final title = exp.position?.trim() ?? '';
                             final company = exp.company?.trim() ?? '';
                             final location = exp.location?.trim() ?? '';
-                            final dateStr =
-                                '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+                            final dateStr = DateRangeFormatter.formatExperience(
+                              startDate: exp.startDate,
+                              endDate: exp.endDate,
+                              isCurrentRole: exp.isCurrentlyWorking == true,
+                              separator: ' - ',
+                            );
 
                             final companyLocation = [
                               if (company.isNotEmpty) company,
@@ -525,14 +534,5 @@ class ElegantTemplateRenderer implements TemplateRenderer {
         const SizedBox(height: 12),
       ],
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
   }
 }

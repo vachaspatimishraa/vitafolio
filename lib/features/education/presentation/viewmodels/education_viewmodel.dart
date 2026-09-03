@@ -2,6 +2,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vitafolio/features/resume/domain/entities/education.dart';
 import 'package:vitafolio/features/resume/domain/usecases/get_resume.dart';
 import 'package:vitafolio/features/resume/domain/usecases/update_resume.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/resume/presentation/providers/resume_domain_providers.dart';
 
 class MockEducationItem {
@@ -24,29 +25,53 @@ class MockEducationItem {
   });
 
   factory MockEducationItem.fromDomain(Education domain) {
+    final range = DateRangeFormatter.formatEducation(
+      startYear: domain.startYear,
+      endYear: domain.endYear,
+      isCurrentlyStudying: domain.isCurrentlyStudying,
+      separator: ' - ',
+    );
     return MockEducationItem(
       id: domain.id,
       degree: domain.degree,
       fieldOfStudy: domain.fieldOfStudy,
       institution: domain.institution,
-      dateRange: '${domain.startYear} - ${domain.endYear}',
+      dateRange: range,
       grade: domain.grade ?? '',
       description: '', // If domain entity has description, map it here
     );
   }
 
   Education toDomain() {
-    final dates = dateRange.split(' - ');
+    final isPursuing = dateRange.contains('Pursuing') || dateRange.contains('Present');
+    String start = '';
+    String end = '';
+    if (dateRange.contains(' - ')) {
+      final dates = dateRange.split(' - ');
+      start = dates[0].trim();
+      end = dates.length > 1 ? dates[1].trim() : '';
+    } else if (dateRange.contains(' – ')) {
+      final dates = dateRange.split(' – ');
+      start = dates[0].trim();
+      end = dates.length > 1 ? dates[1].trim() : '';
+    } else {
+      if (isPursuing) {
+        start = dateRange.replaceAll('Pursuing', '').replaceAll('Present', '').trim();
+      } else {
+        start = dateRange.trim();
+      }
+    }
+
     return Education(
       id: id,
       degree: degree,
       fieldOfStudy: fieldOfStudy,
       institution: institution,
       location: '', // Add location if needed
-      startYear: dates.isNotEmpty ? dates[0] : '',
-      endYear: dates.length > 1 ? dates[1] : '',
+      startYear: start,
+      endYear: isPursuing ? '' : end,
       grade: grade,
-      isCurrentlyStudying: dateRange.contains('Present'),
+      isCurrentlyStudying: isPursuing,
     );
   }
 }
@@ -138,6 +163,15 @@ class EducationViewModel extends StateNotifier<EducationListState> {
   void addEducation(MockEducationItem item) {
     state = state.copyWith(
       educations: [...state.educations, item],
+    );
+    _save();
+  }
+
+  void updateEducation(MockEducationItem item) {
+    state = state.copyWith(
+      educations: state.educations
+          .map((e) => e.id == item.id ? item : e)
+          .toList(),
     );
     _save();
   }

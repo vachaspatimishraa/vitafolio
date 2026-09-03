@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
 
 class CreativeTemplateRenderer implements TemplateRenderer {
@@ -209,8 +210,12 @@ class CreativeTemplateRenderer implements TemplateRenderer {
                           if (edu.fieldOfStudy?.trim().isNotEmpty == true)
                             edu.fieldOfStudy!.trim(),
                         ].join(' in ');
-                        final dateStr =
-                            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+                        final dateStr = DateRangeFormatter.formatEducation(
+                          startDate: edu.startDate,
+                          endDate: edu.endDate,
+                          isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                          separator: ' - ',
+                        );
 
                         return Padding(
                           padding: const EdgeInsets.only(bottom: 10.0),
@@ -327,8 +332,12 @@ class CreativeTemplateRenderer implements TemplateRenderer {
                       ...experienceList.map((exp) {
                         final company = exp.company?.trim() ?? '';
                         final position = exp.position?.trim() ?? '';
-                        final dateStr =
-                            '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+                        final dateStr = DateRangeFormatter.formatExperience(
+                          startDate: exp.startDate,
+                          endDate: exp.endDate,
+                          isCurrentRole: exp.isCurrentlyWorking == true,
+                          separator: ' - ',
+                        );
 
                         final descLines = <String>[];
                         if (exp.description?.trim().isNotEmpty == true) {
@@ -538,10 +547,5 @@ class CreativeTemplateRenderer implements TemplateRenderer {
         shape: BoxShape.circle,
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    return '${date.year}';
   }
 }

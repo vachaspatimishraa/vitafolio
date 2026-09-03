@@ -156,7 +156,7 @@ class ExecutivePdfRenderer implements PdfRenderer {
                 '${e.degree?.trim() ?? ""} ${e.fieldOfStudy?.trim() ?? ""}'
                     .trim(),
             date:
-                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Pursuing" : _formatDate(e.endDate)}',
           ),
         ),
       ],

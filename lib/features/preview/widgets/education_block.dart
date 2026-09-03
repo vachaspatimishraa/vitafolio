@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/data/models/embedded/education_model.dart';
 
 class EducationBlock extends StatelessWidget {
@@ -10,18 +11,11 @@ class EducationBlock extends StatelessWidget {
   Widget build(BuildContext context) {
     final theme = Theme.of(context);
 
-    final startDateStr = item.startDate != null
-        ? item.startDate!.toIso8601String().split('T').first
-        : '';
-    final endDateStr = item.isCurrentlyStudying == true
-        ? 'Present'
-        : (item.endDate != null
-              ? item.endDate!.toIso8601String().split('T').first
-              : '');
-
-    final dateRange = startDateStr.isNotEmpty || endDateStr.isNotEmpty
-        ? '$startDateStr – $endDateStr'
-        : '';
+    final dateRange = DateRangeFormatter.formatEducation(
+      startDate: item.startDate,
+      endDate: item.endDate,
+      isCurrentlyStudying: item.isCurrentlyStudying ?? false,
+    );
 
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4.0),

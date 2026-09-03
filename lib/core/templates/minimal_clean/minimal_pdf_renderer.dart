@@ -8,6 +8,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class MinimalPdfRenderer extends ResumeTemplateRenderer {
   const MinimalPdfRenderer();
@@ -119,8 +120,13 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
                           final title = exp.position?.trim() ?? '';
                           final company = exp.company?.trim() ?? '';
                           final location = exp.location?.trim() ?? '';
-                          final dateStr =
-                              '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "PRESENT" : _formatDate(exp.endDate)}';
+                          final dateStr = DateRangeFormatter.formatExperience(
+                            startDate: exp.startDate,
+                            endDate: exp.endDate,
+                            isCurrentRole: exp.isCurrentlyWorking == true,
+                            ongoingLabel: 'PRESENT',
+                            separator: ' - ',
+                          );
 
                           final companyLoc = [
                             if (company.isNotEmpty) company,
@@ -322,8 +328,12 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
                       if (educationList.isNotEmpty) ...[
                         _buildRightHeader('EDUCATION', darkTitleColor),
                         ...educationList.map((edu) {
-                          final dateStr =
-                              '${_formatDate(edu.startDate)} - ${_formatDate(edu.endDate)}';
+                          final dateStr = DateRangeFormatter.formatEducation(
+                            startDate: edu.startDate,
+                            endDate: edu.endDate,
+                            isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                            separator: ' - ',
+                          );
                           final degree = [
                             if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),
                             if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
@@ -506,10 +516,5 @@ class MinimalPdfRenderer extends ResumeTemplateRenderer {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    return '${date.year}';
   }
 }

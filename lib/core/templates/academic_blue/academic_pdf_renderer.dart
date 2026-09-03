@@ -8,6 +8,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/academic_blue/academic_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class AcademicPdfRenderer extends ResumeTemplateRenderer {
   const AcademicPdfRenderer();
@@ -210,8 +211,12 @@ class AcademicPdfRenderer extends ResumeTemplateRenderer {
                         ...experienceList.map((exp) {
                           final title = exp.position?.trim() ?? '';
                           final company = exp.company?.trim() ?? '';
-                          final dateStr =
-                              '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+                          final dateStr = DateRangeFormatter.formatExperience(
+                            startDate: exp.startDate,
+                            endDate: exp.endDate,
+                            isCurrentRole: exp.isCurrentlyWorking == true,
+                            separator: ' - ',
+                          );
 
                           final companyDate = [
                             if (company.isNotEmpty) company,
@@ -287,7 +292,10 @@ class AcademicPdfRenderer extends ResumeTemplateRenderer {
                           final degreeDate = [
                             if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),
                             if (edu.fieldOfStudy?.trim().isNotEmpty == true) 'in ${edu.fieldOfStudy!.trim()}',
-                            if (edu.endDate != null) ', ${_formatDate(edu.endDate)}',
+                            if (edu.isCurrentlyStudying == true)
+                              ', Pursuing'
+                            else if (edu.endDate != null)
+                              ', ${_formatDate(edu.endDate)}',
                           ].join(' ');
 
                           return pw.Padding(

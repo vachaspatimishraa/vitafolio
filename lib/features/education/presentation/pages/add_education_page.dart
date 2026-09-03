@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:vitafolio/app/constants/app_spacing.dart';
 import 'package:vitafolio/app/router.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/education/presentation/viewmodels/education_viewmodel.dart';
 import 'package:vitafolio/features/education/presentation/widgets/current_study_switch.dart';
 import 'package:vitafolio/features/education/presentation/widgets/description_editor.dart';
@@ -94,13 +95,48 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
 
     if (widget.isEditing) {
       if (item != null && item.dateRange.isNotEmpty) {
-        final dates = item.dateRange.split(' - ');
-        _selectedStartYear = dates.isNotEmpty ? dates[0] : '2020';
-        _selectedEndYear = (dates.length > 1 && dates[1] != 'Present') ? dates[1] : '2024';
-        _isCurrentlyStudying = item.dateRange.contains('Present');
+        final isPursuing =
+            item.dateRange.contains('Pursuing') || item.dateRange.contains('Present');
+        _isCurrentlyStudying = isPursuing;
+
+        if (item.dateRange.contains(' - ')) {
+          final dates = item.dateRange.split(' - ');
+          _selectedStartYear = (dates.isNotEmpty && dates[0].trim().isNotEmpty)
+              ? dates[0].trim()
+              : null;
+          _selectedEndYear = (dates.length > 1 &&
+                  dates[1].trim().isNotEmpty &&
+                  !isPursuing)
+              ? dates[1].trim()
+              : null;
+        } else if (item.dateRange.contains(' – ')) {
+          final dates = item.dateRange.split(' – ');
+          _selectedStartYear = (dates.isNotEmpty && dates[0].trim().isNotEmpty)
+              ? dates[0].trim()
+              : null;
+          _selectedEndYear = (dates.length > 1 &&
+                  dates[1].trim().isNotEmpty &&
+                  !isPursuing)
+              ? dates[1].trim()
+              : null;
+        } else {
+          if (isPursuing) {
+            final start = item.dateRange
+                .replaceAll('Pursuing', '')
+                .replaceAll('Present', '')
+                .trim();
+            _selectedStartYear = start.isNotEmpty ? start : null;
+            _selectedEndYear = null;
+          } else {
+            _selectedStartYear =
+                item.dateRange.trim().isNotEmpty ? item.dateRange.trim() : null;
+            _selectedEndYear = null;
+          }
+        }
       } else {
-        _selectedStartYear = '2020';
-        _selectedEndYear = '2024';
+        _selectedStartYear = null;
+        _selectedEndYear = null;
+        _isCurrentlyStudying = false;
       }
       _selectedCity = null;
       _selectedState = null;
@@ -140,8 +176,12 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
       return;
     }
 
-    final endYearText = _isCurrentlyStudying ? 'Present' : (_selectedEndYear ?? '');
-    final dateRangeText = '${_selectedStartYear ?? ''} - $endYearText';
+    final dateRangeText = DateRangeFormatter.formatEducation(
+      startYear: _selectedStartYear,
+      endYear: _selectedEndYear,
+      isCurrentlyStudying: _isCurrentlyStudying,
+      separator: ' - ',
+    );
 
     final newItem = MockEducationItem(
       id: widget.initialItem?.id ?? DateTime.now().millisecondsSinceEpoch.toString(),
@@ -153,7 +193,11 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
       description: _descriptionController.text.trim(),
     );
 
-    ref.read(educationViewModelProvider.notifier).addEducation(newItem);
+    if (widget.isEditing) {
+      ref.read(educationViewModelProvider.notifier).updateEducation(newItem);
+    } else {
+      ref.read(educationViewModelProvider.notifier).addEducation(newItem);
+    }
 
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
@@ -295,7 +339,7 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
                                     ),
                                   ),
                                   child: Text(
-                                    'Present',
+                                    'Pursuing',
                                     style: theme.textTheme.bodyMedium?.copyWith(
                                       fontWeight: FontWeight.bold,
                                       color: colorScheme.primary,

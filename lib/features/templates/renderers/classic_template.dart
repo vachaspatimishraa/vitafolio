@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
 
 class ClassicTemplateRenderer implements TemplateRenderer {
@@ -131,8 +132,12 @@ class ClassicTemplateRenderer implements TemplateRenderer {
             _buildSectionTitle('WORK EXPERIENCE', theme),
             ...experienceList.map((exp) {
               final title = exp.position?.trim() ?? '';
-              final dateStr =
-                  '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+              final dateStr = DateRangeFormatter.formatExperience(
+                startDate: exp.startDate,
+                endDate: exp.endDate,
+                isCurrentRole: exp.isCurrentlyWorking == true,
+                separator: ' - ',
+              );
               final company = exp.company?.trim() ?? '';
 
               final titleDate = [
@@ -220,8 +225,12 @@ class ClassicTemplateRenderer implements TemplateRenderer {
                   _buildSectionTitle('ACADEMIC HISTORY', theme),
                   ...educationList.map((edu) {
                     final school = edu.school?.trim() ?? '';
-                    final dateStr =
-                        '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+                    final dateStr = DateRangeFormatter.formatEducation(
+                      startDate: edu.startDate,
+                      endDate: edu.endDate,
+                      isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                      separator: ' - ',
+                    );
                     final schoolDate = [
                       if (school.isNotEmpty) school,
                       if (dateStr.isNotEmpty) dateStr,
@@ -466,10 +475,5 @@ class ClassicTemplateRenderer implements TemplateRenderer {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    return '${date.year}';
   }
 }

@@ -178,7 +178,7 @@ class CreativePdfRenderer implements PdfRenderer {
           if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
         ].join(' in ');
         final dateStr =
-            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Pursuing" : _formatDate(edu.endDate)}';
 
         leftWidgets.add(
           pw.Container(

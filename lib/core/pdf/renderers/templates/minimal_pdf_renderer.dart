@@ -133,7 +133,7 @@ class MinimalPdfRenderer implements PdfRenderer {
             title: e.school?.trim() ?? '',
             subtitle: e.degree?.trim(),
             date:
-                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Present" : _formatDate(e.endDate)}',
+                '${_formatDate(e.startDate)} - ${e.isCurrentlyStudying == true ? "Pursuing" : _formatDate(e.endDate)}',
           ),
         ),
       ],

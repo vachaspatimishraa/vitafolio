@@ -178,7 +178,7 @@ class AtsPdfRenderer implements PdfRenderer {
         ].join(' in ');
 
         final dateStr =
-            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Pursuing" : _formatDate(edu.endDate)}';
 
         widgets.add(
           pw.Container(

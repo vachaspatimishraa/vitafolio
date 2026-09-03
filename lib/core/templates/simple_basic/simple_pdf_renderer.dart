@@ -8,6 +8,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class SimplePdfRenderer extends ResumeTemplateRenderer {
   const SimplePdfRenderer();
@@ -156,8 +157,12 @@ class SimplePdfRenderer extends ResumeTemplateRenderer {
               ...experienceList.map((exp) {
                 final title = exp.position?.trim() ?? '';
                 final company = exp.company?.trim() ?? '';
-                final dateStr =
-                    '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+                final dateStr = DateRangeFormatter.formatExperience(
+                  startDate: exp.startDate,
+                  endDate: exp.endDate,
+                  isCurrentRole: exp.isCurrentlyWorking == true,
+                  separator: ' - ',
+                );
 
                 final companyDate = [
                   if (company.isNotEmpty) company,
@@ -339,8 +344,12 @@ class SimplePdfRenderer extends ResumeTemplateRenderer {
                 ].join(' in ');
 
                 final school = edu.school?.trim() ?? '';
-                final dateStr =
-                    '${_formatDate(edu.startDate)} - ${_formatDate(edu.endDate)}';
+                final dateStr = DateRangeFormatter.formatEducation(
+                  startDate: edu.startDate,
+                  endDate: edu.endDate,
+                  isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                  separator: ' - ',
+                );
 
                 final schoolDate = [
                   if (school.isNotEmpty) school,
@@ -507,10 +516,5 @@ class SimplePdfRenderer extends ResumeTemplateRenderer {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    return '${date.year}';
   }
 }

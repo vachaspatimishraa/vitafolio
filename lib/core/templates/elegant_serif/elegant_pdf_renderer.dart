@@ -9,6 +9,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class ElegantPdfRenderer extends ResumeTemplateRenderer {
   const ElegantPdfRenderer();
@@ -180,8 +181,12 @@ class ElegantPdfRenderer extends ResumeTemplateRenderer {
                             if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
                           ].join(' in ');
 
-                          final dateStr =
-                              '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+                          final dateStr = DateRangeFormatter.formatEducation(
+                            startDate: edu.startDate,
+                            endDate: edu.endDate,
+                            isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                            separator: ' - ',
+                          );
 
                           return pw.Padding(
                             padding: const pw.EdgeInsets.only(bottom: 10),
@@ -305,8 +310,12 @@ class ElegantPdfRenderer extends ResumeTemplateRenderer {
                             final title = exp.position?.trim() ?? '';
                             final company = exp.company?.trim() ?? '';
                             final location = exp.location?.trim() ?? '';
-                            final dateStr =
-                                '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+                            final dateStr = DateRangeFormatter.formatExperience(
+                              startDate: exp.startDate,
+                              endDate: exp.endDate,
+                              isCurrentRole: exp.isCurrentlyWorking == true,
+                              separator: ' - ',
+                            );
 
                             final companyLocation = [
                               if (company.isNotEmpty) company,
@@ -535,14 +544,5 @@ class ElegantPdfRenderer extends ResumeTemplateRenderer {
         pw.SizedBox(height: 10),
       ],
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
   }
 }

@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:typed_data';
 import 'package:archive/archive.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/resume/domain/entities/resume.dart';
 
 /// Production-ready service that generates Microsoft Word compatible `.docx`
@@ -206,8 +207,12 @@ class DocxExportService {
         final position = exp.jobTitle.trim();
         final company = exp.company.trim();
         final location = exp.location.trim();
-        final dateRange =
-            '${exp.startDate} - ${exp.isCurrentRole ? "Present" : (exp.endDate ?? "")}';
+        final dateRange = DateRangeFormatter.formatExperience(
+          startDateStr: exp.startDate,
+          endDateStr: exp.endDate,
+          isCurrentRole: exp.isCurrentRole,
+          separator: ' - ',
+        );
 
         final headerLine = [
           if (position.isNotEmpty) position,
@@ -264,8 +269,12 @@ class DocxExportService {
           if (edu.degree.trim().isNotEmpty) edu.degree.trim(),
           if (edu.fieldOfStudy.trim().isNotEmpty) edu.fieldOfStudy.trim(),
         ].join(' in ');
-        final dateRange =
-            '${edu.startYear} - ${edu.isCurrentlyStudying ? "Present" : edu.endYear}';
+        final dateRange = DateRangeFormatter.formatEducation(
+          startYear: edu.startYear,
+          endYear: edu.endYear,
+          isCurrentlyStudying: edu.isCurrentlyStudying,
+          separator: ' - ',
+        );
 
         _writeHeading2(
           buffer,

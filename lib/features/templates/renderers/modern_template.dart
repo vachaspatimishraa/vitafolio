@@ -1,6 +1,7 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
 
 class ModernTemplateRenderer implements TemplateRenderer {
@@ -123,8 +124,13 @@ class ModernTemplateRenderer implements TemplateRenderer {
               if (educationList.isNotEmpty) ...[
                 _buildSidebarTitle('EDUCATION', theme),
                 ...educationList.map((edu) {
-                  final dateStr =
-                      '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "PRESENT" : _formatDate(edu.endDate)}';
+                  final dateStr = DateRangeFormatter.formatEducation(
+                    startDate: edu.startDate,
+                    endDate: edu.endDate,
+                    isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                    ongoingLabel: 'PURSUING',
+                    separator: ' - ',
+                  );
                   final school = edu.school?.trim() ?? '';
                   final degree = [
                     if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),
@@ -332,8 +338,13 @@ class ModernTemplateRenderer implements TemplateRenderer {
                   ...experienceList.map((exp) {
                     final company = exp.company?.trim() ?? '';
                     final position = exp.position?.trim() ?? '';
-                    final dateStr =
-                        '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "PRESENT" : _formatDate(exp.endDate)}';
+                    final dateStr = DateRangeFormatter.formatExperience(
+                      startDate: exp.startDate,
+                      endDate: exp.endDate,
+                      isCurrentRole: exp.isCurrentlyWorking == true,
+                      ongoingLabel: 'PRESENT',
+                      separator: ' - ',
+                    );
 
                     final descLines = <String>[];
                     if (exp.description?.trim().isNotEmpty == true) {

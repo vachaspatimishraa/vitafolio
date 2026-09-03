@@ -8,6 +8,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class CompactPdfRenderer extends ResumeTemplateRenderer {
   const CompactPdfRenderer();
@@ -131,8 +132,13 @@ class CompactPdfRenderer extends ResumeTemplateRenderer {
                   if (company.isNotEmpty) company,
                 ].join(' | ');
 
-                final dateStr =
-                    '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "present" : _formatDate(exp.endDate)}';
+                final dateStr = DateRangeFormatter.formatExperience(
+                  startDate: exp.startDate,
+                  endDate: exp.endDate,
+                  isCurrentRole: exp.isCurrentlyWorking == true,
+                  ongoingLabel: 'present',
+                  separator: ' - ',
+                );
 
                 final descLines = <String>[];
                 if (exp.description?.trim().isNotEmpty == true) {
@@ -304,8 +310,12 @@ class CompactPdfRenderer extends ResumeTemplateRenderer {
                   if (school.isNotEmpty) school,
                 ].join(' | ');
 
-                final dateStr =
-                    '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "present" : _formatDate(edu.endDate)}';
+                final dateStr = DateRangeFormatter.formatEducation(
+                  startDate: edu.startDate,
+                  endDate: edu.endDate,
+                  isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                  separator: ' - ',
+                );
 
                 return pw.Padding(
                   padding: const pw.EdgeInsets.only(bottom: 8),
@@ -471,14 +481,5 @@ class CompactPdfRenderer extends ResumeTemplateRenderer {
         ),
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sept', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
   }
 }

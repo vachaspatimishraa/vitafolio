@@ -8,6 +8,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/modern_executive/executive_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class ExecutivePdfRenderer extends ResumeTemplateRenderer {
   const ExecutivePdfRenderer();
@@ -120,8 +121,12 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
               ...experienceList.map((exp) {
                 final title = exp.position?.trim() ?? '';
                 final company = exp.company?.trim() ?? '';
-                final dateStr =
-                    '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+                final dateStr = DateRangeFormatter.formatExperience(
+                  startDate: exp.startDate,
+                  endDate: exp.endDate,
+                  isCurrentRole: exp.isCurrentlyWorking == true,
+                  separator: ' - ',
+                );
 
                 final descLines = <String>[];
                 if (exp.description?.trim().isNotEmpty == true) {
@@ -268,6 +273,13 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
                             if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),
                           ].join(' in ');
 
+                          final dateStr = DateRangeFormatter.formatEducation(
+                            startDate: edu.startDate,
+                            endDate: edu.endDate,
+                            isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                            separator: ' - ',
+                          );
+
                           return pw.Padding(
                             padding: const pw.EdgeInsets.only(bottom: 10),
                             child: pw.Column(
@@ -282,10 +294,13 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
                                       color: textDark,
                                     ),
                                   ),
-                                if (edu.school?.trim().isNotEmpty == true) ...[
+                                if (edu.school?.trim().isNotEmpty == true || dateStr.isNotEmpty) ...[
                                   pw.SizedBox(height: 2),
                                   pw.Text(
-                                    edu.school!.trim(),
+                                    [
+                                      if (edu.school?.trim().isNotEmpty == true) edu.school!.trim(),
+                                      if (dateStr.isNotEmpty) dateStr,
+                                    ].join(' | '),
                                     style: pw.TextStyle(
                                       fontSize: 9.5,
                                       color: subtextColor,
@@ -467,15 +482,6 @@ class ExecutivePdfRenderer extends ResumeTemplateRenderer {
         pw.SizedBox(height: 8),
       ],
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
   }
 }
 

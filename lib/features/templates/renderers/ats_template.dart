@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/templates/renderers/template_renderer.dart';
 
 class AtsTemplateRenderer implements TemplateRenderer {
@@ -158,8 +159,12 @@ class AtsTemplateRenderer implements TemplateRenderer {
                 if (company.isNotEmpty) company,
               ].join(' — ');
 
-              final dateStr =
-                  '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+              final dateStr = DateRangeFormatter.formatExperience(
+                startDate: exp.startDate,
+                endDate: exp.endDate,
+                isCurrentRole: exp.isCurrentlyWorking == true,
+                separator: ' - ',
+              );
 
               final descLines = <String>[];
               if (exp.description?.trim().isNotEmpty == true) {
@@ -257,8 +262,12 @@ class AtsTemplateRenderer implements TemplateRenderer {
               ].join(' in ');
 
               final school = edu.school?.trim() ?? '';
-              final dateStr =
-                  '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+              final dateStr = DateRangeFormatter.formatEducation(
+                startDate: edu.startDate,
+                endDate: edu.endDate,
+                isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                separator: ' - ',
+              );
 
               return Padding(
                 padding: const EdgeInsets.only(bottom: 12.0),
@@ -476,14 +485,5 @@ class AtsTemplateRenderer implements TemplateRenderer {
         const SizedBox(height: 10),
       ],
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
   }
 }

@@ -9,6 +9,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/professional_modern/modern_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class ModernPdfRenderer extends ResumeTemplateRenderer {
   const ModernPdfRenderer();
@@ -175,8 +176,12 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
             widgets.add(_buildSectionHeader('WORK EXPERIENCE', deepOceanColor, accentTeal));
             for (final exp in experienceList) {
               final title = exp.position?.trim() ?? '';
-              final dateStr =
-                  '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+              final dateStr = DateRangeFormatter.formatExperience(
+                startDate: exp.startDate,
+                endDate: exp.endDate,
+                isCurrentRole: exp.isCurrentlyWorking == true,
+                separator: ' - ',
+              );
               final company = exp.company?.trim() ?? '';
               final location = exp.location?.trim() ?? '';
 
@@ -326,8 +331,12 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
             widgets.add(_buildSectionHeader('EDUCATION', deepOceanColor, accentTeal));
             for (final edu in educationList) {
               final school = edu.school?.trim() ?? '';
-              final dateStr =
-                  '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+              final dateStr = DateRangeFormatter.formatEducation(
+                startDate: edu.startDate,
+                endDate: edu.endDate,
+                isCurrentlyStudying: edu.isCurrentlyStudying == true,
+                separator: ' - ',
+              );
               final degree = [
                 if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),
                 if (edu.fieldOfStudy?.trim().isNotEmpty == true) edu.fieldOfStudy!.trim(),

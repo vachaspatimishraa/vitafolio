@@ -8,6 +8,7 @@ import 'package:vitafolio/core/templates/renderers/template_renderer.dart';
 import 'package:vitafolio/core/templates/themes/template_theme.dart';
 import 'package:vitafolio/core/templates/widgets/pdf_preview_widget.dart';
 import 'package:vitafolio/core/templates/ats_professional/ats_theme.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 
 class AtsPdfRenderer extends ResumeTemplateRenderer {
   const AtsPdfRenderer();
@@ -146,8 +147,12 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
           if (company.isNotEmpty) company,
         ].join(' - ');
 
-        final dateStr =
-            '${_formatDate(exp.startDate)} - ${exp.isCurrentlyWorking == true ? "Present" : _formatDate(exp.endDate)}';
+        final dateStr = DateRangeFormatter.formatExperience(
+          startDate: exp.startDate,
+          endDate: exp.endDate,
+          isCurrentRole: exp.isCurrentlyWorking == true,
+          separator: ' - ',
+        );
 
         final descLines = <String>[];
         if (exp.description?.trim().isNotEmpty == true) {
@@ -166,30 +171,29 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
 
         widgets.add(
           pw.Padding(
-            padding: const pw.EdgeInsets.only(bottom: 10),
+            padding: const pw.EdgeInsets.only(bottom: 8),
             child: pw.Column(
               crossAxisAlignment: pw.CrossAxisAlignment.start,
               children: [
                 pw.Row(
                   mainAxisAlignment: pw.MainAxisAlignment.spaceBetween,
                   children: [
-                    if (titleCompany.isNotEmpty)
-                      pw.Expanded(
-                        child: pw.Text(
-                          titleCompany,
-                          style: pw.TextStyle(
-                            fontSize: 10,
-                            fontWeight: pw.FontWeight.bold,
-                            color: textDark,
-                          ),
+                    pw.Expanded(
+                      child: pw.Text(
+                        titleCompany,
+                        style: pw.TextStyle(
+                          fontWeight: pw.FontWeight.bold,
+                          fontSize: 10,
+                          color: textDark,
                         ),
                       ),
+                    ),
                     if (dateStr.isNotEmpty)
                       pw.Text(
                         dateStr,
                         style: pw.TextStyle(
                           fontSize: 9.5,
-                          fontWeight: pw.FontWeight.bold,
+                          fontStyle: pw.FontStyle.italic,
                           color: textDark,
                         ),
                       ),
@@ -209,16 +213,16 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
                 if (descLines.isNotEmpty) ...[
                   pw.SizedBox(height: 3),
                   ...descLines.map(
-                    (line) => pw.Padding(
-                      padding: const pw.EdgeInsets.only(left: 8, bottom: 2),
+                    (bullet) => pw.Padding(
+                      padding: const pw.EdgeInsets.only(bottom: 2, left: 4),
                       child: pw.Row(
                         crossAxisAlignment: pw.CrossAxisAlignment.start,
                         children: [
-                          pw.Text('- ', style: pw.TextStyle(fontSize: 9.5, color: textDark)),
+                          _buildBulletDot(textDark),
                           pw.Expanded(
                             child: pw.Text(
-                              line,
-                              style: pw.TextStyle(fontSize: 9.5, color: textDark),
+                              bullet,
+                              style: pw.TextStyle(fontSize: 9, color: textDark),
                             ),
                           ),
                         ],
@@ -245,8 +249,12 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
         ].join(' in ');
 
         final school = edu.school?.trim() ?? '';
-        final dateStr =
-            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "Present" : _formatDate(edu.endDate)}';
+        final dateStr = DateRangeFormatter.formatEducation(
+          startDate: edu.startDate,
+          endDate: edu.endDate,
+          isCurrentlyStudying: edu.isCurrentlyStudying == true,
+          separator: ' - ',
+        );
 
         widgets.add(
           pw.Padding(
@@ -476,14 +484,5 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
         shape: pw.BoxShape.circle,
       ),
     );
-  }
-
-  String _formatDate(DateTime? date) {
-    if (date == null) return '';
-    const months = [
-      'Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun',
-      'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'
-    ];
-    return '${months[date.month - 1]} ${date.year}';
   }
 }

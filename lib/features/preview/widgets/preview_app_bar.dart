@@ -71,13 +71,11 @@ class PreviewAppBar extends ConsumerWidget implements PreferredSizeWidget {
                 borderRadius: BorderRadius.circular(10),
               ),
               alignment: Alignment.center,
-              child: Text(
-                'A',
-                style: TextStyle(
-                  color: foregroundColor,
-                  fontWeight: FontWeight.bold,
-                  fontSize: 17,
-                ),
+              child: Image.asset(
+                'assets/icons/font_icon.png',
+                width: 22,
+                height: 22,
+                fit: BoxFit.contain,
               ),
             ),
           ),

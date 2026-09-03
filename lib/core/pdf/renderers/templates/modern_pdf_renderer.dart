@@ -78,7 +78,7 @@ class ModernPdfRenderer implements PdfRenderer {
       sidebarWidgets.add(_buildSidebarTitle('EDUCATION'));
       for (final edu in validEdu) {
         final dateStr =
-            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "PRESENT" : _formatDate(edu.endDate)}';
+            '${_formatDate(edu.startDate)} - ${edu.isCurrentlyStudying == true ? "PURSUING" : _formatDate(edu.endDate)}';
         final school = edu.school?.trim() ?? '';
         final degree = [
           if (edu.degree?.trim().isNotEmpty == true) edu.degree!.trim(),

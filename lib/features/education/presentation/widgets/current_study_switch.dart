@@ -39,7 +39,7 @@ class CurrentStudySwitch extends StatelessWidget {
               ),
               const SizedBox(width: AppSpacing.sm),
               Text(
-                'I am currently studying here',
+                'I am pursuing',
                 style: theme.textTheme.bodyMedium?.copyWith(
                   fontWeight: FontWeight.w600,
                   color: colorScheme.onSurface,
