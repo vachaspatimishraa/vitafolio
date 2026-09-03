@@ -33,36 +33,22 @@ class ModernTemplateRenderer implements TemplateRenderer {
         .toList();
     final skillsList = resumeData.skills;
 
-    // Profile Photo Avatar
-    Widget profilePhotoWidget;
     final photoPath = info.profileImagePath;
-    if (photoPath != null && photoPath.trim().isNotEmpty && File(photoPath).existsSync()) {
-      profilePhotoWidget = Container(
-        width: 140,
-        height: 140,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: Colors.white, width: 4),
-          image: DecorationImage(
-            image: FileImage(File(photoPath)),
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    } else {
-      profilePhotoWidget = Container(
-        width: 140,
-        height: 140,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFF2C4D6F),
-          border: Border.all(color: Colors.white, width: 4),
-        ),
-        child: const Center(
-          child: Icon(Icons.person, size: 70, color: Colors.white),
-        ),
-      );
-    }
+    final hasPhoto = photoPath != null && photoPath.trim().isNotEmpty && File(photoPath).existsSync();
+    final Widget? profilePhotoWidget = hasPhoto
+        ? Container(
+            width: 140,
+            height: 140,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: Colors.white, width: 4),
+              image: DecorationImage(
+                image: FileImage(File(photoPath)),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        : null;
 
     final contactItems = <Map<String, String>>[
       if (info.phone?.trim().isNotEmpty == true) {'icon': 'phone', 'val': info.phone!.trim()},
@@ -90,8 +76,10 @@ class ModernTemplateRenderer implements TemplateRenderer {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Center(child: profilePhotoWidget),
-              const SizedBox(height: 24),
+              if (profilePhotoWidget != null) ...[
+                Center(child: profilePhotoWidget),
+                const SizedBox(height: 24),
+              ],
 
               // CONTACT
               if (contactItems.isNotEmpty) ...[

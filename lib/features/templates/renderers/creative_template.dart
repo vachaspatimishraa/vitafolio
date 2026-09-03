@@ -40,36 +40,22 @@ class CreativeTemplateRenderer implements TemplateRenderer {
         ? info.jobTitle!.trim().toUpperCase()
         : null;
 
-    // Profile Photo Avatar
-    Widget profilePhotoWidget;
     final photoPath = info.profileImagePath;
-    if (photoPath != null && photoPath.trim().isNotEmpty && File(photoPath).existsSync()) {
-      profilePhotoWidget = Container(
-        width: 86,
-        height: 86,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          border: Border.all(color: goldTan, width: 3),
-          image: DecorationImage(
-            image: FileImage(File(photoPath)),
-            fit: BoxFit.cover,
-          ),
-        ),
-      );
-    } else {
-      profilePhotoWidget = Container(
-        width: 86,
-        height: 86,
-        decoration: BoxDecoration(
-          shape: BoxShape.circle,
-          color: const Color(0xFF2C3E50),
-          border: Border.all(color: goldTan, width: 3),
-        ),
-        child: const Center(
-          child: Icon(Icons.person, size: 48, color: Colors.white),
-        ),
-      );
-    }
+    final hasPhoto = photoPath != null && photoPath.trim().isNotEmpty && File(photoPath).existsSync();
+    final Widget? profilePhotoWidget = hasPhoto
+        ? Container(
+            width: 86,
+            height: 86,
+            decoration: BoxDecoration(
+              shape: BoxShape.circle,
+              border: Border.all(color: goldTan, width: 3),
+              image: DecorationImage(
+                image: FileImage(File(photoPath)),
+                fit: BoxFit.cover,
+              ),
+            ),
+          )
+        : null;
 
     final contactItems = <String>[
       if (info.phone?.trim().isNotEmpty == true) info.phone!.trim(),
@@ -127,7 +113,7 @@ class CreativeTemplateRenderer implements TemplateRenderer {
                   ],
                 ],
               ),
-              profilePhotoWidget,
+              ?profilePhotoWidget,
             ],
           ),
         ),

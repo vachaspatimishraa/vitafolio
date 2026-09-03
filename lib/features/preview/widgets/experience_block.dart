@@ -12,6 +12,8 @@ class ExperienceBlock extends StatelessWidget {
     final theme = Theme.of(context);
 
     final dateRange = DateRangeFormatter.formatExperience(
+      startDateStr: item.startDateStr,
+      endDateStr: item.endDateStr,
       startDate: item.startDate,
       endDate: item.endDate,
       isCurrentRole: item.isCurrentlyWorking ?? false,

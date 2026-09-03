@@ -18,6 +18,7 @@ import 'package:vitafolio/data/models/embedded/certification_model.dart';
 import 'package:vitafolio/data/models/embedded/language_model.dart';
 import 'package:vitafolio/data/models/embedded/project_model.dart';
 import 'package:vitafolio/data/models/enums/language_proficiency.dart';
+import 'package:vitafolio/core/utils/date_range_formatter.dart';
 import 'package:vitafolio/features/resume/domain/entities/resume.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 
@@ -53,9 +54,11 @@ class PdfService {
               fieldOfStudy: e.fieldOfStudy,
               school: e.institution,
               grade: e.grade,
-              startDate: DateTime.tryParse(e.startYear) ?? (int.tryParse(e.startYear) != null ? DateTime(int.parse(e.startYear)) : null),
-              endDate: DateTime.tryParse(e.endYear) ?? (int.tryParse(e.endYear) != null ? DateTime(int.parse(e.endYear)) : null),
+              startDate: DateRangeFormatter.parseDate(e.startYear),
+              endDate: DateRangeFormatter.parseDate(e.endYear),
               isCurrentlyStudying: e.isCurrentlyStudying,
+              startYear: e.startYear,
+              endYear: e.endYear,
             ),
           )
           .toList(),
@@ -66,10 +69,12 @@ class PdfService {
               position: e.jobTitle,
               company: e.company,
               location: e.location,
-              startDate: DateTime.tryParse(e.startDate) ?? (int.tryParse(e.startDate) != null ? DateTime(int.parse(e.startDate)) : null),
-              endDate: e.endDate != null ? (DateTime.tryParse(e.endDate!) ?? (int.tryParse(e.endDate!) != null ? DateTime(int.parse(e.endDate!)) : null)) : null,
+              startDate: DateRangeFormatter.parseDate(e.startDate),
+              endDate: DateRangeFormatter.parseDate(e.endDate),
               isCurrentlyWorking: e.isCurrentRole,
               description: e.description,
+              startDateStr: e.startDate,
+              endDateStr: e.endDate,
             ),
           )
           .toList(),

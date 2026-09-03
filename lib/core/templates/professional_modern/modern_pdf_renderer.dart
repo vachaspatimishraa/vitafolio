@@ -177,6 +177,8 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
             for (final exp in experienceList) {
               final title = exp.position?.trim() ?? '';
               final dateStr = DateRangeFormatter.formatExperience(
+                startDateStr: exp.startDateStr,
+                endDateStr: exp.endDateStr,
                 startDate: exp.startDate,
                 endDate: exp.endDate,
                 isCurrentRole: exp.isCurrentlyWorking == true,
@@ -188,7 +190,7 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
               final companyLoc = [
                 if (company.isNotEmpty) company,
                 if (location.isNotEmpty) location,
-              ].join(' • ');
+              ].join(' | ');
 
               final descLines = <String>[];
               if (exp.description?.trim().isNotEmpty == true) {
@@ -332,6 +334,8 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
             for (final edu in educationList) {
               final school = edu.school?.trim() ?? '';
               final dateStr = DateRangeFormatter.formatEducation(
+                startYear: edu.startYear,
+                endYear: edu.endYear,
                 startDate: edu.startDate,
                 endDate: edu.endDate,
                 isCurrentlyStudying: edu.isCurrentlyStudying == true,
@@ -440,7 +444,7 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
               final subtitle = [
                 if (org.isNotEmpty) org,
                 if (date.isNotEmpty) date,
-              ].join(' • ');
+              ].join(' | ');
 
               widgets.add(
                 pw.Padding(
@@ -480,7 +484,7 @@ class ModernPdfRenderer extends ResumeTemplateRenderer {
               final name = lang.language?.trim() ?? '';
               final prof = lang.proficiency.name;
               return prof.isNotEmpty ? '$name ($prof)' : name;
-            }).join('   •   ');
+            }).join('   |   ');
 
             widgets.add(
               pw.Padding(

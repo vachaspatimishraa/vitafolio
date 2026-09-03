@@ -28,6 +28,8 @@ class PreviewActionBar extends ConsumerWidget {
                 icon: const Icon(Icons.arrow_back, color: Colors.white),
                 label: const Text(
                   'Back to Edit',
+                  maxLines: 1,
+                  overflow: TextOverflow.ellipsis,
                   style: TextStyle(
                     color: Colors.white,
                     fontWeight: FontWeight.bold,

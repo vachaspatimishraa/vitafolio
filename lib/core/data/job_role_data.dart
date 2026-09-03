@@ -6,6 +6,7 @@ const List<String> kGlobalJobRoleCatalogue = [
   'Frontend Developer',
   'Backend Developer',
   'Full Stack Developer',
+  'React Developer',
   'Flutter Developer',
   'Android Developer',
   'iOS Developer',

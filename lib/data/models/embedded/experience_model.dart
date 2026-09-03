@@ -18,6 +18,11 @@ class ExperienceModel {
   bool? isCurrentlyWorking;
   String? description;
 
+  @ignore
+  String? startDateStr;
+  @ignore
+  String? endDateStr;
+
   ExperienceModel({
     this.id,
     this.company,
@@ -28,6 +33,8 @@ class ExperienceModel {
     this.endDate,
     this.isCurrentlyWorking,
     this.description,
+    this.startDateStr,
+    this.endDateStr,
   });
 
   ExperienceModel copyWith({

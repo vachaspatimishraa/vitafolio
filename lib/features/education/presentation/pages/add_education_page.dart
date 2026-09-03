@@ -59,6 +59,8 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
 
   String? _selectedStartYear;
   String? _selectedEndYear;
+  String? _startYearError;
+  String? _endYearError;
   String? _selectedCountry;
   String? _selectedCity;
   String? _selectedState;
@@ -164,8 +166,24 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
   }
 
   void _handleSave() {
-    final isValid = _formKey.currentState?.validate() ?? false;
-    if (!isValid) {
+    final isFormValid = _formKey.currentState?.validate() ?? false;
+
+    String? startErr;
+    if (_selectedStartYear == null || _selectedStartYear!.trim().isEmpty) {
+      startErr = 'Start year is required';
+    }
+
+    String? endErr;
+    if (!_isCurrentlyStudying && (_selectedEndYear == null || _selectedEndYear!.trim().isEmpty)) {
+      endErr = 'End year is required';
+    }
+
+    setState(() {
+      _startYearError = startErr;
+      _endYearError = endErr;
+    });
+
+    if (!isFormValid || startErr != null || endErr != null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Please complete required fields (Degree, Field of Study, Institution)'),
@@ -319,10 +337,14 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
                       children: [
                         Expanded(
                           child: YearPickerField(
-                            label: 'Start Year',
+                            label: 'Start Year *',
                             value: _selectedStartYear,
+                            errorText: _startYearError,
                             onYearSelected: (year) =>
-                                setState(() => _selectedStartYear = year),
+                                setState(() {
+                                  _selectedStartYear = year;
+                                  _startYearError = null;
+                                }),
                           ),
                         ),
                         const SizedBox(width: AppSpacing.sm),
@@ -347,10 +369,14 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
                                   ),
                                 )
                               : YearPickerField(
-                                  label: 'End Year',
+                                  label: _isCurrentlyStudying ? 'End Year' : 'End Year *',
                                   value: _selectedEndYear,
+                                  errorText: _endYearError,
                                   onYearSelected: (year) =>
-                                      setState(() => _selectedEndYear = year),
+                                      setState(() {
+                                        _selectedEndYear = year;
+                                        _endYearError = null;
+                                      }),
                                 ),
                         ),
                       ],
@@ -361,7 +387,12 @@ class _AddEducationPageState extends ConsumerState<AddEducationPage> {
                     CurrentStudySwitch(
                       value: _isCurrentlyStudying,
                       onChanged: (val) =>
-                          setState(() => _isCurrentlyStudying = val),
+                          setState(() {
+                            _isCurrentlyStudying = val;
+                            if (val) {
+                              _endYearError = null;
+                            }
+                          }),
                     ),
                     const SizedBox(height: AppSpacing.md),
 

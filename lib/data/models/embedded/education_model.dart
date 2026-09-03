@@ -13,6 +13,11 @@ class EducationModel {
   DateTime? endDate;
   bool? isCurrentlyStudying;
 
+  @ignore
+  String? startYear;
+  @ignore
+  String? endYear;
+
   EducationModel({
     this.id,
     this.school,
@@ -22,6 +27,8 @@ class EducationModel {
     this.startDate,
     this.endDate,
     this.isCurrentlyStudying,
+    this.startYear,
+    this.endYear,
   });
 
   EducationModel copyWith({

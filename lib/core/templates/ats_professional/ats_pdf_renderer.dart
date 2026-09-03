@@ -148,6 +148,8 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
         ].join(' - ');
 
         final dateStr = DateRangeFormatter.formatExperience(
+          startDateStr: exp.startDateStr,
+          endDateStr: exp.endDateStr,
           startDate: exp.startDate,
           endDate: exp.endDate,
           isCurrentRole: exp.isCurrentlyWorking == true,
@@ -250,6 +252,8 @@ class AtsPdfRenderer extends ResumeTemplateRenderer {
 
         final school = edu.school?.trim() ?? '';
         final dateStr = DateRangeFormatter.formatEducation(
+          startYear: edu.startYear,
+          endYear: edu.endYear,
           startDate: edu.startDate,
           endDate: edu.endDate,
           isCurrentlyStudying: edu.isCurrentlyStudying == true,

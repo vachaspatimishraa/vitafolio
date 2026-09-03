@@ -12,6 +12,8 @@ class EducationBlock extends StatelessWidget {
     final theme = Theme.of(context);
 
     final dateRange = DateRangeFormatter.formatEducation(
+      startYear: item.startYear,
+      endYear: item.endYear,
       startDate: item.startDate,
       endDate: item.endDate,
       isCurrentlyStudying: item.isCurrentlyStudying ?? false,

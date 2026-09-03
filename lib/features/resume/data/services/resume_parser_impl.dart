@@ -1,5 +1,6 @@
 import 'dart:io';
 import 'dart:convert';
+import 'package:archive/archive.dart';
 import 'package:flutter/foundation.dart';
 import 'package:vitafolio/features/resume/domain/entities/certification.dart';
 import 'package:vitafolio/features/resume/domain/entities/education.dart';
@@ -112,9 +113,10 @@ class ResumeParserImpl implements ResumeParser {
         );
     }
 
-    // Attempt OCR fallback for PDF by rasterizing PDF pages into images first
-    if (docFormat == DocumentFormat.pdf && rawText.trim().isEmpty) {
-      _debugLog('[PDF] Native extraction returned empty. Rasterization started');
+    // Attempt OCR fallback for PDF if native extraction produced empty or inadequate quality text
+    final nativeQualityError = _validateRawTextQuality(rawText);
+    if (docFormat == DocumentFormat.pdf && nativeQualityError != null) {
+      _debugLog('[PDF] Native extraction inadequate or empty ($nativeQualityError). Rasterization started');
       if (_pdfRasterService != null && _ocrService != null) {
         final pageImages = await _pdfRasterService.renderPdfPagesToImages(bytes);
         _debugLog('[PDF] Page count: ${pageImages.length}');
@@ -144,10 +146,12 @@ class ResumeParserImpl implements ResumeParser {
             _debugLog('$stack');
           }
         }
-        rawText = ocrSb.toString().trim();
-        _debugLog('[PDF] Combined OCR result length: ${rawText.length}');
+        final ocrText = ocrSb.toString().trim();
+        _debugLog('[PDF] Combined OCR result length: ${ocrText.length}');
 
-        if (rawText.isEmpty) {
+        if (ocrText.isNotEmpty) {
+          rawText = ocrText;
+        } else {
           _debugLog('Diagnostic State: OCR_RETURNED_EMPTY');
         }
       } else {
@@ -269,31 +273,34 @@ class ResumeParserImpl implements ResumeParser {
   }
 
   /// Extract readable text from PDF bytes.
-  /// Filters out PDF operator keywords and streams that don't represent clear text.
+  /// Decompresses /FlateDecode streams using zlib and parses uncompressed operators.
   Future<String> _extractPdfText(List<int> bytes) async {
     try {
-      final latin1Str = String.fromCharCodes(bytes);
       final sb = StringBuffer();
 
-      // Look for stream contents inside PDF
-      final streamReg = RegExp(r'stream\r?\n([\s\S]*?)\r?\nendstream');
-      final matches = streamReg.allMatches(latin1Str);
+      // 1. Locate all stream...endstream byte boundaries
+      final streamSlices = _findPdfStreamByteSlices(bytes);
+      _debugLog('[PDF] Found ${streamSlices.length} stream objects');
 
-      for (final match in matches) {
-        final streamContent = match.group(1) ?? '';
-        final textFromStream = _extractTextFromPdfStream(streamContent);
-        if (textFromStream.trim().isNotEmpty) {
-          sb.writeln(textFromStream);
+      for (final streamSlice in streamSlices) {
+        final decompressed = _decompressPdfStream(streamSlice);
+        if (decompressed.isNotEmpty) {
+          final streamStr = utf8.decode(decompressed, allowMalformed: true);
+          final text = _extractTextFromPdfStream(streamStr);
+          if (text.trim().isNotEmpty) {
+            sb.writeln(text);
+          }
         }
       }
 
-      // If stream blocks didn't yield text, parse uncompressed text strings outside streams
+      // 2. Also check uncompressed text strings outside streams or fallback for uncompressed PDFs
       if (sb.length < 50) {
-        final tjReg = RegExp(r'\(([^)]+)\)\s*Tj');
+        final latin1Str = String.fromCharCodes(bytes);
+        final tjReg = RegExp(r'\(([^)]+)\)\s*(?:Tj|\x27|\x22)');
         for (final m in tjReg.allMatches(latin1Str)) {
           final t = m.group(1);
           if (t != null && _isReadablePdfTextString(t)) {
-            sb.write('$t ');
+            sb.write('${_decodePdfString(t)} ');
           }
         }
       }
@@ -306,10 +313,114 @@ class ResumeParserImpl implements ResumeParser {
     }
   }
 
+  /// Locates byte sublists for all streams in a PDF file.
+  List<List<int>> _findPdfStreamByteSlices(List<int> bytes) {
+    final slices = <List<int>>[];
+    final n = bytes.length;
+    int i = 0;
+
+    // Pattern: 'stream' is [115, 116, 114, 101, 97, 109]
+    while (i + 6 < n) {
+      if (bytes[i] == 115 &&
+          bytes[i + 1] == 116 &&
+          bytes[i + 2] == 114 &&
+          bytes[i + 3] == 101 &&
+          bytes[i + 4] == 97 &&
+          bytes[i + 5] == 109) {
+        // Skip whitespace after 'stream' (CR, LF, or space)
+        int streamStart = i + 6;
+        while (streamStart < n &&
+            (bytes[streamStart] == 13 || bytes[streamStart] == 10 || bytes[streamStart] == 32)) {
+          streamStart++;
+        }
+
+        // Look for 'endstream' [101, 110, 100, 115, 116, 114, 101, 97, 109]
+        int endSearch = streamStart;
+        int streamEnd = -1;
+        while (endSearch + 9 <= n) {
+          if (bytes[endSearch] == 101 &&
+              bytes[endSearch + 1] == 110 &&
+              bytes[endSearch + 2] == 100 &&
+              bytes[endSearch + 3] == 115 &&
+              bytes[endSearch + 4] == 116 &&
+              bytes[endSearch + 5] == 114 &&
+              bytes[endSearch + 6] == 101 &&
+              bytes[endSearch + 7] == 97 &&
+              bytes[endSearch + 8] == 109) {
+            streamEnd = endSearch;
+            break;
+          }
+          endSearch++;
+        }
+
+        if (streamEnd > streamStart) {
+          int trimmedEnd = streamEnd;
+          while (trimmedEnd > streamStart &&
+              (bytes[trimmedEnd - 1] == 13 || bytes[trimmedEnd - 1] == 10)) {
+            trimmedEnd--;
+          }
+          if (trimmedEnd > streamStart) {
+            slices.add(bytes.sublist(streamStart, trimmedEnd));
+          }
+          i = streamEnd + 9;
+          continue;
+        }
+      }
+      i++;
+    }
+
+    return slices;
+  }
+
+  /// Attempts to decompress PDF stream with zlib / ZLibDecoder; falls back to raw bytes.
+  List<int> _decompressPdfStream(List<int> streamBytes) {
+    if (streamBytes.isEmpty) return streamBytes;
+    try {
+      return zlib.decode(streamBytes);
+    } catch (_) {
+      try {
+        return ZLibDecoder().decodeBytes(streamBytes);
+      } catch (_) {
+        return streamBytes;
+      }
+    }
+  }
+
+  String _decodePdfString(String input) {
+    var s = input;
+    s = s.replaceAllMapped(RegExp(r'\\([0-7]{1,3})'), (m) {
+      final octal = int.tryParse(m.group(1)!, radix: 8);
+      return octal != null ? String.fromCharCode(octal) : '';
+    });
+    return s
+        .replaceAll(r'\(', '(')
+        .replaceAll(r'\)', ')')
+        .replaceAll(r'\\', '\\')
+        .replaceAll(r'\n', '\n')
+        .replaceAll(r'\r', '\r')
+        .replaceAll(r'\t', '\t')
+        .replaceAll(r'\b', '')
+        .replaceAll(r'\f', '');
+  }
+
+  String _decodePdfHex(String hex) {
+    final clean = hex.replaceAll(RegExp(r'\s'), '');
+    final bytes = <int>[];
+    for (int i = 0; i < clean.length; i += 2) {
+      if (i + 1 < clean.length) {
+        final b = int.tryParse(clean.substring(i, i + 2), radix: 16);
+        if (b != null) bytes.add(b);
+      } else {
+        final b = int.tryParse('${clean[i]}0', radix: 16);
+        if (b != null) bytes.add(b);
+      }
+    }
+    return utf8.decode(bytes, allowMalformed: true);
+  }
+
   bool _isReadablePdfTextString(String t) {
     final trimmed = t.trim();
     if (trimmed.isEmpty) return false;
-    // Reject common PDF operator noise or font glyph tokens
     if (trimmed.startsWith('%') || trimmed.startsWith('/') || RegExp(r'^\d{12,}$').hasMatch(trimmed)) {
       return false;
     }
@@ -318,65 +429,168 @@ class ResumeParserImpl implements ResumeParser {
 
   String _extractTextFromPdfStream(String stream) {
     final sb = StringBuffer();
-    // Match strings inside [ (str1) (str2) ] TJ or (str) Tj
+    // 1. Bracket TJ arrays: [ (str1) -10 (str2) ] TJ or [ <hex1> 20 <hex2> ] TJ
     final bracketReg = RegExp(r'\[\s*([\s\S]*?)\s*\]\s*TJ');
-    final parenReg = RegExp(r'\(([^)]+)\)');
+    final parenReg = RegExp(r'\(([^)]*)\)');
+    final hexInBracketReg = RegExp(r'<([0-9a-fA-F]+)>');
 
     for (final bMatch in bracketReg.allMatches(stream)) {
       final inner = bMatch.group(1) ?? '';
-      for (final pMatch in parenReg.allMatches(inner)) {
-        final t = pMatch.group(1);
-        if (t != null && _isReadablePdfTextString(t)) {
-          sb.write(t);
+      final lineSb = StringBuffer();
+
+      int offset = 0;
+      while (offset < inner.length) {
+        final parenMatch = parenReg.matchAsPrefix(inner, offset);
+        if (parenMatch != null) {
+          final t = _decodePdfString(parenMatch.group(1) ?? '');
+          if (_isReadablePdfTextString(t)) {
+            lineSb.write(t);
+          }
+          offset = parenMatch.end;
+          continue;
         }
+
+        final hexMatch = hexInBracketReg.matchAsPrefix(inner, offset);
+        if (hexMatch != null) {
+          final t = _decodePdfHex(hexMatch.group(1) ?? '');
+          if (_isReadablePdfTextString(t)) {
+            lineSb.write(t);
+          }
+          offset = hexMatch.end;
+          continue;
+        }
+
+        final spaceMatch = RegExp(r'^-?\d+').matchAsPrefix(inner.substring(offset));
+        if (spaceMatch != null) {
+          final numVal = int.tryParse(spaceMatch.group(0) ?? '0') ?? 0;
+          if (numVal <= -80 && lineSb.isNotEmpty && !lineSb.toString().endsWith(' ')) {
+            lineSb.write(' ');
+          }
+          offset += spaceMatch.end;
+          continue;
+        }
+
+        offset++;
       }
-      sb.writeln();
+
+      final lineText = lineSb.toString().trim();
+      if (lineText.isNotEmpty) {
+        sb.writeln(lineText);
+      }
     }
 
-    if (sb.isEmpty) {
-      final tjReg = RegExp(r'\(([^)]+)\)\s*Tj');
-      for (final m in tjReg.allMatches(stream)) {
-        final t = m.group(1);
-        if (t != null && _isReadablePdfTextString(t)) {
-          sb.writeln(t);
-        }
+    // 2. Direct string Tj, ', "
+    final tjReg = RegExp(r'\(([^)]*)\)\s*(?:Tj|\x27|\x22)');
+    for (final m in tjReg.allMatches(stream)) {
+      final t = _decodePdfString(m.group(1) ?? '');
+      if (t.trim().isNotEmpty && _isReadablePdfTextString(t)) {
+        sb.writeln(t.trim());
+      }
+    }
+
+    // 3. Direct hex string <...> Tj
+    final hexTjReg = RegExp(r'<([0-9a-fA-F]+)>\s*(?:Tj|\x27|\x22)');
+    for (final m in hexTjReg.allMatches(stream)) {
+      final t = _decodePdfHex(m.group(1) ?? '');
+      if (t.trim().isNotEmpty && _isReadablePdfTextString(t)) {
+        sb.writeln(t.trim());
       }
     }
 
     return sb.toString();
   }
 
-  /// Extracts text from DOCX bytes, handling both paragraphs and table cells in logical reading order.
+  /// Extracts text from DOCX bytes, unpacking OpenXML zip archive and preserving paragraphs/tables.
   String _extractDocxText(List<int> bytes) {
     try {
-      final raw = String.fromCharCodes(bytes);
-      final wtReg = RegExp(r'<w:t[^>]*>(.*?)</w:t>');
-      // Match paragraph (<w:p>) or table cell (<w:tc>) containers
-      final blockReg = RegExp(r'<(?:w:p|w:tc)[^>]*>(.*?)</(?:w:p|w:tc)>');
-      final sb = StringBuffer();
+      final xmlContents = <String>[];
 
-      for (final blockMatch in blockReg.allMatches(raw)) {
-        final blockXml = blockMatch.group(1) ?? '';
-        final lineSb = StringBuffer();
-        for (final tMatch in wtReg.allMatches(blockXml)) {
-          final textNode = tMatch.group(1) ?? '';
-          lineSb.write(textNode);
+      // 1. Try unpacking ZIP archive containing OpenXML document
+      try {
+        final archive = ZipDecoder().decodeBytes(bytes);
+
+        // Extract header parts (often contains candidate name and contact info)
+        for (final file in archive.files) {
+          final fname = file.name.toLowerCase();
+          if (fname.startsWith('word/header') && fname.endsWith('.xml')) {
+            final content = file.content;
+            if (content is List<int>) {
+              xmlContents.add(utf8.decode(content, allowMalformed: true));
+            } else if (content is String) {
+              xmlContents.add(content);
+            }
+          }
         }
-        if (lineSb.isNotEmpty) {
-          sb.writeln(lineSb.toString());
+
+        // Extract main document body
+        final docFile = archive.findFile('word/document.xml');
+        if (docFile != null) {
+          final content = docFile.content;
+          if (content is List<int>) {
+            xmlContents.add(utf8.decode(content, allowMalformed: true));
+          } else if (content is String) {
+            xmlContents.add(content);
+          }
         }
+      } catch (e) {
+        _debugLog('[DOCX] ZipDecoder note: $e. Falling back to direct XML string analysis');
       }
 
-      if (sb.isEmpty) {
-        for (final m in wtReg.allMatches(raw)) {
-          sb.writeln(m.group(1));
+      // Fallback if not a zip archive (e.g. uncompressed raw xml string)
+      if (xmlContents.isEmpty) {
+        xmlContents.add(String.fromCharCodes(bytes));
+      }
+
+      final sb = StringBuffer();
+
+      // OpenXML regex patterns
+      final wtReg = RegExp(r'<w:t[^>]*>(.*?)</w:t>');
+      final blockReg = RegExp(r'<(?:w:p|w:tc)[^>]*>(.*?)</(?:w:p|w:tc)>');
+      final brReg = RegExp(r'<w:br[^>]*/>');
+      final tabReg = RegExp(r'<w:tab[^>]*/>');
+
+      for (final rawXml in xmlContents) {
+        for (final blockMatch in blockReg.allMatches(rawXml)) {
+          var blockXml = blockMatch.group(1) ?? '';
+          blockXml = blockXml.replaceAll(brReg, '\n');
+          blockXml = blockXml.replaceAll(tabReg, '\t');
+
+          final lineSb = StringBuffer();
+          for (final tMatch in wtReg.allMatches(blockXml)) {
+            final textNode = tMatch.group(1) ?? '';
+            lineSb.write(_decodeXmlEntities(textNode));
+          }
+
+          final lineText = lineSb.toString().trim();
+          if (lineText.isNotEmpty) {
+            sb.writeln(lineText);
+          }
+        }
+
+        if (sb.isEmpty) {
+          for (final m in wtReg.allMatches(rawXml)) {
+            final text = _decodeXmlEntities(m.group(1) ?? '').trim();
+            if (text.isNotEmpty) {
+              sb.writeln(text);
+            }
+          }
         }
       }
 
       return _normalizeText(sb.toString());
-    } catch (_) {
+    } catch (e) {
+      _debugLog('[DOCX] Extraction error: $e');
       return '';
     }
+  }
+
+  String _decodeXmlEntities(String input) {
+    return input
+        .replaceAll('&amp;', '&')
+        .replaceAll('&lt;', '<')
+        .replaceAll('&gt;', '>')
+        .replaceAll('&quot;', '"')
+        .replaceAll('&apos;', "'");
   }
 
   /// Advanced text normalization layer repairing OCR artifacts, email spacing, phone formats, and multiline symbols.
@@ -574,7 +788,7 @@ class ResumeParserImpl implements ResumeParser {
 
   String _extractSummary(String text) {
     final summaryReg = RegExp(
-      r'(?:SUMMARY|PROFESSIONAL SUMMARY|PROFILE SUMMARY|CAREER SUMMARY|PROFILE|ABOUT ME|CAREER OBJECTIVE|OBJECTIVE)\s*[:\n]+([\s\S]*?)(?=\n\s*(?:EXPERIENCE|WORK EXPERIENCE|EMPLOYMENT|EDUCATION|SKILLS|TECHNICAL SKILLS|PROJECTS|CERTIFICATIONS|LANGUAGES)\b|\z)',
+      r'(?:SUMMARY|PROFESSIONAL SUMMARY|PROFILE SUMMARY|CAREER SUMMARY|PROFILE|ABOUT ME|CAREER OBJECTIVE|OBJECTIVE)\s*[:\n]+([\s\S]*?)(?=\n\s*(?:EXPERIENCE|WORK EXPERIENCE|EMPLOYMENT|EDUCATION|SKILLS|TECHNICAL SKILLS|PROJECTS|CERTIFICATIONS|LANGUAGES)\b|$)',
       caseSensitive: false,
     );
     final match = summaryReg.firstMatch(text);
@@ -587,7 +801,7 @@ class ResumeParserImpl implements ResumeParser {
 
   List<Experience> _extractExperiences(String text) {
     final expReg = RegExp(
-      r'(?:EXPERIENCE|WORK EXPERIENCE|PROFESSIONAL EXPERIENCE|EMPLOYMENT HISTORY|CAREER HISTORY)[\s\S]*?(?=\n\s*(?:EDUCATION|ACADEMIC BACKGROUND|SKILLS|TECHNICAL SKILLS|PROJECTS|KEY PROJECTS|CERTIFICATIONS|LICENSES|LANGUAGES)\b|\z)',
+      r'(?:EXPERIENCE|WORK EXPERIENCE|PROFESSIONAL EXPERIENCE|EMPLOYMENT HISTORY|CAREER HISTORY)[\s\S]*?(?=\n\s*(?:EDUCATION|ACADEMIC BACKGROUND|SKILLS|TECHNICAL SKILLS|PROJECTS|KEY PROJECTS|CERTIFICATIONS|LICENSES|LANGUAGES)\b|$)',
       caseSensitive: false,
     );
     final match = expReg.firstMatch(text);
@@ -605,9 +819,9 @@ class ResumeParserImpl implements ResumeParser {
     for (int i = 1; i < lines.length; i++) {
       final line = lines[i];
       final isRoleLine = RegExp(
-        r'(developer|engineer|manager|lead|specialist|architect|designer|consultant|analyst|intern|administrator|director|executive|programmer)',
+        r'(developer|engineer|manager|lead|specialist|architect|designer|consultant|analyst|intern|administrator|director|executive|programmer|officer|scientist|associate|coordinator|head|assistant)',
         caseSensitive: false,
-      ).hasMatch(line);
+      ).hasMatch(line) || (currentTitle.isEmpty && line.length < 60 && !line.startsWith('•') && !line.startsWith('-'));
 
       if (isRoleLine && line.length < 60) {
         if (currentTitle.isNotEmpty && (currentCompany.isNotEmpty || currentDesc.isNotEmpty)) {
@@ -648,7 +862,7 @@ class ResumeParserImpl implements ResumeParser {
 
   List<Education> _extractEducations(String text) {
     final eduReg = RegExp(
-      r'(?:EDUCATION|ACADEMIC BACKGROUND|EDUCATIONAL QUALIFICATION|EDUCATION & TRAINING)[\s\S]*?(?=\n\s*(?:SKILLS|TECHNICAL SKILLS|PROJECTS|KEY PROJECTS|CERTIFICATIONS|LICENSES|LANGUAGES|EXPERIENCE)\b|\z)',
+      r'(?:EDUCATION|ACADEMIC BACKGROUND|EDUCATIONAL QUALIFICATION|EDUCATION & TRAINING)[\s\S]*?(?=\n\s*(?:SKILLS|TECHNICAL SKILLS|PROJECTS|KEY PROJECTS|CERTIFICATIONS|LICENSES|LANGUAGES|EXPERIENCE)\b|$)',
       caseSensitive: false,
     );
     final match = eduReg.firstMatch(text);
@@ -663,7 +877,7 @@ class ResumeParserImpl implements ResumeParser {
       final isDegree = RegExp(
         r'(bachelor|master|b\.tech|m\.tech|b\.s|b\.a|degree|phd|diploma|b\.e|m\.e|b\.sc|m\.sc|mba)',
         caseSensitive: false,
-      ).hasMatch(line);
+      ).hasMatch(line) || (list.isEmpty && line.length < 80 && !line.startsWith('•') && !line.startsWith('-'));
 
       if (isDegree && line.length < 80) {
         list.add(Education(
@@ -682,7 +896,7 @@ class ResumeParserImpl implements ResumeParser {
 
   List<Project> _extractProjects(String text) {
     final projReg = RegExp(
-      r'(?:PROJECTS|KEY PROJECTS|SELECTED PROJECTS|ACADEMIC PROJECTS|PERSONAL PROJECTS)[\s\S]*?(?=\n\s*(?:SKILLS|TECHNICAL SKILLS|CERTIFICATIONS|LICENSES|LANGUAGES|EDUCATION|EXPERIENCE)\b|\z)',
+      r'(?:PROJECTS|KEY PROJECTS|SELECTED PROJECTS|ACADEMIC PROJECTS|PERSONAL PROJECTS)[\s\S]*?(?=\n\s*(?:SKILLS|TECHNICAL SKILLS|CERTIFICATIONS|LICENSES|LANGUAGES|EDUCATION|EXPERIENCE)\b|$)',
       caseSensitive: false,
     );
     final match = projReg.firstMatch(text);
@@ -739,7 +953,7 @@ class ResumeParserImpl implements ResumeParser {
 
   List<Certification> _extractCertifications(String text) {
     final certReg = RegExp(
-      r'(?:CERTIFICATIONS|CERTIFICATES|LICENSES|CERTIFICATIONS & LICENSES)[\s\S]*?(?=\n\s*(?:LANGUAGES|SKILLS|PROJECTS|EDUCATION|EXPERIENCE)\b|\z)',
+      r'(?:CERTIFICATIONS|CERTIFICATES|LICENSES|CERTIFICATIONS & LICENSES)[\s\S]*?(?=\n\s*(?:LANGUAGES|SKILLS|PROJECTS|EDUCATION|EXPERIENCE)\b|$)',
       caseSensitive: false,
     );
     final match = certReg.firstMatch(text);

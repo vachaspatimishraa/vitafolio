@@ -40,7 +40,7 @@ class TemplateRepository {
       atsRating: 5,
       accentColor: Colors.lightBlue,
       isDefault: false,
-      requiresProfileImage: true,
+      requiresProfileImage: false,
     ),
     const ResumeTemplate(
       id: 'executive',
@@ -53,7 +53,7 @@ class TemplateRepository {
       atsRating: 4,
       accentColor: Colors.amber,
       isDefault: false,
-      requiresProfileImage: true,
+      requiresProfileImage: false,
     ),
     const ResumeTemplate(
       id: 'academic',

@@ -6,6 +6,7 @@ class YearPickerField extends StatelessWidget {
   final String label;
   final String? value;
   final bool enabled;
+  final String? errorText;
   final ValueChanged<String> onYearSelected;
 
   const YearPickerField({
@@ -13,6 +14,7 @@ class YearPickerField extends StatelessWidget {
     required this.label,
     required this.value,
     this.enabled = true,
+    this.errorText,
     required this.onYearSelected,
   });
 
@@ -20,15 +22,18 @@ class YearPickerField extends StatelessWidget {
     final theme = Theme.of(context);
     final colorScheme = theme.colorScheme;
     final int currentYear = DateTime.now().year;
+    final screenHeight = MediaQuery.of(context).size.height;
 
     showDialog(
       context: context,
       builder: (context) {
         return AlertDialog(
           title: Text('Select $label'),
-          content: SizedBox(
-            width: 300,
-            height: 300,
+          content: ConstrainedBox(
+            constraints: BoxConstraints(
+              maxWidth: 300,
+              maxHeight: screenHeight < 500 ? screenHeight * 0.55 : 300,
+            ),
             child: YearPicker(
               firstDate: DateTime(1970),
               lastDate: DateTime(2035),
@@ -70,6 +75,7 @@ class YearPickerField extends StatelessWidget {
           decoration: InputDecoration(
             labelText: label,
             enabled: enabled,
+            errorText: errorText,
             prefixIcon: const Icon(Icons.calendar_today_outlined),
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(AppSpacing.radiusTextField),

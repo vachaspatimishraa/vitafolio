@@ -144,5 +144,44 @@ void main() {
         '',
       );
     });
+
+    test('parseDate parses ISO, year-only, and MMM yyyy formats', () {
+      expect(DateRangeFormatter.parseDate('2023-05-15'), DateTime(2023, 5, 15));
+      expect(DateRangeFormatter.parseDate('2024'), DateTime(2024, 1, 1));
+      expect(DateRangeFormatter.parseDate('May 2023'), DateTime(2023, 5, 1));
+      expect(DateRangeFormatter.parseDate('Jan 2021'), DateTime(2021, 1, 1));
+      expect(DateRangeFormatter.parseDate('05/2023'), DateTime(2023, 5, 1));
+      expect(DateRangeFormatter.parseDate('2023/05'), DateTime(2023, 5, 1));
+      expect(DateRangeFormatter.parseDate(''), null);
+      expect(DateRangeFormatter.parseDate('   '), null);
+      expect(DateRangeFormatter.parseDate(null), null);
+      expect(DateRangeFormatter.parseDate('invalid-date'), null);
+    });
+
+    test('formatEducation with DateTime formats year without fake month', () {
+      final start = DateTime(2020, 1, 1);
+      final end = DateTime(2024, 1, 1);
+      expect(
+        DateRangeFormatter.formatEducation(startDate: start, endDate: end),
+        '2020 – 2024',
+      );
+      expect(
+        DateRangeFormatter.formatEducation(startDate: start, isCurrentlyStudying: true),
+        '2020 – Pursuing',
+      );
+    });
+
+    test('formatExperience with DateTime formats MMM yyyy', () {
+      final start = DateTime(2020, 5, 1);
+      final end = DateTime(2023, 12, 1);
+      expect(
+        DateRangeFormatter.formatExperience(startDate: start, endDate: end),
+        'May 2020 – Dec 2023',
+      );
+      expect(
+        DateRangeFormatter.formatExperience(startDate: start, isCurrentRole: true),
+        'May 2020 – Present',
+      );
+    });
   });
 }

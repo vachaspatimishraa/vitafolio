@@ -21,18 +21,6 @@ class ProfileImagePage extends ConsumerWidget {
   }
 
   Future<void> _handleContinue(BuildContext context, WidgetRef ref) async {
-    final state = ref.read(profileImageViewModelProvider);
-    if (state.requiresProfileImage &&
-        (state.imagePath == null || state.imagePath!.isEmpty)) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          content: const Text('This template requires a profile photo to continue.'),
-          backgroundColor: Theme.of(context).colorScheme.error,
-        ),
-      );
-      return;
-    }
-
     await ref.read(profileImageViewModelProvider.notifier).save();
     if (context.mounted) {
       context.push(AppRoutes.summary);
@@ -87,7 +75,7 @@ class ProfileImagePage extends ConsumerWidget {
                   children: [
                     const SizedBox(height: AppSpacing.md),
                     Text(
-                      state.requiresProfileImage ? 'Profile Image *' : 'Profile Image',
+                      'Profile Image',
                       style: theme.textTheme.headlineSmall?.copyWith(
                         fontWeight: FontWeight.bold,
                         color: colorScheme.onSurface,
@@ -96,9 +84,7 @@ class ProfileImagePage extends ConsumerWidget {
                     ),
                     const SizedBox(height: AppSpacing.xs),
                     Text(
-                      state.requiresProfileImage
-                          ? 'This template requires a professional profile photo.'
-                          : 'Add a professional photo to your resume.\nThis is optional for the selected template.',
+                      'Add a professional photo to your resume.\nThis is optional for all templates.',
                       style: theme.textTheme.bodyMedium?.copyWith(
                         color: colorScheme.onSurfaceVariant,
                       ),

@@ -1,5 +1,8 @@
+import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:vitafolio/core/utils/date_range_formatter.dart';
+import 'package:vitafolio/features/education/presentation/pages/add_education_page.dart';
 import 'package:vitafolio/features/education/presentation/viewmodels/education_viewmodel.dart';
 import 'package:vitafolio/features/resume/domain/entities/education.dart';
 
@@ -166,6 +169,71 @@ void main() {
         separator: ' - ',
       );
       expect(range5, '');
+    });
+
+    test('Education date validation rules: start required, end required unless pursuing', () {
+      // Helper simulating validation logic
+      String? validateStartYear(String? start) {
+        if (start == null || start.trim().isEmpty) return 'Start year is required';
+        return null;
+      }
+
+      String? validateEndYear(String? end, bool isPursuing) {
+        if (!isPursuing && (end == null || end.trim().isEmpty)) return 'End year is required';
+        return null;
+      }
+
+      // Case 1: Start year empty -> Invalid
+      expect(validateStartYear(null), 'Start year is required');
+      expect(validateStartYear(''), 'Start year is required');
+      expect(validateStartYear('   '), 'Start year is required');
+
+      // Case 2: Start year valid (2020), Pursuing = false, End year empty -> Invalid
+      expect(validateStartYear('2020'), null);
+      expect(validateEndYear(null, false), 'End year is required');
+      expect(validateEndYear('', false), 'End year is required');
+
+      // Case 3: Start year 2020, End year 2024, Pursuing = false -> Valid
+      expect(validateStartYear('2020'), null);
+      expect(validateEndYear('2024', false), null);
+
+      // Case 4: Start year 2022, Pursuing = true, End year empty -> Valid
+      expect(validateStartYear('2022'), null);
+      expect(validateEndYear(null, true), null);
+      expect(validateEndYear('', true), null);
+    });
+
+    testWidgets('AddEducationPage shows Start Year * and dynamic End Year * indicators', (tester) async {
+      tester.view.physicalSize = const Size(800, 1200);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(() => tester.view.resetPhysicalSize());
+
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: AddEducationPage(),
+          ),
+        ),
+      );
+      await tester.pumpAndSettle();
+
+      // 1. Start Year * is ALWAYS present
+      expect(find.text('Start Year *'), findsOneWidget);
+
+      // 2. By default, Pursuing is OFF -> End Year * MUST be present
+      expect(find.text('End Year *'), findsOneWidget);
+
+      // 3. Find and tap the Switch
+      final switchFinder = find.byType(Switch);
+      expect(switchFinder, findsOneWidget);
+      await tester.tap(switchFinder);
+      await tester.pumpAndSettle();
+
+      // 4. When Pursuing is ON -> End Year * should no longer be present, Pursuing indicator shows
+      expect(find.text('End Year *'), findsNothing);
+      expect(find.text('Pursuing'), findsOneWidget);
+      // Start Year * remains required
+      expect(find.text('Start Year *'), findsOneWidget);
     });
   });
 }
