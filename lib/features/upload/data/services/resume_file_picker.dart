@@ -1,3 +1,4 @@
+import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 
 /// Clean Architecture abstraction for file picking operations.
@@ -27,7 +28,7 @@ class ProductionResumeFilePicker implements ResumeFilePicker {
   Future<PickedResumeFile?> pickResumeFile() async {
     final result = await FilePicker.platform.pickFiles(
       type: FileType.custom,
-      allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg'],
+      allowedExtensions: ['pdf', 'doc', 'docx', 'png', 'jpg', 'jpeg', 'webp'],
       withData: true,
     );
 
@@ -38,11 +39,21 @@ class ProductionResumeFilePicker implements ResumeFilePicker {
     final platformFile = result.files.first;
     final sizeInMB = platformFile.size / (1024 * 1024);
 
+    List<int>? fileBytes = platformFile.bytes;
+    if ((fileBytes == null || fileBytes.isEmpty) && platformFile.path != null) {
+      try {
+        final f = File(platformFile.path!);
+        if (f.existsSync()) {
+          fileBytes = await f.readAsBytes();
+        }
+      } catch (_) {}
+    }
+
     return PickedResumeFile(
       path: platformFile.path,
       name: platformFile.name,
       sizeInMB: sizeInMB,
-      bytes: platformFile.bytes,
+      bytes: fileBytes,
     );
   }
 }

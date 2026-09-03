@@ -74,13 +74,15 @@ class EducationListPage extends ConsumerWidget {
             const ResumeProgressStepper(currentStepIndex: 6),
             Expanded(
               child: state.educations.isEmpty
-                  ? EmptyState(
-                      icon: Icons.school_outlined,
-                      title: 'No Education Added',
-                      description:
-                          'Tap the button below to add your first education record.',
-                      primaryActionLabel: 'Add Education',
-                      onPrimaryAction: () => _addEducation(context),
+                  ? SingleChildScrollView(
+                      child: EmptyState(
+                        icon: Icons.school_outlined,
+                        title: 'No Education Added',
+                        description:
+                            'Tap the button below to add your first education record.',
+                        primaryActionLabel: 'Add Education',
+                        onPrimaryAction: () => _addEducation(context),
+                      ),
                     )
                   : SingleChildScrollView(
                       padding: const EdgeInsets.all(AppSpacing.lg),

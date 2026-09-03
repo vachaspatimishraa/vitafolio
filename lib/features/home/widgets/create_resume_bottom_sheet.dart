@@ -22,15 +22,19 @@ class CreateResumeBottomSheet extends ConsumerWidget {
 
     return Container(
       width: double.infinity,
+      constraints: BoxConstraints(
+        maxHeight: MediaQuery.of(context).size.height * 0.9,
+      ),
       decoration: BoxDecoration(
         color: colorScheme.surface,
         borderRadius: const BorderRadius.vertical(top: Radius.circular(28)),
       ),
       padding: const EdgeInsets.symmetric(horizontal: AppSpacing.lg),
       child: SafeArea(
-        child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
+        child: SingleChildScrollView(
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
             // Drag Handle
             const SizedBox(height: AppSpacing.md),
             Container(
@@ -112,8 +116,9 @@ class CreateResumeBottomSheet extends ConsumerWidget {
           ],
         ),
       ),
-    );
-  }
+    ),
+  );
+}
 
   Widget _buildOptionCard({
     required BuildContext context,

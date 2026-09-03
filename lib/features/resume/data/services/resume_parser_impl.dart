@@ -160,7 +160,7 @@ class ResumeParserImpl implements ResumeParser {
     }
 
     // Quality gate on raw text
-    final qualityError = _validateRawTextQuality(rawText);
+    final qualityError = _validateRawTextQuality(rawText, isImage: docFormat == DocumentFormat.image);
     if (qualityError != null) {
       _debugLog('[PARSER] Quality gate: FAIL (${qualityError.replaceAll('\n', ' ')})');
       throw Exception(
@@ -175,17 +175,29 @@ class ResumeParserImpl implements ResumeParser {
   }
 
   DocumentFormat _detectDocumentFormat(List<int> bytes, String ext) {
+    // 1. Check extension first if explicit
+    final cleanExt = ext.toLowerCase().replaceAll('.', '').trim();
+    if (cleanExt == 'pdf') return DocumentFormat.pdf;
+    if (cleanExt == 'docx') return DocumentFormat.docx;
+    if (cleanExt == 'doc') return DocumentFormat.doc;
+    if (cleanExt == 'png' || cleanExt == 'jpg' || cleanExt == 'jpeg' || cleanExt == 'webp') return DocumentFormat.image;
+    if (cleanExt == 'txt') return DocumentFormat.txt;
+
+    // 2. Check magic bytes
     if (bytes.length >= 4) {
-      // PDF Signature: %PDF
-      if (bytes[0] == 0x25 && bytes[1] == 0x50 && bytes[2] == 0x44 && bytes[3] == 0x46) {
-        return DocumentFormat.pdf;
+      // PDF Signature: %PDF anywhere in first 1024 bytes (ISO 32000-1)
+      final headerLimit = bytes.length < 1024 ? bytes.length : 1024;
+      for (int i = 0; i <= headerLimit - 4; i++) {
+        if (bytes[i] == 0x25 && bytes[i + 1] == 0x50 && bytes[i + 2] == 0x44 && bytes[i + 3] == 0x46) {
+          return DocumentFormat.pdf;
+        }
       }
       // PNG Signature: 89 50 4E 47
       if (bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
         return DocumentFormat.image;
       }
-      // JPEG Signature: FF D8 FF
-      if (bytes[0] == 0xFF && bytes[1] == 0xD8 && bytes[2] == 0xFF) {
+      // JPEG Signature: FF D8
+      if (bytes[0] == 0xFF && bytes[1] == 0xD8) {
         return DocumentFormat.image;
       }
       // WEBP Signature: RIFF....WEBP
@@ -194,8 +206,8 @@ class ResumeParserImpl implements ResumeParser {
           bytes[8] == 0x57 && bytes[9] == 0x45 && bytes[10] == 0x42 && bytes[11] == 0x50) {
         return DocumentFormat.image;
       }
-      // ZIP Signature (used by DOCX): 50 4B 03 04
-      if (bytes[0] == 0x50 && bytes[1] == 0x4B && bytes[2] == 0x03 && bytes[3] == 0x04) {
+      // ZIP Signature (used by DOCX): 50 4B
+      if (bytes[0] == 0x50 && bytes[1] == 0x4B) {
         return DocumentFormat.docx;
       }
       // OLE Compound Document (used by legacy DOC): D0 CF 11 E0
@@ -204,19 +216,11 @@ class ResumeParserImpl implements ResumeParser {
       }
     }
 
-    // Fallback to extension check if magic bytes are ambiguous
-    final cleanExt = ext.toLowerCase().replaceAll('.', '');
-    if (cleanExt == 'pdf') return DocumentFormat.pdf;
-    if (cleanExt == 'docx') return DocumentFormat.docx;
-    if (cleanExt == 'doc') return DocumentFormat.doc;
-    if (cleanExt == 'png' || cleanExt == 'jpg' || cleanExt == 'jpeg' || cleanExt == 'webp') return DocumentFormat.image;
-    if (cleanExt == 'txt') return DocumentFormat.txt;
-
     return DocumentFormat.unknown;
   }
 
   /// Quality Gate: Ensures raw extracted text contains meaningful resume content.
-  String? _validateRawTextQuality(String rawText) {
+  String? _validateRawTextQuality(String rawText, {bool isImage = false}) {
     final trimmed = rawText.trim();
     if (trimmed.isEmpty) {
       return 'We couldn\'t extract readable text from this resume.\n\nThis may be a scanned or image-only PDF. Please try uploading a text-based PDF/DOCX or enter your information manually.';
@@ -256,12 +260,14 @@ class ResumeParserImpl implements ResumeParser {
 
     _debugLog('Quality stats — total: $total, alpha: $alphaCount (${(alphaRatio * 100).toStringAsFixed(1)}%), digits: $digitCount, words: $wordCount, sections: $sectionSignalCount, email: $hasEmail, phone: $hasPhone');
 
-    if (total < 15 || wordCount < 10) {
+    final minTotal = isImage ? 10 : 15;
+    final minWords = isImage ? 5 : 10;
+    if (total < minTotal || wordCount < minWords) {
       return 'The extracted text is too short to construct a valid resume.';
     }
 
     // Reject short strings like "John 9876543210" if no section headers or contact information exist
-    if (wordCount < 15 && sectionSignalCount == 0 && !hasEmail && !hasPhone) {
+    if (!isImage && wordCount < 15 && sectionSignalCount == 0 && !hasEmail && !hasPhone) {
       return 'The extracted text does not contain sufficient resume structure.';
     }
 
@@ -543,9 +549,9 @@ class ResumeParserImpl implements ResumeParser {
 
       final sb = StringBuffer();
 
-      // OpenXML regex patterns
-      final wtReg = RegExp(r'<w:t[^>]*>(.*?)</w:t>');
-      final blockReg = RegExp(r'<(?:w:p|w:tc)[^>]*>(.*?)</(?:w:p|w:tc)>');
+      // OpenXML regex patterns (using [\s\S]*? to span multiple lines)
+      final wtReg = RegExp(r'<w:t[^>]*>([\s\S]*?)</w:t>');
+      final blockReg = RegExp(r'<(?:w:p|w:tc)[^>]*>([\s\S]*?)</(?:w:p|w:tc)>');
       final brReg = RegExp(r'<w:br[^>]*/>');
       final tabReg = RegExp(r'<w:tab[^>]*/>');
 

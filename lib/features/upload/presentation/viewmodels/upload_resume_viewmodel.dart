@@ -67,7 +67,24 @@ class UploadResumeViewModel extends StateNotifier<UploadResumeState> {
         return;
       }
 
-      final ext = file.name.contains('.') ? file.name.split('.').last.toLowerCase() : '';
+      var ext = file.name.contains('.') ? file.name.split('.').last.toLowerCase() : '';
+      if (ext.isEmpty && file.path != null && file.path!.contains('.')) {
+        ext = file.path!.split('.').last.toLowerCase();
+      }
+      // Inspect magic bytes if extension not present in name or path
+      if (ext.isEmpty && file.bytes != null && file.bytes!.isNotEmpty) {
+        final b = file.bytes!;
+        if (b.length >= 4 && b[0] == 0x25 && b[1] == 0x50 && b[2] == 0x44 && b[3] == 0x46) {
+          ext = 'pdf';
+        } else if (b.length >= 2 && b[0] == 0x50 && b[1] == 0x4B) {
+          ext = 'docx';
+        } else if (b.length >= 2 && b[0] == 0xFF && b[1] == 0xD8) {
+          ext = 'jpg';
+        } else if (b.length >= 4 && b[0] == 0x89 && b[1] == 0x50 && b[2] == 0x4E && b[3] == 0x47) {
+          ext = 'png';
+        }
+      }
+
       if (ext != 'pdf' && ext != 'doc' && ext != 'docx' && ext != 'png' && ext != 'jpg' && ext != 'jpeg' && ext != 'webp') {
         state = state.copyWith(
           isLoading: false,
@@ -115,9 +132,30 @@ class UploadResumeViewModel extends StateNotifier<UploadResumeState> {
 
     try {
       final fileName = state.selectedFileName ?? '';
-      final ext = fileName.contains('.') ? fileName.split('.').last : 'pdf';
+      var ext = fileName.contains('.') ? fileName.split('.').last.toLowerCase() : '';
       final path = state.selectedFilePath;
-      final bytes = state.selectedFileBytes;
+      if (ext.isEmpty && path != null && path.contains('.')) {
+        ext = path.split('.').last.toLowerCase();
+      }
+
+      var bytes = state.selectedFileBytes;
+      if ((bytes == null || bytes.isEmpty) && path != null && path.isNotEmpty && File(path).existsSync()) {
+        try {
+          bytes = await File(path).readAsBytes();
+        } catch (_) {}
+      }
+
+      if (ext.isEmpty && bytes != null && bytes.isNotEmpty) {
+        if (bytes.length >= 4 && bytes[0] == 0x25 && bytes[1] == 0x50 && bytes[2] == 0x44 && bytes[3] == 0x46) {
+          ext = 'pdf';
+        } else if (bytes.length >= 2 && bytes[0] == 0x50 && bytes[1] == 0x4B) {
+          ext = 'docx';
+        } else if (bytes.length >= 2 && bytes[0] == 0xFF && bytes[1] == 0xD8) {
+          ext = 'jpg';
+        } else if (bytes.length >= 4 && bytes[0] == 0x89 && bytes[1] == 0x50 && bytes[2] == 0x4E && bytes[3] == 0x47) {
+          ext = 'png';
+        }
+      }
 
       if (kDebugMode) {
         print('[UPLOAD] Starting resume parsing request');
@@ -132,12 +170,12 @@ class UploadResumeViewModel extends StateNotifier<UploadResumeState> {
       final parser = _ref.read(resumeDomainParserProvider) as ResumeParserImpl;
       Resume parsed;
 
-      if (path != null && path.isNotEmpty && File(path).existsSync()) {
-        if (kDebugMode) print('[UPLOAD] Delegating to parser.parseFile(path)');
-        parsed = await parser.parseFile(path);
-      } else if (bytes != null && bytes.isNotEmpty) {
+      if (bytes != null && bytes.isNotEmpty) {
         if (kDebugMode) print('[UPLOAD] Delegating to parser.parseBytes(bytes, ext: $ext)');
         parsed = await parser.parseBytes(bytes, ext: ext);
+      } else if (path != null && path.isNotEmpty && File(path).existsSync()) {
+        if (kDebugMode) print('[UPLOAD] Delegating to parser.parseFile(path)');
+        parsed = await parser.parseFile(path);
       } else {
         throw Exception('No valid resume file path or content available.');
       }

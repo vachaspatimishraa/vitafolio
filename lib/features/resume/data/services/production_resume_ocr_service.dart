@@ -31,7 +31,11 @@ class ProductionResumeOcrService implements ResumeOcrService {
     File? tempFile;
     try {
       final tempDir = await getTemporaryDirectory();
-      final tempPath = '${tempDir.path}/ocr_input_${DateTime.now().microsecondsSinceEpoch}.png';
+      String fileExt = 'png';
+      if (imageBytes.length >= 2 && imageBytes[0] == 0xFF && imageBytes[1] == 0xD8) {
+        fileExt = 'jpg';
+      }
+      final tempPath = '${tempDir.path}/ocr_input_${DateTime.now().microsecondsSinceEpoch}.$fileExt';
       tempFile = File(tempPath);
       await tempFile.writeAsBytes(imageBytes);
 

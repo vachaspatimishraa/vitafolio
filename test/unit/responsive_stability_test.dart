@@ -1,10 +1,16 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:vitafolio/core/pdf/services/pdf_service.dart';
 import 'package:vitafolio/core/templates/repository/template_repository.dart';
 import 'package:vitafolio/data/models/embedded/personal_information.dart';
+import 'package:vitafolio/features/certifications/presentation/widgets/empty_certification_state.dart';
 import 'package:vitafolio/features/education/presentation/widgets/year_picker_field.dart';
+import 'package:vitafolio/features/experience/presentation/widgets/empty_experience_state.dart';
+import 'package:vitafolio/features/home/widgets/create_resume_bottom_sheet.dart';
+import 'package:vitafolio/features/languages/presentation/widgets/empty_language_state.dart';
 import 'package:vitafolio/features/preview/widgets/preview_action_bar.dart';
+import 'package:vitafolio/features/projects/presentation/widgets/empty_projects_state.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 
 void main() {
@@ -95,7 +101,7 @@ void main() {
         languages: [],
       );
 
-      final pdfService = PdfService();
+        final pdfService = PdfService();
       for (final t in templates) {
         final renderer = pdfService.resolveRenderer(t.id);
         final doc = renderer.buildPdf(emptyPhotoState);
@@ -103,6 +109,70 @@ void main() {
         final bytes = await doc.save();
         expect(bytes, isNotEmpty, reason: 'PDF build for ${t.id} must produce non-null bytes');
       }
+    });
+
+    testWidgets('Empty states and BottomSheet render without overflow in landscape (640x360)', (tester) async {
+      tester.view.physicalSize = const Size(640, 360);
+      tester.view.devicePixelRatio = 1.0;
+      addTearDown(tester.view.resetPhysicalSize);
+
+      // 1. CreateResumeBottomSheet in landscape
+      await tester.pumpWidget(
+        const ProviderScope(
+          child: MaterialApp(
+            home: Scaffold(
+              body: CreateResumeBottomSheet(),
+            ),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('Start from scratch'), findsOneWidget);
+      expect(find.text('Upload an existing resume'), findsOneWidget);
+
+      // 2. EmptyExperienceState in landscape
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: EmptyExperienceState(onAdd: () {}),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('No Experience Added'), findsOneWidget);
+
+      // 3. EmptyProjectsState in landscape
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: EmptyProjectsState(onAdd: () {}),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('No Projects Added Yet'), findsOneWidget);
+
+      // 4. EmptyCertificationState in landscape
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: EmptyCertificationState(onAdd: () {}),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('No Certifications Added'), findsOneWidget);
+
+      // 5. EmptyLanguageState in landscape
+      await tester.pumpWidget(
+        MaterialApp(
+          home: Scaffold(
+            body: EmptyLanguageState(onAdd: () {}),
+          ),
+        ),
+      );
+      expect(tester.takeException(), isNull);
+      expect(find.text('No Languages Added'), findsOneWidget);
     });
   });
 }
