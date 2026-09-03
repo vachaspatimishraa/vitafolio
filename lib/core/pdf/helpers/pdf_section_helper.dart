@@ -7,6 +7,24 @@ import 'package:vitafolio/data/models/embedded/skill_model.dart';
 
 /// Centralized helper for checking section visibility and filtering non-empty items.
 class PdfSectionHelper {
+  /// Sanitizes text for Type 1 / standard PDF fonts (e.g. Helvetica) by replacing
+  /// unsupported Unicode punctuation (en-dash, em-dash, curly quotes) with standard ASCII equivalents.
+  static String sanitizeText(String? text) {
+    if (text == null) return '';
+    return text
+        .replaceAll('–', '-') // U+2013 en-dash -> ASCII hyphen
+        .replaceAll('—', '-') // U+2014 em-dash -> ASCII hyphen
+        .replaceAll('―', '-') // U+2015 horizontal bar
+        .replaceAll('−', '-') // U+2212 minus sign
+        .replaceAll('•', '-') // bullet
+        .replaceAll('·', '-') // middle dot
+        .replaceAll('’', "'") // right single quote
+        .replaceAll('‘', "'") // left single quote
+        .replaceAll('“', '"') // left double quote
+        .replaceAll('”', '"') // right double quote
+        .replaceAll('\u00A0', ' '); // non-breaking space
+  }
+
   /// Checks if string content (e.g. summary) is non-empty.
   static bool hasSummary(String? summary) {
     return summary != null && summary.trim().isNotEmpty;

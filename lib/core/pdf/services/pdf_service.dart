@@ -19,6 +19,7 @@ import 'package:vitafolio/data/models/embedded/language_model.dart';
 import 'package:vitafolio/data/models/embedded/project_model.dart';
 import 'package:vitafolio/data/models/enums/language_proficiency.dart';
 import 'package:vitafolio/core/utils/date_range_formatter.dart';
+import 'package:vitafolio/core/pdf/helpers/pdf_section_helper.dart';
 import 'package:vitafolio/features/resume/domain/entities/resume.dart';
 import 'package:vitafolio/features/workflow/models/workflow_state.dart';
 
@@ -32,33 +33,35 @@ class PdfService {
         ? resume.selectedTemplateId.value
         : 'ats';
 
+    String s(String? val) => PdfSectionHelper.sanitizeText(val);
+
     return WorkflowState(
       resumeId: int.tryParse(resume.id.value),
-      resumeName: resume.title,
+      resumeName: s(resume.title),
       personalInfo: PersonalInformation(
-        fullName: resume.personalDetails?.fullName,
-        jobTitle: resume.personalDetails?.jobTitle,
-        email: resume.personalDetails?.email,
-        phone: resume.personalDetails?.phoneNumber,
-        linkedIn: resume.personalDetails?.linkedinUrl,
-        github: resume.personalDetails?.githubUrl,
-        portfolioWebsite: resume.personalDetails?.website,
+        fullName: s(resume.personalDetails?.fullName),
+        jobTitle: s(resume.personalDetails?.jobTitle),
+        email: s(resume.personalDetails?.email),
+        phone: s(resume.personalDetails?.phoneNumber),
+        linkedIn: s(resume.personalDetails?.linkedinUrl),
+        github: s(resume.personalDetails?.githubUrl),
+        portfolioWebsite: s(resume.personalDetails?.website),
         profileImagePath: resume.personalDetails?.profileImagePath,
       ),
-      summary: resume.summary?.summaryText ?? '',
+      summary: s(resume.summary?.summaryText),
       education: resume.educations
           .map(
             (e) => EducationModel(
               id: e.id,
-              degree: e.degree,
-              fieldOfStudy: e.fieldOfStudy,
-              school: e.institution,
-              grade: e.grade,
+              degree: s(e.degree),
+              fieldOfStudy: s(e.fieldOfStudy),
+              school: s(e.institution),
+              grade: s(e.grade),
               startDate: DateRangeFormatter.parseDate(e.startYear),
               endDate: DateRangeFormatter.parseDate(e.endYear),
               isCurrentlyStudying: e.isCurrentlyStudying,
-              startYear: e.startYear,
-              endYear: e.endYear,
+              startYear: s(e.startYear),
+              endYear: s(e.endYear),
             ),
           )
           .toList(),
@@ -66,26 +69,26 @@ class PdfService {
           .map(
             (e) => ExperienceModel(
               id: e.id,
-              position: e.jobTitle,
-              company: e.company,
-              location: e.location,
+              position: s(e.jobTitle),
+              company: s(e.company),
+              location: s(e.location),
               startDate: DateRangeFormatter.parseDate(e.startDate),
               endDate: DateRangeFormatter.parseDate(e.endDate),
               isCurrentlyWorking: e.isCurrentRole,
-              description: e.description,
-              startDateStr: e.startDate,
-              endDateStr: e.endDate,
+              description: s(e.description),
+              startDateStr: s(e.startDate),
+              endDateStr: s(e.endDate),
             ),
           )
           .toList(),
-      skills: resume.skills.map((s) => s.name).toList(),
+      skills: resume.skills.map((skill) => s(skill.name)).toList(),
       projects: resume.projects
           .map(
             (p) => ProjectModel(
               id: p.id,
-              projectName: p.name,
-              description: p.description,
-              technologies: p.technologies.join(', '),
+              projectName: s(p.name),
+              description: s(p.description),
+              technologies: s(p.technologies.join(', ')),
             ),
           )
           .toList(),
@@ -93,10 +96,10 @@ class PdfService {
           .map(
             (c) => CertificationModel(
               id: c.id,
-              certificateName: c.name,
-              organization: c.organization,
+              certificateName: s(c.name),
+              organization: s(c.organization),
               issueDate: DateTime.tryParse(c.issueDate) ?? (int.tryParse(c.issueDate) != null ? DateTime(int.parse(c.issueDate)) : null),
-              credentialUrl: c.credentialId,
+              credentialUrl: s(c.credentialId),
             ),
           )
           .toList(),
@@ -104,7 +107,7 @@ class PdfService {
           .map(
             (l) => LanguageModel(
               id: l.id,
-              language: l.name,
+              language: s(l.name),
               proficiency: _parseProficiency(l.proficiencyLevel),
             ),
           )

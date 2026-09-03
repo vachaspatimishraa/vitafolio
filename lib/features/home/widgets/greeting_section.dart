@@ -10,8 +10,7 @@ class GreetingSection extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final theme = Theme.of(context);
-    final themeMode = ref.watch(themeModeProvider);
-    final isDark = themeMode == ThemeMode.dark;
+    final isDark = theme.brightness == Brightness.dark;
 
     return Container(
       padding: const EdgeInsets.symmetric(vertical: AppSpacing.sm),
@@ -49,7 +48,7 @@ class GreetingSection extends ConsumerWidget {
           // Dark / Light Mode Toggle Button in top right corner
           IconButton.filledTonal(
             onPressed: () {
-              ref.read(themeModeProvider.notifier).toggleTheme();
+              ref.read(themeModeProvider.notifier).toggleTheme(theme.brightness);
             },
             icon: Icon(
               isDark ? Icons.light_mode_outlined : Icons.dark_mode_outlined,

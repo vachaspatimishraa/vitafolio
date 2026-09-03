@@ -340,7 +340,22 @@ class ResumeParserImpl implements ResumeParser {
           streamStart++;
         }
 
-        // Look for 'endstream' [101, 110, 100, 115, 116, 114, 101, 97, 109]
+        // Try reading declared /Length from preceding object dictionary
+        int? declaredLength;
+        final dictStart = i > 250 ? i - 250 : 0;
+        final precedingStr = String.fromCharCodes(bytes.sublist(dictStart, i));
+        final lenMatch = RegExp(r'/Length\s+(\d+)').firstMatch(precedingStr);
+        if (lenMatch != null) {
+          declaredLength = int.tryParse(lenMatch.group(1)!);
+        }
+
+        if (declaredLength != null && declaredLength > 0 && streamStart + declaredLength <= n) {
+          slices.add(bytes.sublist(streamStart, streamStart + declaredLength));
+          i = streamStart + declaredLength;
+          continue;
+        }
+
+        // Fallback: Look for 'endstream' [101, 110, 100, 115, 116, 114, 101, 97, 109]
         int endSearch = streamStart;
         int streamEnd = -1;
         while (endSearch + 9 <= n) {
@@ -378,16 +393,20 @@ class ResumeParserImpl implements ResumeParser {
     return slices;
   }
 
-  /// Attempts to decompress PDF stream with zlib / ZLibDecoder; falls back to raw bytes.
+  /// Attempts to decompress PDF stream with zlib, raw Deflate (Inflate), or ZLibDecoder; falls back to raw bytes.
   List<int> _decompressPdfStream(List<int> streamBytes) {
     if (streamBytes.isEmpty) return streamBytes;
     try {
       return zlib.decode(streamBytes);
     } catch (_) {
       try {
-        return ZLibDecoder().decodeBytes(streamBytes);
+        return Inflate(streamBytes).getBytes();
       } catch (_) {
-        return streamBytes;
+        try {
+          return ZLibDecoder().decodeBytes(streamBytes);
+        } catch (_) {
+          return streamBytes;
+        }
       }
     }
   }
@@ -421,7 +440,31 @@ class ResumeParserImpl implements ResumeParser {
         if (b != null) bytes.add(b);
       }
     }
-    return utf8.decode(bytes, allowMalformed: true);
+    if (bytes.isEmpty) return '';
+
+    // Check for UTF-16BE BOM (FE FF)
+    if (bytes.length >= 2 && bytes[0] == 0xFE && bytes[1] == 0xFF) {
+      final chars = <int>[];
+      for (int i = 2; i + 1 < bytes.length; i += 2) {
+        chars.add((bytes[i] << 8) | bytes[i + 1]);
+      }
+      return String.fromCharCodes(chars);
+    }
+
+    // Check for UTF-16BE without BOM (alternating zero bytes, e.g. 00 48 00 65)
+    if (bytes.length >= 4 && bytes[0] == 0x00 && bytes[2] == 0x00) {
+      final chars = <int>[];
+      for (int i = 0; i + 1 < bytes.length; i += 2) {
+        chars.add((bytes[i] << 8) | bytes[i + 1]);
+      }
+      return String.fromCharCodes(chars);
+    }
+
+    try {
+      return utf8.decode(bytes);
+    } catch (_) {
+      return latin1.decode(bytes);
+    }
   }
 
   bool _isReadablePdfTextString(String t) {
@@ -783,12 +826,27 @@ class ResumeParserImpl implements ResumeParser {
     return upper == 'SUMMARY' ||
         upper == 'PROFESSIONAL SUMMARY' ||
         upper == 'PROFILE' ||
+        upper == 'CAREER OBJECTIVE' ||
+        upper == 'OBJECTIVE' ||
         upper == 'EXPERIENCE' ||
         upper == 'WORK EXPERIENCE' ||
+        upper == 'EMPLOYMENT' ||
+        upper == 'EMPLOYMENT HISTORY' ||
+        upper == 'WORK HISTORY' ||
         upper == 'EDUCATION' ||
+        upper == 'ACADEMIC BACKGROUND' ||
         upper == 'SKILLS' ||
+        upper == 'TECHNICAL SKILLS' ||
+        upper == 'CORE SKILLS' ||
+        upper == 'CORE COMPETENCIES' ||
+        upper == 'ADDITIONAL STRENGTHS' ||
+        upper == 'STRENGTHS' ||
+        upper == 'AREAS OF EXPERTISE' ||
         upper == 'PROJECTS' ||
+        upper == 'KEY PROJECTS' ||
         upper == 'CERTIFICATIONS' ||
+        upper == 'CERTIFICATES' ||
+        upper == 'LICENSES' ||
         upper == 'LANGUAGES';
   }
 
@@ -931,7 +989,15 @@ class ResumeParserImpl implements ResumeParser {
     int startIndex = -1;
     for (int i = 0; i < lines.length; i++) {
       final lineUpper = lines[i].toUpperCase().replaceAll(RegExp(r'[^A-Z\s]'), '').trim();
-      if (lineUpper == 'SKILLS' || lineUpper == 'TECHNICAL SKILLS' || lineUpper == 'CORE SKILLS' || lineUpper.startsWith('SKILLS')) {
+      if (lineUpper == 'SKILLS' ||
+          lineUpper == 'TECHNICAL SKILLS' ||
+          lineUpper == 'CORE SKILLS' ||
+          lineUpper == 'CORE COMPETENCIES' ||
+          lineUpper == 'ADDITIONAL STRENGTHS' ||
+          lineUpper == 'STRENGTHS' ||
+          lineUpper == 'KEY STRENGTHS' ||
+          lineUpper == 'AREAS OF EXPERTISE' ||
+          lineUpper.startsWith('SKILLS')) {
         startIndex = i + 1;
         break;
       }

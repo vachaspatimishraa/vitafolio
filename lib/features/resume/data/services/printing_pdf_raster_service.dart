@@ -21,9 +21,17 @@ class PrintingPdfRasterService implements PdfRasterService {
 
     try {
       final bytesList = Uint8List.fromList(pdfBytes);
-      final rasters = await Printing.raster(bytesList, dpi: 150).toList();
-      final pageCount = rasters.length;
+      List<PdfRaster> rasters;
+      try {
+        rasters = await Printing.raster(bytesList, dpi: 150).toList();
+      } catch (e) {
+        if (kDebugMode) {
+          print('[PdfRasterService] 150 DPI failed ($e), attempting 100 DPI fallback');
+        }
+        rasters = await Printing.raster(bytesList, dpi: 100).toList();
+      }
 
+      final pageCount = rasters.length;
       if (kDebugMode) {
         print('[PdfRasterService] Page count: $pageCount');
       }
@@ -33,40 +41,12 @@ class PrintingPdfRasterService implements PdfRasterService {
       for (int i = 0; i < rasters.length; i++) {
         final raster = rasters[i];
         final pngBytes = await raster.toPng();
-        
-        final w = raster.width;
-        final h = raster.height;
-        final byteLen = pngBytes.length;
 
-        bool isValidHeader = false;
-        String format = 'UNKNOWN';
-        if (pngBytes.length >= 4 &&
-            pngBytes[0] == 0x89 &&
-            pngBytes[1] == 0x50 &&
-            pngBytes[2] == 0x4E &&
-            pngBytes[3] == 0x47) {
-          isValidHeader = true;
-          format = 'PNG';
-        } else if (pngBytes.length >= 3 &&
-            pngBytes[0] == 0xFF &&
-            pngBytes[1] == 0xD8 &&
-            pngBytes[2] == 0xFF) {
-          isValidHeader = true;
-          format = 'JPEG';
-        }
-
-        if (kDebugMode) {
-          print('[PdfRasterService] Rendering page: ${i + 1}/$pageCount');
-          print('[PdfRasterService] Raster width: $w, height: $h');
-          print('[PdfRasterService] Raster byte length: $byteLen');
-          print('[PdfRasterService] Raster format: $format (header check: ${isValidHeader ? "PASS" : "FAIL"})');
-        }
-
-        if (w > 0 && h > 0 && byteLen > 0 && isValidHeader) {
+        if (pngBytes.isNotEmpty && pngBytes.length > 50) {
           images.add(pngBytes);
         } else {
           if (kDebugMode) {
-            print('[PdfRasterService] WARNING: Invalid raster on page ${i + 1}. Code: PDF_RASTER_INVALID_IMAGE');
+            print('[PdfRasterService] WARNING: Empty raster on page ${i + 1}. Code: PDF_RASTER_INVALID_IMAGE');
           }
         }
       }
