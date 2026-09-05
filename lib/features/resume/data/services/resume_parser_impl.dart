@@ -300,7 +300,7 @@ class ResumeParserImpl implements ResumeParser {
       }
 
       // 2. Also check uncompressed text strings outside streams or fallback for uncompressed PDFs
-      if (sb.length < 50) {
+      if (sb.length < 50 && bytes.length <= 1024 * 1024) {
         final latin1Str = String.fromCharCodes(bytes);
         final tjReg = RegExp(r'\(([^)]+)\)\s*(?:Tj|\x27|\x22)');
         for (final m in tjReg.allMatches(latin1Str)) {
@@ -333,47 +333,71 @@ class ResumeParserImpl implements ResumeParser {
           bytes[i + 3] == 101 &&
           bytes[i + 4] == 97 &&
           bytes[i + 5] == 109) {
-        // Skip whitespace after 'stream' (CR, LF, or space)
+        // Ensure 'stream' is a keyword, not part of another word (e.g. 'Downstream')
+        if (i > 0) {
+          final prev = bytes[i - 1];
+          if ((prev >= 65 && prev <= 90) || (prev >= 97 && prev <= 122)) {
+            i += 6;
+            continue;
+          }
+        }
+
+        // Skip whitespace after 'stream' (CR, LF, space, tab)
         int streamStart = i + 6;
-        while (streamStart < n &&
-            (bytes[streamStart] == 13 || bytes[streamStart] == 10 || bytes[streamStart] == 32)) {
+        if (streamStart < n && bytes[streamStart] == 13) streamStart++;
+        if (streamStart < n && bytes[streamStart] == 10) streamStart++;
+        while (streamStart < n && (bytes[streamStart] == 32 || bytes[streamStart] == 9)) {
           streamStart++;
         }
 
-        // Try reading declared /Length from preceding object dictionary
-        int? declaredLength;
-        final dictStart = i > 250 ? i - 250 : 0;
+        // Inspect preceding dictionary to check for images or declared direct length
+        final dictStart = i > 400 ? i - 400 : 0;
         final precedingStr = String.fromCharCodes(bytes.sublist(dictStart, i));
-        final lenMatch = RegExp(r'/Length\s+(\d+)').firstMatch(precedingStr);
-        if (lenMatch != null) {
-          declaredLength = int.tryParse(lenMatch.group(1)!);
+
+        // Skip image streams (pure pixel data, not text)
+        if (precedingStr.contains('/Subtype /Image') ||
+            precedingStr.contains('/Subtype/Image') ||
+            (precedingStr.contains('/Type /XObject') && precedingStr.contains('/Subtype /Image'))) {
+          final endIdx = _findEndstream(bytes, streamStart, n);
+          if (endIdx != -1) {
+            i = endIdx + 9;
+            continue;
+          }
         }
 
-        if (declaredLength != null && declaredLength > 0 && streamStart + declaredLength <= n) {
+        // Try reading declared direct /Length (must not be an indirect reference like /Length 12 0 R)
+        int? declaredLength;
+        final lenMatch = RegExp(r'/Length\s+(\d+)\b(?!\s+\d+\s+R)').firstMatch(precedingStr);
+        if (lenMatch != null) {
+          final parsed = int.tryParse(lenMatch.group(1)!);
+          // Verify declared length by checking if 'endstream' exists at streamStart + parsed
+          if (parsed != null && parsed > 0 && streamStart + parsed <= n) {
+            int cs = streamStart + parsed;
+            if (cs < n && bytes[cs] == 13) cs++;
+            if (cs < n && bytes[cs] == 10) cs++;
+            if (cs + 9 <= n &&
+                bytes[cs] == 101 &&
+                bytes[cs + 1] == 110 &&
+                bytes[cs + 2] == 100 &&
+                bytes[cs + 3] == 115 &&
+                bytes[cs + 4] == 116 &&
+                bytes[cs + 5] == 114 &&
+                bytes[cs + 6] == 101 &&
+                bytes[cs + 7] == 97 &&
+                bytes[cs + 8] == 109) {
+              declaredLength = parsed;
+            }
+          }
+        }
+
+        if (declaredLength != null) {
           slices.add(bytes.sublist(streamStart, streamStart + declaredLength));
           i = streamStart + declaredLength;
           continue;
         }
 
         // Fallback: Look for 'endstream' [101, 110, 100, 115, 116, 114, 101, 97, 109]
-        int endSearch = streamStart;
-        int streamEnd = -1;
-        while (endSearch + 9 <= n) {
-          if (bytes[endSearch] == 101 &&
-              bytes[endSearch + 1] == 110 &&
-              bytes[endSearch + 2] == 100 &&
-              bytes[endSearch + 3] == 115 &&
-              bytes[endSearch + 4] == 116 &&
-              bytes[endSearch + 5] == 114 &&
-              bytes[endSearch + 6] == 101 &&
-              bytes[endSearch + 7] == 97 &&
-              bytes[endSearch + 8] == 109) {
-            streamEnd = endSearch;
-            break;
-          }
-          endSearch++;
-        }
-
+        final streamEnd = _findEndstream(bytes, streamStart, n);
         if (streamEnd > streamStart) {
           int trimmedEnd = streamEnd;
           while (trimmedEnd > streamStart &&
@@ -393,20 +417,35 @@ class ResumeParserImpl implements ResumeParser {
     return slices;
   }
 
-  /// Attempts to decompress PDF stream with zlib, raw Deflate (Inflate), or ZLibDecoder; falls back to raw bytes.
+  int _findEndstream(List<int> bytes, int start, int n) {
+    int endSearch = start;
+    while (endSearch + 9 <= n) {
+      if (bytes[endSearch] == 101 &&
+          bytes[endSearch + 1] == 110 &&
+          bytes[endSearch + 2] == 100 &&
+          bytes[endSearch + 3] == 115 &&
+          bytes[endSearch + 4] == 116 &&
+          bytes[endSearch + 5] == 114 &&
+          bytes[endSearch + 6] == 101 &&
+          bytes[endSearch + 7] == 97 &&
+          bytes[endSearch + 8] == 109) {
+        return endSearch;
+      }
+      endSearch++;
+    }
+    return -1;
+  }
+
+  /// Attempts to decompress PDF stream with zlib or ZLibDecoder; falls back to raw bytes.
   List<int> _decompressPdfStream(List<int> streamBytes) {
     if (streamBytes.isEmpty) return streamBytes;
     try {
       return zlib.decode(streamBytes);
     } catch (_) {
       try {
-        return Inflate(streamBytes).getBytes();
+        return ZLibDecoder().decodeBytes(streamBytes);
       } catch (_) {
-        try {
-          return ZLibDecoder().decodeBytes(streamBytes);
-        } catch (_) {
-          return streamBytes;
-        }
+        return streamBytes;
       }
     }
   }
@@ -480,8 +519,6 @@ class ResumeParserImpl implements ResumeParser {
     final sb = StringBuffer();
     // 1. Bracket TJ arrays: [ (str1) -10 (str2) ] TJ or [ <hex1> 20 <hex2> ] TJ
     final bracketReg = RegExp(r'\[\s*([\s\S]*?)\s*\]\s*TJ');
-    final parenReg = RegExp(r'\(([^)]*)\)');
-    final hexInBracketReg = RegExp(r'<([0-9a-fA-F]+)>');
 
     for (final bMatch in bracketReg.allMatches(stream)) {
       final inner = bMatch.group(1) ?? '';
@@ -489,33 +526,63 @@ class ResumeParserImpl implements ResumeParser {
 
       int offset = 0;
       while (offset < inner.length) {
-        final parenMatch = parenReg.matchAsPrefix(inner, offset);
-        if (parenMatch != null) {
-          final t = _decodePdfString(parenMatch.group(1) ?? '');
-          if (_isReadablePdfTextString(t)) {
-            lineSb.write(t);
+        final code = inner.codeUnitAt(offset);
+
+        // String: (...)
+        if (code == 40 /* ( */) {
+          int depth = 1;
+          int pEnd = offset + 1;
+          while (pEnd < inner.length && depth > 0) {
+            final c = inner.codeUnitAt(pEnd);
+            if (c == 92 /* \ */) {
+              pEnd += 2;
+              continue;
+            }
+            if (c == 40 /* ( */) depth++;
+            if (c == 41 /* ) */) depth--;
+            pEnd++;
           }
-          offset = parenMatch.end;
+          if (pEnd - 1 > offset + 1) {
+            final rawParen = inner.substring(offset + 1, pEnd - 1);
+            final t = _decodePdfString(rawParen);
+            if (_isReadablePdfTextString(t)) {
+              lineSb.write(t);
+            }
+          }
+          offset = pEnd;
           continue;
         }
 
-        final hexMatch = hexInBracketReg.matchAsPrefix(inner, offset);
-        if (hexMatch != null) {
-          final t = _decodePdfHex(hexMatch.group(1) ?? '');
-          if (_isReadablePdfTextString(t)) {
-            lineSb.write(t);
+        // Hex: <...>
+        if (code == 60 /* < */) {
+          final hEnd = inner.indexOf('>', offset + 1);
+          if (hEnd != -1) {
+            final hex = inner.substring(offset + 1, hEnd);
+            final t = _decodePdfHex(hex);
+            if (_isReadablePdfTextString(t)) {
+              lineSb.write(t);
+            }
+            offset = hEnd + 1;
+            continue;
           }
-          offset = hexMatch.end;
-          continue;
         }
 
-        final spaceMatch = RegExp(r'^-?\d+').matchAsPrefix(inner.substring(offset));
-        if (spaceMatch != null) {
-          final numVal = int.tryParse(spaceMatch.group(0) ?? '0') ?? 0;
+        // Spacing adjustment number (negative number introduces space, e.g. -120 or -250)
+        if (code == 45 /* - */ || (code >= 48 && code <= 57)) {
+          int numEnd = offset + 1;
+          while (numEnd < inner.length) {
+            final c = inner.codeUnitAt(numEnd);
+            if ((c >= 48 && c <= 57) || c == 46 /* . */) {
+              numEnd++;
+            } else {
+              break;
+            }
+          }
+          final numVal = double.tryParse(inner.substring(offset, numEnd)) ?? 0.0;
           if (numVal <= -80 && lineSb.isNotEmpty && !lineSb.toString().endsWith(' ')) {
             lineSb.write(' ');
           }
-          offset += spaceMatch.end;
+          offset = numEnd;
           continue;
         }
 
