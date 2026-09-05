@@ -21,8 +21,8 @@ class PrintingPdfRasterService implements PdfRasterService {
 
     try {
       final bytesList = Uint8List.fromList(pdfBytes);
-      // Limit raster to first 4 pages max (standard resumes are 1-3 pages) at 100 DPI
-      final rasters = await Printing.raster(bytesList, pages: const [0, 1, 2, 3], dpi: 100).toList();
+      // Dynamically stream existing pages capped at 4 pages max at 150 DPI for sharp OCR
+      final rasters = await Printing.raster(bytesList, dpi: 150).take(4).toList();
       final pageCount = rasters.length;
       if (kDebugMode) {
         print('[PdfRasterService] Page count: $pageCount');

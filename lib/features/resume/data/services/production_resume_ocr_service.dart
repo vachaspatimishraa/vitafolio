@@ -45,10 +45,21 @@ class ProductionResumeOcrService implements ResumeOcrService {
         print('[ResumeOcrService] Sending image to OCR engine...');
       }
 
-      final recognizedText = await _recognizer.processImage(inputImage);
-      final text = recognizedText.text.trim();
+      var recognizedText = await _recognizer.processImage(inputImage);
+      var text = recognizedText.text.trim();
+
+      // Controlled retry (attempt 2) if first OCR attempt returned empty
+      if (text.isEmpty) {
+        if (kDebugMode) {
+          print('[ResumeOcrService] OCR attempt 1 returned empty. Performing controlled attempt 2 retry...');
+        }
+        await Future.delayed(const Duration(milliseconds: 50));
+        recognizedText = await _recognizer.processImage(inputImage);
+        text = recognizedText.text.trim();
+      }
 
       if (kDebugMode) {
+        print('[RESUME_OCR] imageExists=${tempFile.existsSync()} imageBytes=${imageBytes.length} ocrChars=${text.length}');
         print('[ResumeOcrService] OCR engine returned successfully');
         print('[ResumeOcrService] Recognized text length: ${text.length}');
         if (text.isEmpty) {
@@ -59,7 +70,7 @@ class ProductionResumeOcrService implements ResumeOcrService {
       return text;
     } catch (e, stack) {
       if (kDebugMode) {
-        print('[ResumeOcrService] ERROR: OCR processing failed: $e. Diagnostic State: OCR_PROCESSING_FAILED');
+        print('[RESUME_OCR] ERROR: OCR processing failed: $e. Code: OCR_PROCESSING_FAILED');
         print('[ResumeOcrService] Stack trace: $stack');
       }
       return null;

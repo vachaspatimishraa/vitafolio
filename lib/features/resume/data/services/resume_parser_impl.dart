@@ -288,13 +288,23 @@ class ResumeParserImpl implements ResumeParser {
       final streamSlices = _findPdfStreamByteSlices(bytes);
       _debugLog('[PDF] Found ${streamSlices.length} stream objects');
 
+      // 2. Build ToUnicode CMap glyph mapping dictionary from embedded font CMaps
+      final cmap = _buildPdfCMapDictionary(streamSlices);
+      if (cmap.isNotEmpty) {
+        _debugLog('[PDF] Parsed /ToUnicode CMap with ${cmap.length} glyph mappings');
+      }
+
       for (final streamSlice in streamSlices) {
         final decompressed = _decompressPdfStream(streamSlice);
         if (decompressed.isNotEmpty) {
           final streamStr = utf8.decode(decompressed, allowMalformed: true);
-          final text = _extractTextFromPdfStream(streamStr);
-          if (text.trim().isNotEmpty) {
-            sb.writeln(text);
+          // Only process streams that contain standard PDF text operators (BT, Tf, TJ, Tj)
+          if ((streamStr.contains('TJ') || streamStr.contains('Tj')) &&
+              (streamStr.contains('BT') || streamStr.contains('Tf') || streamStr.contains('ET'))) {
+            final text = _extractTextFromPdfStream(streamStr, cmap);
+            if (text.trim().isNotEmpty) {
+              sb.writeln(text);
+            }
           }
         }
       }
@@ -467,8 +477,131 @@ class ResumeParserImpl implements ResumeParser {
         .replaceAll(r'\f', '');
   }
 
-  String _decodePdfHex(String hex) {
+  /// Parses all /ToUnicode CMap streams in PDF objects, building a glyph-to-Unicode mapping dictionary.
+  Map<String, String> _buildPdfCMapDictionary(List<List<int>> streamSlices) {
+    final cmap = <String, String>{};
+    for (final slice in streamSlices) {
+      final decompressed = _decompressPdfStream(slice);
+      if (decompressed.isEmpty) continue;
+      final decStr = utf8.decode(decompressed, allowMalformed: true);
+      if (!decStr.contains('beginbfrange') && !decStr.contains('beginbfchar')) continue;
+
+      final isIconFont = decStr.contains('FontAwesome') || decStr.contains('Icons');
+
+      // 1. beginbfchar ... endbfchar
+      final bfcharSection = RegExp(r'beginbfchar([\s\S]*?)endbfchar');
+      final bfcharReg = RegExp(r'<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>');
+      for (final sec in bfcharSection.allMatches(decStr)) {
+        for (final m in bfcharReg.allMatches(sec.group(1)!)) {
+          final src = m.group(1)!.toUpperCase().padLeft(4, '0');
+          final dstHex = m.group(2)!;
+          final dstChars = <int>[];
+          for (int i = 0; i + 3 < dstHex.length; i += 4) {
+            dstChars.add(int.parse(dstHex.substring(i, i + 4), radix: 16));
+          }
+          if (dstChars.isEmpty) {
+            for (int i = 0; i + 1 < dstHex.length; i += 2) {
+              dstChars.add(int.parse(dstHex.substring(i, i + 2), radix: 16));
+            }
+          }
+          final dstStr = String.fromCharCodes(dstChars);
+          if (!isIconFont || !cmap.containsKey(src)) {
+            cmap[src] = dstStr;
+          }
+        }
+      }
+
+      // 2. beginbfrange ... endbfrange
+      final bfrangeSection = RegExp(r'beginbfrange([\s\S]*?)endbfrange');
+      final bfrangeReg = RegExp(r'<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>');
+      for (final sec in bfrangeSection.allMatches(decStr)) {
+        final secContent = sec.group(1)!;
+        for (final m in bfrangeReg.allMatches(secContent)) {
+          final start = int.parse(m.group(1)!, radix: 16);
+          final end = int.parse(m.group(2)!, radix: 16);
+          final dstStart = int.parse(m.group(3)!, radix: 16);
+          for (int code = start; code <= end; code++) {
+            final src = code.toRadixString(16).toUpperCase().padLeft(4, '0');
+            final dst = String.fromCharCode(dstStart + (code - start));
+            if (!isIconFont || !cmap.containsKey(src)) {
+              cmap[src] = dst;
+            }
+          }
+        }
+
+        // Array-style bfrange: <srcStart> <srcEnd> [ <dst1> <dst2> ... ]
+        final arrayRangeReg = RegExp(r'<([0-9a-fA-F]+)>\s*<([0-9a-fA-F]+)>\s*\[([\s\S]*?)\]');
+        for (final m in arrayRangeReg.allMatches(secContent)) {
+          final start = int.parse(m.group(1)!, radix: 16);
+          final end = int.parse(m.group(2)!, radix: 16);
+          final dstHexes = RegExp(r'<([0-9a-fA-F]+)>').allMatches(m.group(3)!).map((x) => x.group(1)!).toList();
+          int offset = 0;
+          for (int code = start; code <= end && offset < dstHexes.length; code++, offset++) {
+            final src = code.toRadixString(16).toUpperCase().padLeft(4, '0');
+            final dstHex = dstHexes[offset];
+            final dstChars = <int>[];
+            for (int i = 0; i + 3 < dstHex.length; i += 4) {
+              dstChars.add(int.parse(dstHex.substring(i, i + 4), radix: 16));
+            }
+            if (dstChars.isEmpty) {
+              for (int i = 0; i + 1 < dstHex.length; i += 2) {
+                dstChars.add(int.parse(dstHex.substring(i, i + 2), radix: 16));
+              }
+            }
+            final dstStr = String.fromCharCodes(dstChars);
+            if (!isIconFont || !cmap.containsKey(src)) {
+              cmap[src] = dstStr;
+            }
+          }
+        }
+      }
+    }
+    return cmap;
+  }
+
+  String _decodePdfHex(String hex, [Map<String, String>? cmap]) {
     final clean = hex.replaceAll(RegExp(r'\s'), '');
+    if (clean.isEmpty) return '';
+
+    // If CMap is present, decode glyph IDs using the CMap dictionary
+    if (cmap != null && cmap.isNotEmpty) {
+      final sb = StringBuffer();
+      bool matchedAny = false;
+      if (clean.length % 4 == 0) {
+        for (int i = 0; i < clean.length; i += 4) {
+          final code = clean.substring(i, i + 4).toUpperCase();
+          if (cmap.containsKey(code)) {
+            sb.write(cmap[code]);
+            matchedAny = true;
+          } else {
+            final charCode = int.tryParse(code, radix: 16) ?? 0;
+            if (charCode >= 32 && charCode < 127) {
+              sb.writeCharCode(charCode);
+            }
+          }
+        }
+        if (matchedAny) {
+          return sb.toString();
+        }
+      } else if (clean.length % 2 == 0) {
+        for (int i = 0; i < clean.length; i += 2) {
+          final code = clean.substring(i, i + 2).toUpperCase().padLeft(4, '0');
+          if (cmap.containsKey(code)) {
+            sb.write(cmap[code]);
+            matchedAny = true;
+          } else {
+            final charCode = int.tryParse(clean.substring(i, i + 2), radix: 16) ?? 0;
+            if (charCode >= 32 && charCode < 127) {
+              sb.writeCharCode(charCode);
+            }
+          }
+        }
+        if (matchedAny) {
+          return sb.toString();
+        }
+      }
+    }
+
     final bytes = <int>[];
     for (int i = 0; i < clean.length; i += 2) {
       if (i + 1 < clean.length) {
@@ -509,13 +642,17 @@ class ResumeParserImpl implements ResumeParser {
   bool _isReadablePdfTextString(String t) {
     final trimmed = t.trim();
     if (trimmed.isEmpty) return false;
-    if (trimmed.startsWith('%') || trimmed.startsWith('/') || RegExp(r'^\d{12,}$').hasMatch(trimmed)) {
+    if (trimmed.startsWith('%') ||
+        trimmed.startsWith('/Type') ||
+        trimmed.startsWith('/Font') ||
+        trimmed.startsWith('/ProcSet') ||
+        RegExp(r'^\d{12,}$').hasMatch(trimmed)) {
       return false;
     }
     return true;
   }
 
-  String _extractTextFromPdfStream(String stream) {
+  String _extractTextFromPdfStream(String stream, [Map<String, String>? cmap]) {
     final sb = StringBuffer();
     // 1. Bracket TJ arrays: [ (str1) -10 (str2) ] TJ or [ <hex1> 20 <hex2> ] TJ
     final bracketReg = RegExp(r'\[\s*([\s\S]*?)\s*\]\s*TJ');
@@ -558,7 +695,7 @@ class ResumeParserImpl implements ResumeParser {
           final hEnd = inner.indexOf('>', offset + 1);
           if (hEnd != -1) {
             final hex = inner.substring(offset + 1, hEnd);
-            final t = _decodePdfHex(hex);
+            final t = _decodePdfHex(hex, cmap);
             if (_isReadablePdfTextString(t)) {
               lineSb.write(t);
             }
@@ -607,7 +744,7 @@ class ResumeParserImpl implements ResumeParser {
     // 3. Direct hex string <...> Tj
     final hexTjReg = RegExp(r'<([0-9a-fA-F]+)>\s*(?:Tj|\x27|\x22)');
     for (final m in hexTjReg.allMatches(stream)) {
-      final t = _decodePdfHex(m.group(1) ?? '');
+      final t = _decodePdfHex(m.group(1) ?? '', cmap);
       if (t.trim().isNotEmpty && _isReadablePdfTextString(t)) {
         sb.writeln(t.trim());
       }
@@ -620,10 +757,24 @@ class ResumeParserImpl implements ResumeParser {
   String _extractDocxText(List<int> bytes) {
     try {
       final xmlContents = <String>[];
+      final relationships = <String, String>{};
 
       // 1. Try unpacking ZIP archive containing OpenXML document
       try {
         final archive = ZipDecoder().decodeBytes(bytes);
+
+        // Read relationships from word/_rels/document.xml.rels if present
+        final relFile = archive.findFile('word/_rels/document.xml.rels');
+        if (relFile != null) {
+          final relData = relFile.content;
+          final relXml = relData is List<int>
+              ? utf8.decode(relData, allowMalformed: true)
+              : relData.toString();
+          final relMatches = RegExp(r'<Relationship\s+[^>]*Id="([^"]+)"[^>]*Target="([^"]+)"', caseSensitive: false).allMatches(relXml);
+          for (final rm in relMatches) {
+            relationships[rm.group(1)!] = rm.group(2)!;
+          }
+        }
 
         // Extract header parts (often contains candidate name and contact info)
         for (final file in archive.files) {
@@ -659,22 +810,36 @@ class ResumeParserImpl implements ResumeParser {
 
       final sb = StringBuffer();
 
-      // OpenXML regex patterns (using [\s\S]*? to span multiple lines)
-      final wtReg = RegExp(r'<w:t[^>]*>([\s\S]*?)</w:t>');
-      final blockReg = RegExp(r'<(?:w:p|w:tc)[^>]*>([\s\S]*?)</(?:w:p|w:tc)>');
+      // OpenXML regex patterns
+      final pReg = RegExp(r'<w:p\b[^>]*>([\s\S]*?)</w:p>');
+      final wtReg = RegExp(r'<w:t\b[^>]*>([\s\S]*?)</w:t>');
+      final hyperlinkReg = RegExp(r'<w:hyperlink\b[^>]*r:id="([^"]+)"[^>]*>([\s\S]*?)</w:hyperlink>');
       final brReg = RegExp(r'<w:br[^>]*/>');
       final tabReg = RegExp(r'<w:tab[^>]*/>');
 
       for (final rawXml in xmlContents) {
-        for (final blockMatch in blockReg.allMatches(rawXml)) {
-          var blockXml = blockMatch.group(1) ?? '';
-          blockXml = blockXml.replaceAll(brReg, '\n');
-          blockXml = blockXml.replaceAll(tabReg, '\t');
+        for (final pMatch in pReg.allMatches(rawXml)) {
+          var pXml = pMatch.group(1) ?? '';
+          pXml = pXml.replaceAll(brReg, '\n');
+          pXml = pXml.replaceAll(tabReg, '\t');
 
           final lineSb = StringBuffer();
-          for (final tMatch in wtReg.allMatches(blockXml)) {
-            final textNode = tMatch.group(1) ?? '';
-            lineSb.write(_decodeXmlEntities(textNode));
+          for (final tMatch in wtReg.allMatches(pXml)) {
+            lineSb.write(_decodeXmlEntities(tMatch.group(1) ?? ''));
+          }
+
+          // Check if paragraph contains hyperlinks with relevant URLs
+          for (final hlMatch in hyperlinkReg.allMatches(pXml)) {
+            final rId = hlMatch.group(1);
+            if (rId != null && relationships.containsKey(rId)) {
+              final target = relationships[rId]!;
+              if (target.contains('linkedin') || target.contains('github') || target.contains('@')) {
+                final hlText = lineSb.toString();
+                if (!hlText.contains(target)) {
+                  lineSb.write(' $target');
+                }
+              }
+            }
           }
 
           final lineText = lineSb.toString().trim();
@@ -724,19 +889,28 @@ class ResumeParserImpl implements ResumeParser {
 
     // 2. Repair OCR LinkedIn / GitHub URL spacing (e.g. `linkedin. com / in / username` -> `linkedin.com/in/username`)
     cleaned = cleaned.replaceAllMapped(
-      RegExp(r'linkedin\s*\.\s*com\s*\/\s*in\s*\/\s*([a-zA-Z0-9_-]+)', caseSensitive: false),
+      RegExp(r'(?:linkedin\s*\.\s*com\s*\/\s*in\s*\/|(?:LINKEDIN|LinkedIn)\s*[\n\s:]+\s*\/in\/)\s*([a-zA-Z0-9_-]+)', caseSensitive: false),
       (m) => 'linkedin.com/in/${m[1]}',
     );
     cleaned = cleaned.replaceAllMapped(
-      RegExp(r'github\s*\.\s*com\s*\/\s*([a-zA-Z0-9_-]+)', caseSensitive: false),
+      RegExp(r'(?:github\s*\.\s*com\s*\/\s*|(?:GITHUB|GitHub)\s*[\n\s:]+\s*\/)\s*([a-zA-Z0-9_-]+)', caseSensitive: false),
       (m) => 'github.com/${m[1]}',
     );
 
-    return cleaned
-        .split('\n')
-        .map((l) => l.trim())
-        .where((l) => l.isNotEmpty)
-        .join('\n');
+    // 3. Merge lone bullets/dashes with the following line so wrapped bullet items are unified
+    final rawLines = cleaned.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
+    final mergedLines = <String>[];
+    for (int i = 0; i < rawLines.length; i++) {
+      final line = rawLines[i];
+      if ((line == '•' || line == '–' || line == '—' || line == '-' || line == '*') && i + 1 < rawLines.length) {
+        mergedLines.add('• ${rawLines[i + 1]}');
+        i++; // skip next line as it was merged
+      } else {
+        mergedLines.add(line);
+      }
+    }
+
+    return mergedLines.join('\n');
   }
 
   @override
@@ -812,8 +986,8 @@ class ResumeParserImpl implements ResumeParser {
     // Rejects long arbitrary numbers like 3247687638375438.
     final phoneReg = RegExp(r'(\+\d{1,4}[\s-]?)?\(?\d{2,5}\)?[\s-]?\d{3,4}[\s-]?\d{3,4}');
 
-    final linkedinReg = RegExp(r'linkedin\.com\/in\/[a-zA-Z0-9_-]+', caseSensitive: false);
-    final githubReg = RegExp(r'github\.com\/[a-zA-Z0-9_-]+', caseSensitive: false);
+    final linkedinReg = RegExp(r'(?:https?:\/\/)?(?:www\.)?linkedin\.com\/in\/([a-zA-Z0-9_-]+)|(?:LINKEDIN|LinkedIn)[\s\S]{0,20}\/in\/([a-zA-Z0-9_-]+)', caseSensitive: false);
+    final githubReg = RegExp(r'(?:https?:\/\/)?(?:www\.)?github\.com\/([a-zA-Z0-9_-]+)|(?:GITHUB|GitHub)[\s\S]{0,20}\/([a-zA-Z0-9_-]+)', caseSensitive: false);
 
     final emailMatch = emailReg.firstMatch(text)?.group(0) ?? '';
     
@@ -828,8 +1002,11 @@ class ResumeParserImpl implements ResumeParser {
       }
     }
 
-    final linkedinMatch = linkedinReg.firstMatch(text)?.group(0) ?? '';
-    final githubMatch = githubReg.firstMatch(text)?.group(0) ?? '';
+    final linkedinM = linkedinReg.firstMatch(text);
+    final linkedinMatch = linkedinM != null ? 'linkedin.com/in/${linkedinM.group(1) ?? linkedinM.group(2)}' : '';
+
+    final githubM = githubReg.firstMatch(text);
+    final githubMatch = githubM != null ? 'github.com/${githubM.group(1) ?? githubM.group(2)}' : '';
 
     final lines = text.split('\n').map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
     String fullName = '';
@@ -1011,14 +1188,47 @@ class ResumeParserImpl implements ResumeParser {
       ).hasMatch(line) || (list.isEmpty && line.length < 80 && !line.startsWith('•') && !line.startsWith('-'));
 
       if (isDegree && line.length < 80) {
+        String institution = '';
+        String fieldOfStudy = '';
+        String startYear = '';
+        String endYear = '';
+
+        int j = i + 1;
+        while (j < lines.length && j <= i + 5) {
+          final next = lines[j];
+          if (RegExp(r'(bachelor|master|b\.tech|m\.tech|b\.s|b\.a|phd|diploma|b\.e|m\.e|mba)', caseSensitive: false).hasMatch(next) && next.length < 50) {
+            break;
+          }
+          final isYearLine = RegExp(r'(?:expected\s*[:\s]*)?(\b(?:19|20)\d{2}\b)', caseSensitive: false).firstMatch(next);
+          if (isYearLine != null && endYear.isEmpty) {
+            endYear = isYearLine.group(1) ?? '';
+            final range = RegExp(r'(\b(?:19|20)\d{2}\b)\s*[-–—]\s*(\b(?:19|20)\d{2}\b)').firstMatch(next);
+            if (range != null) {
+              startYear = range.group(1) ?? '';
+              endYear = range.group(2) ?? '';
+            }
+          } else if (institution.isEmpty &&
+              (next.toLowerCase().contains('college') ||
+               next.toLowerCase().contains('university') ||
+               next.toLowerCase().contains('institute') ||
+               next.toLowerCase().contains('school') ||
+               next.toLowerCase().contains('academy') ||
+               (!next.contains('|') && !RegExp(r'^\d{4}').hasMatch(next)))) {
+            institution = next;
+          } else if (fieldOfStudy.isEmpty && (next.contains('|') || next.toLowerCase().contains('science') || next.toLowerCase().contains('engineering') || next.toLowerCase().contains('technology'))) {
+            fieldOfStudy = next.split('|').first.trim();
+          }
+          j++;
+        }
+
         list.add(Education(
           id: 'edu_${list.length + 1}',
           degree: line,
-          fieldOfStudy: '',
-          institution: (i + 1 < lines.length && lines[i + 1].length < 80) ? lines[i + 1] : '',
+          fieldOfStudy: fieldOfStudy,
+          institution: institution,
           location: '',
-          startYear: '',
-          endYear: '',
+          startYear: startYear,
+          endYear: endYear,
         ));
       }
     }
@@ -1037,17 +1247,72 @@ class ResumeParserImpl implements ResumeParser {
     if (lines.length <= 1) return [];
 
     final list = <Project>[];
+    Project? currentProject;
+
     for (int i = 1; i < lines.length; i++) {
       final line = lines[i];
-      if (line.length < 60 && !line.startsWith('•') && !line.startsWith('-')) {
-        list.add(Project(
+      final isBullet = line.startsWith('•') ||
+          line.startsWith('-') ||
+          line.startsWith('–') ||
+          line.startsWith('—') ||
+          line.startsWith('*');
+      final isDate = RegExp(
+        r'^(?:Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sep|Oct|Nov|Dec|\d{4})\b',
+        caseSensitive: false,
+      ).hasMatch(line);
+      final isTechOrLink = line.toLowerCase().startsWith('technologies:') ||
+          line.toLowerCase().startsWith('tools:') ||
+          line.toLowerCase().startsWith('github:') ||
+          line.toLowerCase().startsWith('http') ||
+          line.split(',').length >= 3;
+      final isSingleCharOrIcon = line.length <= 2;
+      final startsWithLower = line.isNotEmpty && line[0].toLowerCase() == line[0] && RegExp(r'^[a-z]').hasMatch(line);
+
+      final isNewTitle = !isBullet &&
+          !isDate &&
+          !isTechOrLink &&
+          !isSingleCharOrIcon &&
+          !startsWithLower &&
+          line.length >= 4 &&
+          line.length < 65 &&
+          (line.contains('—') || line.contains(' - ') || currentProject == null);
+
+      if (isNewTitle) {
+        if (currentProject != null) {
+          list.add(currentProject);
+        }
+        currentProject = Project(
           id: 'proj_${list.length + 1}',
           name: line,
           role: '',
-          description: i + 1 < lines.length ? lines[i + 1] : '',
-        ));
+          description: '',
+        );
+      } else if (currentProject != null && !isSingleCharOrIcon) {
+        final existing = currentProject.description;
+        currentProject = currentProject.copyWith(
+          description: existing.isEmpty ? line : '$existing\n$line',
+        );
       }
     }
+
+    if (currentProject != null) {
+      list.add(currentProject);
+    }
+
+    if (list.isEmpty) {
+      for (int i = 1; i < lines.length; i++) {
+        final line = lines[i];
+        if (line.length < 60 && !line.startsWith('•') && !line.startsWith('-') && !line.startsWith('–')) {
+          list.add(Project(
+            id: 'proj_${list.length + 1}',
+            name: line,
+            role: '',
+            description: i + 1 < lines.length ? lines[i + 1] : '',
+          ));
+        }
+      }
+    }
+
     return list;
   }
 
@@ -1101,13 +1366,17 @@ class ResumeParserImpl implements ResumeParser {
     final lines = match.group(0)!.split('\n').sublist(1).map((l) => l.trim()).where((l) => l.isNotEmpty).toList();
     final list = <Certification>[];
     for (final line in lines) {
-      if (line.isNotEmpty && line.length < 80) {
-        list.add(Certification(
-          id: 'cert_${list.length + 1}',
-          name: line,
-          organization: '',
-          issueDate: '',
-        ));
+      final isLoneBullet = line == '•' || line == '-' || line == '–' || line == '—' || line == '*';
+      if (!isLoneBullet && line.isNotEmpty && line.length < 90) {
+        final cleanName = line.replaceFirst(RegExp(r'^[•\-–—*]\s*'), '').trim();
+        if (cleanName.isNotEmpty) {
+          list.add(Certification(
+            id: 'cert_${list.length + 1}',
+            name: cleanName,
+            organization: '',
+            issueDate: '',
+          ));
+        }
       }
     }
     return list;
